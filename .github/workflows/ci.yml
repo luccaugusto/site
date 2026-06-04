@@ -15,14 +15,17 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Install Jekyll prerequisites
-        run: sudo apt-get install ruby-full build-essential zlib1g-dev
+      - name: Install ImageMagick (for gallery thumbnails)
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
 
-      - name: Install Jekyll
-        run: sudo gem install jekyll bundler
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+          bundler-cache: true
 
       - name: Build the website
-        run: sudo ./build.sh
+        run: ./build.sh
 
       - name: Scan the host key
         run: mkdir -p ~/.ssh/ && ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts

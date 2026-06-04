@@ -1,56 +1,56 @@
 #!/bin/sh
 
+# Longest edge (px) for generated gallery thumbnails.
+THUMB_MAX=600
+
+# Regenerate a gallery's data file and its thumbnails.
+#   gen_gallery <image-dir> <data-file> <url-base>
+# Writes one entry per file (nome + full link, plus a thumb for images) and
+# generates a downscaled JPEG thumbnail under <image-dir>/thumbs/ for every
+# non-video image. Thumbnails are only (re)built when missing or stale, and
+# are gitignored (rebuilt fresh on each CI run).
+gen_gallery()
+{
+	dir="$1"
+	yaml="$2"
+	urlbase="$3"
+
+	mkdir -p "$dir/thumbs"
+	echo "" > "$yaml"
+
+	for FOTO in $(ls --sort=extension "$dir")
+	do
+		[ "$FOTO" = "thumbs" ] && continue
+		[ -d "$dir/$FOTO" ] && continue
+
+		{
+			echo "-   nome: $FOTO"
+			echo "    link: $urlbase/$FOTO"
+		} >> "$yaml"
+
+		case "$(echo "$FOTO" | tr 'A-Z' 'a-z')" in
+			*.mp4)
+				;; # videos have no image thumbnail
+			*)
+				thumb="$dir/thumbs/${FOTO%.*}.jpg"
+				if [ ! -f "$thumb" ] || [ "$dir/$FOTO" -nt "$thumb" ]; then
+					convert "$dir/$FOTO" -resize "${THUMB_MAX}x${THUMB_MAX}>" -quality 82 "$thumb"
+				fi
+				echo "    thumb: $urlbase/thumbs/${FOTO%.*}.jpg" >> "$yaml"
+				;;
+		esac
+
+		echo "" >> "$yaml"
+	done
+}
+
 uploadarquivos()
 {
-	echo "" > _data/skate.yml
-	for FOTO in $(ls --sort=extension images/fotos-skate)
-	do
-		{
-			echo "-   nome: $FOTO"
-			echo "    link: /images/fotos-skate/$FOTO"
-			echo ""
-		} >> _data/skate.yml
-	done
-
-	echo "" > _data/wallpapers.yml
-	for FOTO in $(ls --sort=extension images/wallpapers)
-	do
-		{
-			echo "-   nome: $FOTO"
-			echo "    link: /images/wallpapers/$FOTO"
-			echo ""
-		} >> _data/wallpapers.yml
-	done
-
-	echo "" > _data/flores.yml
-	for FOTO in $(ls --sort=extension images/flores)
-	do
-		{
-			echo "-   nome: $FOTO"
-			echo "    link: /images/flores/$FOTO"
-			echo ""
-		} >> _data/flores.yml
-	done
-
-	echo "" > _data/minhas_fotos.yml
-	for FOTO in $(ls --sort=extension images/minhas-fotos)
-	do
-		{
-			echo "-   nome: $FOTO"
-			echo "    link: /images/minhas-fotos/$FOTO"
-			echo ""
-		} >> _data/minhas_fotos.yml
-	done
-
-	echo "" > _data/suspensao.yml
-	for FOTO in $(ls --sort=extension images/suspensao)
-	do
-		{
-			echo "-   nome: $FOTO"
-			echo "    link: /images/suspensao/$FOTO"
-			echo ""
-		} >> _data/suspensao.yml
-	done
+	gen_gallery images/fotos-skate  _data/skate.yml         /images/fotos-skate
+	gen_gallery images/wallpapers   _data/wallpapers.yml    /images/wallpapers
+	gen_gallery images/flores       _data/flores.yml        /images/flores
+	gen_gallery images/minhas-fotos _data/minhas_fotos.yml  /images/minhas-fotos
+	gen_gallery images/suspensao    _data/suspensao.yml     /images/suspensao
 }
 
 updatedates()
@@ -65,8 +65,6 @@ updatedates()
 	done
 }
 
-#. compress_img.sh
-#rm images/*.png
 uploadarquivos
 updatedates
 
