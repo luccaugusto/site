@@ -2,97 +2,76 @@
 layout: home
 title: Lucca Augusto
 ---
-<div class="main">
-	{% include window.html %}
-    <meta name="description" content="{{site.description}}"/>
-	<div class="central cool-red neon">
-		<div class="cabecalho blackground">
-			<img src="images/lucca-full-synth.jpg" class="nome fleft"/>
-			<img src="images/FDP_Synth.jpg" class="fdp-logo fright mobile-hidden small-width" onclick="location.href='/fdp.html'"/>
-		</div>
+<meta name="description" content="{{site.description}}"/>
 
-        <div class="p15">
-		    <h2> Meus Trem </h2>
-		    <ul>
-		    	<li><img class="icone" src="images/icons/github-icon.png"/>Github: <a href="https://github.com/{{ site.github_username }}" target="_blank">{{ site.github_username }}</a></li>
-		    	<li><img class="icone" src="images/icons/spotify-icon.png"/>Spotify: <a href="{{ site.url_spot}}" target="_blank">{{ site.user_spot }}</a></li>
-		    	<li><img class="icone" src="images/icons/mal.ico"/>MyAnimeList: <a href="{{ site.url_mal }}" target="_blank">{{ site.user_mal }}</a></li>
-		    	<li><img class="icone" src="images/icons/letterboxd-icon.png"/>Letterboxd: <a href="{{ site.url_letterboxd }}" target="_blank">{{ site.user_letterboxd }}</a></li>
-		    	<li><img class="icone" src="images/icons/favicon.ico"/>Website: <a href="{{ site.url }}" target="_blank">{{ site.url }}</a> </li>
-		    	<li><img class="icone" src="images/icons/amazon-icon.png"/><a href="{{ site.wish_amazon }}" target="_blank">Wishlist da Amazon</a> </li>
-		    	<li><img class="icone" src="images/icons/orkut-icon.png"/><a href="{{ site.url_orkut }}" target="_blank">Orkut</a> </li>
-		    	<li><img class="icone" src="images/icons/download-icon.png"/><a href="/downloads/" target="_blank">Downloads</a> </li>
-		    	<li><img class="icone" src="images/icons/agenda-icon.png"/><a href="/agenda.html">Agenda</a></li>
-                <li><img class="icone" src="images/icons/gemeos-icon.png"/><a href="/images/meu-mapa-astral.jpeg">Meu Mapa Astral</a></li>
-                <li><img class="icone" src="images/icons/download-icon.png"/><a href="/downloads/Regras Camelô.pdf">Regras Camelô</a></li>
-                <li><img class="icone" src="images/icons/favicon.ico"/><a href="/treino.html">Planilha de Treino</a></li>
-		    </ul>
+<div class="zine-canvas">
+    
+    <!-- 1. Links (Meus Trem) -->
+    <div class="zine-panel panel-links">
+        <div class="crooked-header">Meus Trem</div>
+        <div class="panel-content">
+            <div class="main-icons">
+                <a href="https://github.com/{{ site.github_username }}" target="_blank"><img class="icone-grande" src="images/icons/github-icon.png" alt="Github"/></a>
+                <a href="{{ site.url_spot}}" target="_blank"><img class="icone-grande" src="images/icons/spotify-icon.png" alt="Spotify"/></a>
+                <a href="{{ site.url_letterboxd }}" target="_blank"><img class="icone-grande" src="images/icons/letterboxd-icon.png" alt="Letterboxd"/></a>
+            </div>
+            <ul class="extra-links">
+                <li><a href="{{ site.url_mal }}" target="_blank">MyAnimeList</a></li>
+                <li><a href="{{ site.wish_amazon }}" target="_blank">Wishlist da Amazon</a></li>
+                <li><a href="{{ site.url_orkut }}" target="_blank">Orkut</a></li>
+                <li><a href="/downloads/" target="_blank">Downloads</a></li>
+                <li><a href="/agenda.html">Agenda</a></li>
+                <li><a href="/images/meu-mapa-astral.jpeg">Meu Mapa Astral</a></li>
+                <li><a href="/downloads/Regras Camelô.pdf">Regras Camelô</a></li>
+                <li><a href="/treino.html">Planilha de Treino</a></li>
+            </ul>
+        </div>
+    </div>
 
-		    <div class="bipartido">
-		    	<div class="parte">
-		    		<a href="{{ site.url_pds }}" target="_blank">
-		    			<h2> Papo de Sauna </h2>
-		    		</a>
-		    		<p>
-		    			Papo de Sauna é um podcast idealizado por mim, Felipe e Churros.
-                        Abandonamos a periodicidade que tinhamos e hoje o projeto caminha solto.
-                        Episódios novos a cada intervalo de tempo indefinido. Vale conferir.
-		    		</p>
-		    	</div>
-		    	<div class="parte">
-		    		<h2>
-		    			PIADA AUTORAL
-		    		</h2>
-		    		<!--piada selecionada aleatoriamente no js-->
-		    		<p id="p-piada"></p>
-		    	</div>
-		    </div>
-		    <div class="parte">
-		    	<h2>
-		    		Um salve pro maior apoiador do meu site:
-		    	</h2>
-		    	<pre id="salve-uriel">
+    <!-- 2. Portais (Other websites) -->
+    <div class="zine-panel panel-portals">
+        <div class="crooked-header">Portais</div>
+        <div class="panel-content">
+            <!-- Empty for now, art later -->
+        </div>
+    </div>
+
+    <!-- 3. Piadas -->
+    <div class="zine-panel panel-piada">
+        <div class="crooked-header">Piada do Dia</div>
+        <div class="panel-content">
+            <p id="p-piada"></p>
+        </div>
+    </div>
+
+    <!-- 4. Salve Uriel -->
+    <div class="zine-panel panel-uriel">
+        <div class="crooked-header">Salve Uriel</div>
+        <div class="panel-content">
+            <pre id="salve-uriel">
    _____       __              __  __     _      __
   / ___/____ _/ /   _____     / / / /____(_)__  / /
   \__ \/ __ `/ / | / / _ \   / / / / ___/ / _ \/ /
  ___/ / /_/ / /| |/ /  __/  / /_/ / /  / /  __/ /
 /____/\__,_/_/ |___/\___/   \____/_/  /_/\___/_/
-		    	</pre>
-		    </div>
-
-		    <a href="/blog.html">
-		    	<h2> Blog </h2>
-		    </a>
-		    {% include last_posts.html %}
-
-		    <h2> Meus Outros Trem </h2>
-		    <div class="tripartido">
-		    	<div class="parte">
-		    		<a href="{{ site.url_portfolio }}" target="_blank">
-		    			<img src="images/portfolio.gif" class="img-skate" alt="Portfolio"/>
-		    		</a>
-		    	</div>
-		    	<div class="parte">
-		    		<a href="skate.html">
-		    			<img src="images/skate-or-die.png" class="img-skate" alt="SKATE"/>
-		    		</a>
-		    	</div>
-		    	<div class="parte">
-		    		<a href="wallpapers.html">
-		    			<img src="images/wallpapers.png" class="img-skate" alt="WALLPAPERS"/>
-		    		</a>
-		    	</div>
-		    	<div class="parte">
-		    		<a href="/ded.html">
-		    			<img src="images/dedlogo.png" class="img-skate" alt="DUNGEONS AND DRAGONS"/>
-		    		</a>
-		    	</div>
-		    </div>
-		    <div class="tripartido">
-		    </div>
-		    <p class="font15">
-		    	Queria um maravilhoso site pra você também? Contrate meus serviços de maravilhoso criador de sites.
-		    </p>
+            </pre>
         </div>
-	</div>
+    </div>
+
+    <!-- 5. Blog -->
+    <div class="zine-panel panel-blog">
+        <div class="crooked-header">Blog</div>
+        <div class="panel-content">
+            {% include last_posts.html %}
+        </div>
+    </div>
+
+    <!-- 6. Pictures -->
+    <div class="zine-panel panel-pictures">
+        <div class="crooked-header">Fotos</div>
+        <div class="panel-content">
+            <a href="/fotos.html">Ver as fotos</a>
+        </div>
+    </div>
+
 </div>

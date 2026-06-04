@@ -138,6 +138,8 @@ h2{
 	position: absolute;
 	top: 15pt;
 	left: 15pt;
+	transform: skewX(-15deg) rotate(-6deg);
+	z-index: 100;
 }
 .nome{
 	height: 80pt;
@@ -495,4 +497,243 @@ h2{
 		height: unset;
 		margin: 0;
 	}
+}
+
+/* ==========================================================================
+   ZINE CANVAS LAYOUT (Redesign)
+   ========================================================================== */
+
+.zine-canvas {
+    position: relative;
+    width: 100vw;
+    min-height: 120vh; /* Extra space for chaotic placement */
+    overflow-x: hidden;
+    /* Background art will be added here later */
+}
+
+/* Base Panel Style */
+.zine-panel {
+    position: absolute; /* Allows chaotic placement */
+    background-color: #ffffff; /* White background for visibility */
+    border-radius: 20px;
+    color: #000000; /* Black text for readability on white */
+    padding: 20px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); /* dark shadow */
+    z-index: 10;
+}
+
+.zine-panel a {
+    color: #0000ee;
+    text-decoration: none;
+}
+
+.zine-panel a:hover {
+    color: #ff2d95;
+}
+
+.panel-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* Links Panel Specifics */
+.main-icons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.extra-links {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.extra-links li {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+/* Crooked Headers (Slanted Tape Look) */
+.crooked-header {
+    position: absolute;
+    top: -20px;
+    left: -30px;
+    background-color: #f0a830;
+    color: #000;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 1.5rem; /* Bigger headings */
+    padding: 10px 80px; /* Less height, much more width */
+    transform: skewX(350deg) rotate(355deg);
+    z-index: 3;
+    box-shadow: 3px 3px 0px #000;
+}
+
+/* Specific Panel Placements (Rough Draft) */
+.panel-links { top: 10vh; left: 10vw; width: 300px; transform: rotate(-1.5deg); }
+.panel-portals { top: 15vh; right: 15vw; width: 250px; height: 200px; transform: rotate(2deg); }
+.panel-piada { top: 50vh; left: 5vw; width: 280px; transform: rotate(3deg); } /* extra zine chaos */
+.panel-uriel { top: 45vh; right: 10vw; width: 350px; transform: rotate(-2deg); }
+.panel-blog { top: 75vh; left: 30vw; width: 400px; transform: rotate(1.5deg); }
+.panel-pictures { top: 85vh; right: 20vw; width: 200px; transform: rotate(-3deg); }
+
+/* Responsive fallback for mobile */
+@media (max-width: 808px) {
+    .zine-canvas {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        padding: 40px 10px;
+        min-height: auto;
+    }
+    .zine-panel {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        width: 90% !important;
+        transform: none !important;
+    }
+}
+
+/* ==========================================================================
+   MAGAZINE LAYOUT (Blog & Fotos)
+   ========================================================================== */
+
+.zine-body {
+    background-color: #e8d5b7; /* Beige zine background */
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.magazine-layout {
+    background-color: #f4f0e6; /* Off-white paper color */
+    width: 90vw;
+    max-width: 1200px;
+    min-height: 80vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 50px rgba(0,0,0,0.05);
+    border-radius: 2px;
+    padding: 60px 80px;
+    position: relative;
+    color: #1a1a1a;
+
+    /* Fold in the middle to look like an open magazine */
+    background-image: linear-gradient(to right,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0) 49%,
+        rgba(0,0,0,0.08) 50%,
+        rgba(255,255,255,0) 51%,
+        rgba(255,255,255,0) 100%);
+}
+
+.magazine-header {
+    margin-bottom: 40px;
+}
+
+.magazine-title {
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+    text-align: left;
+    display: inline-block;
+    background-color: #ff2d95; /* Magenta zine accent */
+    color: white;
+    padding: 10px 20px;
+    transform: rotate(-2deg);
+    box-shadow: 4px 4px 0px #000;
+}
+
+.magazine-content {
+    column-width: 400px;
+    column-gap: 80px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.magazine-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+    break-inside: avoid;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+}
+
+.magazine-content p {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.scroll-to-top-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.scroll-to-top {
+    display: inline-block;
+    background-color: #00f3ff; /* Cyan zine accent */
+    color: #000;
+    font-weight: bold;
+    font-style: italic;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    text-decoration: none;
+    transform: rotate(3deg);
+    box-shadow: 3px 3px 0px #000;
+    transition: transform 0.2s ease;
+}
+
+.scroll-to-top:hover {
+    transform: rotate(0deg) scale(1.1);
+    background-color: #ff2d95;
+    color: #fff;
+}
+
+.blog-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.blog-list li {
+    margin-bottom: 40px;
+    break-inside: avoid; /* Prevents a blog post snippet from splitting across columns */
+}
+
+.blog-list h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: none;
+}
+
+.blog-list a {
+    color: #ff2d95;
+    text-decoration: none;
+}
+
+.blog-list a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 808px) {
+    .magazine-layout {
+        padding: 30px 20px;
+        background-image: none; /* No fold on mobile */
+    }
+    .magazine-content {
+        column-count: 1;
+    }
 }
