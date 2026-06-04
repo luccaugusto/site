@@ -22,14 +22,15 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://luccaaugusto.xyz" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: luccaugusto
 url_pds: "https://pds.luccaaugusto.xyz"
-url_port: "https://portfolio.luccaaugusto.xyz"
+url_portfolio: "https://luccaaugusto.xyz"
+url_dev_portfolio: "https://dev.luccaaugusto.xyz"
 url_mal: "https://myanimelist.net/profile/luccaugusto"
 url_letterboxd: "https://letterboxd.com/luccaugusto/"
 user_mal: "luccaugusto"
 user_spot: "luccaugusto"
 user_letterboxd: "luccaugusto"
 url_spot: "https://open.spotify.com/user/luccaugusto"
-url_linkedin: "https://www.linkedin.com/in/lucca-augusto-santos-b66416195"
+url_linkedin: "https://www.linkedin.com/in/luccaugusto"
 url_orkut: "https://www.orkut.br.com/MainProfile?uid=2736677"
 wish_amazon: "https://www.amazon.com.br/hz/wishlist/ls/YICR8H5942MX?ref_=wl_share"
 
@@ -38,6 +39,7 @@ markdown: kramdown
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-loading-lazy
 
 # Treat my posts as collections so i dont have that stupid date on url
 collections:

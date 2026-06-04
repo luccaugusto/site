@@ -34,3 +34,9 @@ function cursores() {
         elementToChange.style.cursor = "url('/cursores/Windows_CursorR.cur'), auto";
     }
 }
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", cursores);
+} else {
+    cursores();
+}

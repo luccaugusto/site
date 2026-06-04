@@ -8,12 +8,12 @@ title: Fotos de Skate
 <div class="thumbnail">
 	<div class="item">
 		{% if titulo[1] == 'mp4' %}
-				<video  class="w100 h100" controls preload="auto">
+				<video  class="w100 h100" controls preload="metadata">
 					<source src="{{ foto.link }}" type="video/mp4">
 				</video>
 		{% else %}
 			<a href="{{ foto.link }}" target="blank">
-				<img src="{{ foto.link }}" class="w100 h100" alt="{{ foto.nome }}"/>
+				<img src="{{ foto.thumb | default: foto.link }}" srcset="{{ foto.thumb | default: foto.link }} 600w, {{ foto.link }} 1600w" sizes="(max-width: 808px) 45vw, 18vw" class="w100 h100" alt="{{ foto.nome }}"/>
 			</a>
 		{% endif %}
 	</div>

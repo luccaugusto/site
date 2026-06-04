@@ -3,3 +3,6 @@ _site/*
 vendor/*
 vendor
 .jekyll-cache
+
+# Generated gallery thumbnails (rebuilt by build.sh)
+images/*/thumbs/
