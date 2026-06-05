@@ -194,6 +194,13 @@ h2{
 	top: 165pt;
 	z-index: 550;
 }
+#panel-skull {
+	position: absolute;
+	right: -21em;
+	top: 30em;
+	height: 42em;
+	z-index: 1;
+}
 /*ALIGNMENT*/
 .to-the-right{
 	padding-left: 5pt;
@@ -598,7 +605,12 @@ h2{
 }
 
 /* Specific Panel Placements (Rough Draft) */
-.panel-links { top: 10vh; left: 10vw; width: 300px; transform: rotate(-1.5deg); }
+.panel-links {
+	top: 18vh;
+    left: 20vw;
+    width: 40em;
+    transform: rotate(14deg);
+}
 .panel-portals { top: 15vh; right: 15vw; width: 250px; height: 200px; transform: rotate(2deg); }
 .panel-piada { top: 50vh; left: 5vw; width: 280px; transform: rotate(3deg); } /* extra zine chaos */
 .panel-uriel { top: 45vh; right: 10vw; width: 350px; transform: rotate(-2deg); }
