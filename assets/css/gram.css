@@ -1,0 +1,13 @@
+/* Instagram-like feed — deliberately minimal; skin into the synthwave look later. */
+.gram-feed { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; max-width: 960px; margin: 0 auto; }
+@media (max-width: 600px) { .gram-feed { grid-template-columns: 1fr; } }
+.gram-post { width: 100%; }
+.gram-post__caption { margin: 0.5rem 0 0; }
+.gram-media img, .gram-media video { width: 100%; height: auto; display: block; border-radius: 8px; }
+.gram-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 0.5rem; }
+.gram-carousel > * { flex: 0 0 100%; scroll-snap-align: center; }
+.gram-dots { display: flex; gap: 6px; justify-content: center; margin-top: 6px; }
+.gram-dots button { width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; background: #bbb; cursor: pointer; }
+.gram-dots button[aria-current="true"] { background: #333; }
+.gram-more { display: block; margin: 1.5rem auto; }
+.gram-feed__status { text-align: center; opacity: 0.7; margin-top: 1rem; }

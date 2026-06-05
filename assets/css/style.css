@@ -1,3 +1,14 @@
+@font-face {
+    font-family: 'Ethnocentric';
+    src: url('/assets/Ethnocentric-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1, h2, h3, h4, h5, h6, .crooked-header, .magazine-title {
+    font-family: 'Ethnocentric', sans-serif;
+}
+
 html{
 	min-height: 100%;
 }

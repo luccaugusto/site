@@ -1,0 +1,79 @@
+---
+layout: post
+title: Feed
+---
+<link rel="stylesheet" href="/assets/css/gram.css">
+<div id="gram-feed" class="gram-feed" aria-live="polite"></div>
+<div class="gram-feed__status" id="gram-status"></div>
+<button id="gram-more" class="gram-more" hidden>Carregar mais</button>
+<script>
+  // Single source of truth for the PocketBase origin — change if the subdomain changes.
+  window.GRAM_PB_URL = "https://gram.luccaaugusto.xyz";
+</script>
+
+<!-- ============================================================================
+     TEST DATA — DELETE THIS WHOLE <script> BLOCK (or comment it out) BEFORE
+     DEPLOYING. It mocks the PocketBase response with picsum images + a sample
+     video so the page can be previewed before PocketBase is live. With it
+     removed, the page fetches real posts from window.GRAM_PB_URL above.
+     ============================================================================ -->
+<script>
+  (() => {
+    const img = (seed) => `https://picsum.photos/seed/${seed}/600/600`;
+    const VIDEO = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+
+    // Shape mirrors GET /api/collections/posts/records?expand=media_via_post
+    const media = (id, file, type, order, extra = {}) => ({
+      id, collectionId: "mediacol", collectionName: "media",
+      post: "", file, type, order, alt: "", poster: "", ...extra,
+    });
+
+    const MOCK = {
+      page: 1, perPage: 12, totalItems: 4, totalPages: 1,
+      items: [
+        {
+          id: "p1", collectionId: "postscol", collectionName: "posts",
+          caption: "Post simples — uma foto só", published: "2026-06-05 12:00:00.000Z", pinned: false,
+          expand: { media_via_post: [ media("m1", img("uma"), "image", 0) ] },
+        },
+        {
+          id: "p2", collectionId: "postscol", collectionName: "posts",
+          caption: "Carrossel de 4 fotos", published: "2026-06-04 12:00:00.000Z", pinned: false,
+          expand: { media_via_post: [
+            media("m2", img("dois-a"), "image", 0),
+            media("m3", img("dois-b"), "image", 1),
+            media("m4", img("dois-c"), "image", 2),
+            media("m5", img("dois-d"), "image", 3),
+          ] },
+        },
+        {
+          id: "p3", collectionId: "postscol", collectionName: "posts",
+          caption: "Vídeo com poster", published: "2026-06-03 12:00:00.000Z", pinned: false,
+          expand: { media_via_post: [ media("m6", VIDEO, "video", 0, { poster: img("video-poster") }) ] },
+        },
+        {
+          id: "p4", collectionId: "postscol", collectionName: "posts",
+          caption: "Carrossel misto (foto + vídeo + foto)", published: "2026-06-02 12:00:00.000Z", pinned: false,
+          expand: { media_via_post: [
+            media("m7", img("misto-a"), "image", 0),
+            media("m8", VIDEO, "video", 1, { poster: img("misto-poster") }),
+            media("m9", img("misto-c"), "image", 2),
+          ] },
+        },
+      ],
+    };
+
+    const realFetch = window.fetch.bind(window);
+    window.fetch = (url, opts) => {
+      if (typeof url === "string" && url.includes("/api/collections/posts/records")) {
+        return Promise.resolve(new Response(JSON.stringify(MOCK), {
+          status: 200, headers: { "Content-Type": "application/json" },
+        }));
+      }
+      return realFetch(url, opts);
+    };
+  })();
+</script>
+<!-- ============================ END TEST DATA ============================ -->
+
+<script src="/assets/js/gram.js" defer></script>
