@@ -74,6 +74,12 @@
 /* --- split: progression list + control card --- */
 .treino .split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 18px; align-items: start; }
 
+/* --- "Hoje": today's workout, cloned to the top and centered --- */
+.treino .today { max-width: 720px; margin: 0 auto 32px; }
+.treino .today:empty { display: none; }          /* hidden until the script fills it (and if JS is off) */
+.treino .today h2 { text-align: center; }
+.treino .today .card { box-shadow: 6px 6px 0 #ff2d95; }  /* magenta offset = "this is today" */
+
 /* --- responsive: collapse all grids to one column --- */
 @media (max-width: 900px) {
   .treino .stats,
