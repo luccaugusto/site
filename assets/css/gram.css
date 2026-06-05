@@ -3,11 +3,82 @@
 @media (max-width: 600px) { .gram-feed { grid-template-columns: 1fr; } }
 .gram-post { width: 100%; }
 .gram-post__caption { margin: 0.5rem 0 0; }
+.gram-media { position: relative; }
 .gram-media img, .gram-media video { width: 100%; height: auto; display: block; border-radius: 8px; }
-.gram-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 0.5rem; }
+.gram-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 0.5rem; scrollbar-width: none; }
+.gram-carousel::-webkit-scrollbar { display: none; }
 .gram-carousel > * { flex: 0 0 100%; scroll-snap-align: center; }
 .gram-dots { display: flex; gap: 6px; justify-content: center; margin-top: 6px; }
 .gram-dots button { width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; background: #bbb; cursor: pointer; }
 .gram-dots button[aria-current="true"] { background: #333; }
 .gram-more { display: block; margin: 1.5rem auto; }
 .gram-feed__status { text-align: center; opacity: 0.7; margin-top: 1rem; }
+
+/* ---- click-to-expand (modal) ---------------------------------------------- */
+.gram-post { cursor: pointer; }
+
+/* Media item wrapper — anchors the download button and play hint. */
+.gram-media__item { position: relative; }
+
+/* Download button overlaid on each media item. */
+.gram-download {
+  position: absolute; right: 8px; bottom: 8px; z-index: 2;
+  width: 36px; height: 36px; padding: 0; border: none; border-radius: 50%;
+  cursor: pointer; color: #fff; background: rgba(0, 0, 0, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.85; transition: opacity 0.15s ease;
+}
+.gram-download:hover { opacity: 1; background: rgba(0, 0, 0, 0.75); }
+.gram-download svg { width: 18px; height: 18px; }
+
+/* Carousel prev/next arrows. */
+.gram-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  width: 36px; height: 36px; padding: 0; border: none; border-radius: 50%;
+  cursor: pointer; color: #fff; background: rgba(0, 0, 0, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.85; transition: opacity 0.15s ease;
+}
+.gram-arrow:hover { opacity: 1; background: rgba(0, 0, 0, 0.75); }
+.gram-arrow svg { width: 20px; height: 20px; }
+.gram-arrow--prev { left: 8px; }
+.gram-arrow--next { right: 8px; }
+
+/* Play hint on video posters (videos play only inside the modal). */
+.gram-media__item--video::after {
+  content: "\25B6"; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%); pointer-events: none;
+  width: 56px; height: 56px; border-radius: 50%; font-size: 20px;
+  color: #fff; background: rgba(0, 0, 0, 0.5);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Modal / lightbox — dimmed backdrop with the post centered on top. */
+.gram-modal {
+  position: fixed; inset: 0; z-index: 1000; box-sizing: border-box;
+  padding: 2rem; background: rgba(0, 0, 0, 0.8);
+  display: flex; align-items: center; justify-content: center;
+}
+.gram-modal[hidden] { display: none; }
+.gram-modal__dialog {
+  position: relative; width: 100%; max-width: 900px; max-height: 90vh;
+  overflow: auto; background: #f4f0e6; border-radius: 8px;
+  scrollbar-width: none;
+}
+.gram-modal__dialog::-webkit-scrollbar { display: none; }
+.gram-modal__body { padding: 1.25rem 1rem 1rem; }
+.gram-modal__body .gram-media img,
+.gram-modal__body .gram-media video {
+  max-height: 80vh; width: auto; max-width: 100%; margin: 0 auto;
+}
+.gram-modal .gram-media__item--video::after { display: none; }
+
+/* Close button (X) — fixed to the top-right corner of the viewport. */
+.gram-close {
+  width: 40px; height: 40px; padding: 0; border: none; border-radius: 50%;
+  font-size: 26px; line-height: 1; cursor: pointer; color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center;
+}
+.gram-close:hover { background: rgba(0, 0, 0, 0.85); }
+.gram-modal__close { position: absolute; top: 1rem; right: 1rem; z-index: 1010; }
