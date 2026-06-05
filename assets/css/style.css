@@ -28,25 +28,25 @@ h2{
 	margin: auto;
 }
 .palmtree{
-	background-image: url('/images/background-2.jpg');
+	background-image: url('/assets/img/background-2.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-attachment: fixed;
 }
 .take-me-away{
-	background-image: url('/images/vaporwhat.jpg');
+	background-image: url('/assets/img/vaporwhat.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-attachment: fixed;
 }
 .random{
-	background-image: url('/images/background.jpg');
+	background-image: url('/assets/img/background.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-attachment: fixed;
 }
 .skate{
-	background-image: url('/images/skulls-background-2.jpg');
+	background-image: url('/assets/img/skulls-background-2.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
@@ -571,6 +571,9 @@ h2{
     position: absolute;
     top: -20px;
     left: -30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     background-color: #f0a830;
     color: #000;
     font-weight: bold;
@@ -580,6 +583,18 @@ h2{
     transform: skewX(350deg) rotate(355deg);
     z-index: 3;
     box-shadow: 3px 3px 0px #000;
+}
+
+/* Star marker to the left of each header's text */
+.crooked-header::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 1.1em;
+    height: 1.1em;
+    background-image: url("/assets/star-marker.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 /* Specific Panel Placements (Rough Draft) */

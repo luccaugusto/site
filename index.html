@@ -5,15 +5,15 @@ title: Lucca Augusto
 <meta name="description" content="{{site.description}}"/>
 
 <div class="zine-canvas">
-    
+
     <!-- 1. Links (Meus Trem) -->
     <div class="zine-panel panel-links">
         <div class="crooked-header">Meus Trem</div>
         <div class="panel-content">
             <div class="main-icons">
-                <a href="https://github.com/{{ site.github_username }}" target="_blank"><img class="icone-grande" src="images/icons/github-icon.png" alt="Github"/></a>
-                <a href="{{ site.url_spot}}" target="_blank"><img class="icone-grande" src="images/icons/spotify-icon.png" alt="Spotify"/></a>
-                <a href="{{ site.url_letterboxd }}" target="_blank"><img class="icone-grande" src="images/icons/letterboxd-icon.png" alt="Letterboxd"/></a>
+                <a href="https://github.com/{{ site.github_username }}" target="_blank"><img class="icone-grande" src="/assets/icons/github-icon.png" alt="Github"/></a>
+                <a href="{{ site.url_spot}}" target="_blank"><img class="icone-grande" src="/assets/icons/spotify-icon.png" alt="Spotify"/></a>
+                <a href="{{ site.url_letterboxd }}" target="_blank"><img class="icone-grande" src="/assets/icons/letterboxd-icon.png" alt="Letterboxd"/></a>
             </div>
             <ul class="extra-links">
                 <li><a href="{{ site.url_mal }}" target="_blank">MyAnimeList</a></li>
@@ -60,7 +60,9 @@ title: Lucca Augusto
 
     <!-- 5. Blog -->
     <div class="zine-panel panel-blog">
-        <div class="crooked-header">Blog</div>
+        <a href="/blog">
+            <div class="crooked-header">Blog</div>
+        </a>
         <div class="panel-content">
             {% include last_posts.html %}
         </div>
