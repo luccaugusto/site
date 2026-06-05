@@ -1,634 +1,434 @@
-<!doctype html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Planilha de Treino: Forca + Volume Moderado</title>
-    <style>
-      :root {
-        --bg: #0f1115;
-        --surface: #171a21;
-        --surface-soft: #1f2430;
-        --border: #303645;
-        --text: #f4f5f7;
-        --muted: #b2b8c6;
-        --subtle: #8992a3;
-        --accent: #6aa6ff;
-        --success: #73d58c;
-        --warning: #f0c36a;
-        --radius: 14px;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--text);
-        font-family:
-          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        line-height: 1.5;
-      }
-      main {
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 32px 20px 48px;
-      }
-      h1,
-      h2,
-      h3,
-      p {
-        margin-top: 0;
-      }
-      h1 {
-        margin-bottom: 10px;
-        font-size: clamp(2rem, 5vw, 3.4rem);
-        line-height: 1.05;
-      }
-      h2 {
-        margin: 34px 0 14px;
-        font-size: 1.5rem;
-      }
-      h3 {
-        margin-bottom: 10px;
-        font-size: 1rem;
-      }
-      p {
-        color: var(--muted);
-      }
-      .intro {
-        max-width: 840px;
-      }
-      .row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        padding: 4px 10px;
-        color: var(--muted);
-        font-size: 0.82rem;
-        font-weight: 650;
-      }
-      .pill.success {
-        border-color: color-mix(in srgb, var(--success) 65%, var(--border));
-        color: var(--success);
-      }
-      .pill.info {
-        border-color: color-mix(in srgb, var(--accent) 65%, var(--border));
-        color: var(--accent);
-      }
-      .pill.warning {
-        border-color: color-mix(in srgb, var(--warning) 65%, var(--border));
-        color: var(--warning);
-      }
-      .stats,
-      .week,
-      .split {
-        display: grid;
-        gap: 16px;
-      }
-      .stats {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        margin: 24px 0;
-      }
-      .stat,
-      .card,
-      .callout {
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: var(--surface);
-      }
-      .stat {
-        padding: 16px;
-      }
-      .stat strong {
-        display: block;
-        margin-bottom: 2px;
-        font-size: 1.6rem;
-        line-height: 1.1;
-      }
-      .stat span {
-        color: var(--subtle);
-        font-size: 0.9rem;
-      }
-      .callout {
-        padding: 16px;
-        background: var(--surface-soft);
-      }
-      .callout strong {
-        display: block;
-        margin-bottom: 4px;
-        color: var(--accent);
-      }
-      .callout p {
-        margin-bottom: 0;
-      }
-      .week {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 12px 14px;
-        border-bottom: 1px solid var(--border);
-        font-weight: 750;
-      }
-      .card-body {
-        padding: 16px;
-      }
-      .modalities {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-      }
-      .block {
-        margin-top: 14px;
-      }
-      .block:first-of-type {
-        margin-top: 8px;
-      }
-      ul {
-        margin: 8px 0 0;
-        padding-left: 20px;
-        color: var(--muted);
-      }
-      li {
-        margin-bottom: 6px;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: var(--surface);
-      }
-      th,
-      td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-        text-align: left;
-        vertical-align: top;
-      }
-      th {
-        color: var(--text);
-        font-size: 0.86rem;
-      }
-      td {
-        color: var(--muted);
-      }
-      tr:last-child td {
-        border-bottom: 0;
-      }
-      .split {
-        grid-template-columns: 1fr 1fr;
-        margin-top: 18px;
-      }
-      .progression {
-        color: var(--muted);
-      }
-      @media (max-width: 900px) {
-        .stats,
-        .week,
-        .split,
-        .modalities {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <section class="intro">
-        <h1>Planilha de Treino: Forca + Volume Moderado</h1>
-        <p>
-          Estrutura hibrida para ganhar forca no corpo todo, dar enfase em membros superiores e
-          construir volume suficiente para sair do visual magro sem virar um treino focado so em
-          hipertrofia.
-        </p>
-        <div class="row">
-          <span class="pill success">Compostos = forca</span>
-          <span class="pill info">Acessorios = volume</span>
-          <span class="pill">Calistenia ou academia no dia</span>
-        </div>
-      </section>
-      <section class="stats" aria-label="Resumo do treino">
-        <div class="stat">
-          <strong>5x/sem</strong>
-          <span>frequencia</span>
-        </div>
-        <div class="stat">
-          <strong>3-6</strong>
-          <span>reps nos principais</span>
-        </div>
-        <div class="stat">
-          <strong>8-15</strong>
-          <span>reps nos acessorios</span>
-        </div>
-        <div class="stat">
-          <strong>1-2 RIR</strong>
-          <span>margem nos compostos</span>
-        </div>
-      </section>
-      <section class="callout">
-        <strong>Como usar no dia</strong>
-        <p>
-          Escolha a versao de academia ou calistenia conforme sua rotina. Mantenha o padrao do dia:
-          push, pull, legs, upper acessorios ou tecnico. Dentro da versao escolhida, faca primeiro
-          os principais, depois os acessorios e deixe core/skill para o final.
-        </p>
-      </section>
-      <h2>Semana</h2>
-      <section class="week">
-        <article class="card">
-          <div class="card-header">
-            <span>Segunda</span>
-            <span class="pill info">Push forca</span>
-          </div>
-          <div class="card-body">
-            <p>Empurrar pesado sem transformar o treino em excesso de peito/triceps.</p>
-            <div class="modalities">
-              <div>
-                <h3>Academia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Supino reto barra</li>
-                    <li>Desenvolvimento militar</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Supino inclinado halter ou dips com carga</li>
-                    <li>Triceps polia ou testa leve</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>Prancha com carga</li>
-                  </ul>
-                </div>
-              </div>
-              <div>
-                <h3>Calistenia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Dips com carga</li>
-                    <li>Pike push-up ou HSPU progressao</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Flexao com peso</li>
-                    <li>Flexao arqueiro ou pseudo planche push-up</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>Hollow body hold</li>
-                  </ul>
-                </div>
-              </div>
+---
+layout: post
+title: "Planilha de Treino: Forca + Volume Moderado"
+---
+<link rel="stylesheet" href="/assets/css/treino.css">
+<div class="treino">
+  <section class="intro">
+    <p>
+      Estrutura hibrida para ganhar forca no corpo todo, dar enfase em membros superiores e
+      construir volume suficiente para sair do visual magro sem virar um treino focado so em
+      hipertrofia.
+    </p>
+    <div class="row">
+      <span class="pill success">Compostos = forca</span>
+      <span class="pill info">Acessorios = volume</span>
+      <span class="pill">Calistenia ou academia no dia</span>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="Resumo do treino">
+    <div class="stat">
+      <strong>5x/sem</strong>
+      <span>frequencia</span>
+    </div>
+    <div class="stat">
+      <strong>3-6</strong>
+      <span>reps nos principais</span>
+    </div>
+    <div class="stat">
+      <strong>8-15</strong>
+      <span>reps nos acessorios</span>
+    </div>
+    <div class="stat">
+      <strong>1-2 RIR</strong>
+      <span>margem nos compostos</span>
+    </div>
+  </section>
+
+  <section class="callout">
+    <strong>Como usar no dia</strong>
+    <p>
+      Escolha a versao de academia ou calistenia conforme sua rotina. Mantenha o padrao do dia:
+      push, pull, legs, upper acessorios ou tecnico. Dentro da versao escolhida, faca primeiro
+      os principais, depois os acessorios e deixe core/skill para o final.
+    </p>
+  </section>
+
+  <h2>Semana</h2>
+  <section class="week">
+    <article class="card">
+      <div class="card-header">
+        <span>Segunda</span>
+        <span class="pill info">Push forca</span>
+      </div>
+      <div class="card-body">
+        <p>Empurrar pesado sem transformar o treino em excesso de peito/triceps.</p>
+        <div class="modalities">
+          <div>
+            <h3>Academia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Supino reto barra</li>
+                <li>Desenvolvimento militar</li>
+              </ul>
             </div>
             <div class="block">
-              <span class="pill warning">Todo dia</span>
+              <span class="pill info">Acessorios</span>
               <ul>
-                <li>10 series de sim linda você ta certa, desculpa por existir</li>
+                <li>Supino inclinado halter ou dips com carga</li>
+                <li>Triceps polia ou testa leve</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>Prancha com carga</li>
               </ul>
             </div>
           </div>
-        </article>
-        <article class="card">
-          <div class="card-header">
-            <span>Terca</span>
-            <span class="pill info">Pull forca</span>
-          </div>
-          <div class="card-body">
-            <p>Puxada vertical e remada forte como base para costas, biceps e pegada.</p>
-            <div class="modalities">
-              <div>
-                <h3>Academia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Barra fixa com carga ou puxada frente</li>
-                    <li>Remada curvada barra</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Remada unilateral halter ou remada baixa</li>
-                    <li>Face pull</li>
-                    <li>Rosca direta ou martelo</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>Hanging leg raise ou dead hang</li>
-                  </ul>
-                </div>
-              </div>
-              <div>
-                <h3>Calistenia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Barra fixa pronada</li>
-                    <li>Chin-up com carga ou pausa</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Remada australiana</li>
-                    <li>Face pull com elastico</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>Hanging leg raise</li>
-                  </ul>
-                </div>
-              </div>
+          <div>
+            <h3>Calistenia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Dips com carga</li>
+                <li>Pike push-up ou HSPU progressao</li>
+              </ul>
             </div>
             <div class="block">
-              <span class="pill warning">Todo dia</span>
+              <span class="pill info">Acessorios</span>
               <ul>
-                <li>10 series de sim linda você ta certa, desculpa por existir</li>
+                <li>Flexao com peso</li>
+                <li>Flexao arqueiro ou pseudo planche push-up</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>Hollow body hold</li>
               </ul>
             </div>
           </div>
-        </article>
-        <article class="card">
-          <div class="card-header">
-            <span>Quarta</span>
-            <span class="pill info">Legs forca</span>
-          </div>
-          <div class="card-body">
-            <p>Forca de pernas com equilibrio entre agachar, posterior e unilateral.</p>
-            <div class="modalities">
-              <div>
-                <h3>Academia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Agachamento livre</li>
-                    <li>Levantamento terra romeno</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Afundo bulgaro ou leg press</li>
-                    <li>Mesa flexora</li>
-                    <li>Panturrilha em pe</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>Cable crunch</li>
-                  </ul>
-                </div>
-              </div>
-              <div>
-                <h3>Calistenia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Pistol squat progressao</li>
-                    <li>Afundo bulgaro</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Nordic curl progressao</li>
-                    <li>Panturrilha unilateral</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>Dragon flag progressao</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="block">
-              <span class="pill warning">Todo dia</span>
-              <ul>
-                <li>10 series de sim linda você ta certa, desculpa por existir</li>
-              </ul>
-            </div>
-          </div>
-        </article>
-        <article class="card">
-          <div class="card-header">
-            <span>Quinta</span>
-            <span class="pill info">Upper acessorios + bracos</span>
-          </div>
-          <div class="card-body">
-            <p>Volume moderado para deixar de parecer magro sem roubar recuperacao dos dias pesados.</p>
-            <div class="modalities">
-              <div>
-                <h3>Academia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Chin-up ou remada leve</li>
-                    <li>Dips ou supino leve</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Rosca direta</li>
-                    <li>Rosca martelo</li>
-                    <li>Triceps testa</li>
-                    <li>Extensao de triceps</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>L-sit</li>
-                  </ul>
-                </div>
-              </div>
-              <div>
-                <h3>Calistenia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Chin-up com pausa</li>
-                    <li>Dips leve ou flexao diamante</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Remada australiana leve</li>
-                    <li>Flexao controlada</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>L-sit</li>
-                    <li>Dead hang</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="block">
-              <span class="pill warning">Todo dia</span>
-              <ul>
-                <li>10 series de sim linda você ta certa, desculpa por existir</li>
-              </ul>
-            </div>
-          </div>
-        </article>
-        <article class="card">
-          <div class="card-header">
-            <span>Sexta</span>
-            <span class="pill info">Pull tecnico + ombros</span>
-          </div>
-          <div class="card-body">
-            <p>Tecnica, escapulas, ombros e postura. Deve ser mais leve que a terca.</p>
-            <div class="modalities">
-              <div>
-                <h3>Academia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Barra fixa tecnica</li>
-                    <li>Remada baixa maquina</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Face pull</li>
-                    <li>Elevacao lateral</li>
-                    <li>Rotacao externa cabo ou elastico</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>Prancha lateral</li>
-                  </ul>
-                </div>
-              </div>
-              <div>
-                <h3>Calistenia</h3>
-                <div class="block">
-                  <span class="pill success">Principais</span>
-                  <ul>
-                    <li>Remada australiana lenta</li>
-                    <li>Scapular pull-ups</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill info">Acessorios</span>
-                  <ul>
-                    <li>Flexao controlada</li>
-                    <li>Handstand hold na parede</li>
-                    <li>Elevacao lateral com elastico</li>
-                  </ul>
-                </div>
-                <div class="block">
-                  <span class="pill">Core / skill</span>
-                  <ul>
-                    <li>Prancha lateral</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="block">
-              <span class="pill warning">Todo dia</span>
-              <ul>
-                <li>10 series de sim linda você ta certa, desculpa por existir</li>
-              </ul>
-            </div>
-          </div>
-        </article>
-      </section>
-      <h2>Regras de Series, Reps e Descanso</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Bloco</th>
-            <th>Series</th>
-            <th>Reps / tempo</th>
-            <th>Descanso</th>
-            <th>Regra pratica</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Principais de forca</td>
-            <td>3-5 series</td>
-            <td>3-6 reps</td>
-            <td>2-4 min</td>
-            <td>Pare com 1-2 reps na reserva na maior parte do tempo.</td>
-          </tr>
-          <tr>
-            <td>Acessorios de volume</td>
-            <td>2-4 series</td>
-            <td>8-15 reps</td>
-            <td>60-120s</td>
-            <td>Chegue perto da falha, mas sem quebrar tecnica.</td>
-          </tr>
-          <tr>
-            <td>Core e skill</td>
-            <td>2-4 series</td>
-            <td>10-40s ou 6-12 reps</td>
-            <td>60-120s</td>
-            <td>Priorize controle corporal e progressao limpa.</td>
-          </tr>
-        </tbody>
-      </table>
-      <section class="split">
-        <div>
-          <h2>Progressao</h2>
-          <ul class="progression">
-            <li>Quando bater o topo da faixa de reps em todas as series com boa tecnica, aumente carga ou dificuldade.</li>
-            <li>Nos compostos, suba pouco: 1-2 kg em movimentos de superior ou 2-5 kg em pernas, quando fizer sentido.</li>
-            <li>Na calistenia, progrida com carga, alavanca mais dificil, pausa, amplitude ou tempo sob tensao.</li>
-            <li>Evite falha nos movimentos principais. Guarde a falha ocasional para acessorios seguros.</li>
+        </div>
+        <div class="block">
+          <span class="pill warning">Todo dia</span>
+          <ul>
+            <li>10 series de sim linda você ta certa, desculpa por existir</li>
           </ul>
         </div>
-        <article class="card">
-          <div class="card-header">controle semanal</div>
-          <div class="card-body">
-            <p>
-              Se o peso sobe, as reps sobem ou a variacao fica mais dificil mantendo tecnica, o
-              treino esta funcionando.
-            </p>
-            <p>
-              Se voce fica moido, perde desempenho por varios treinos seguidos ou as articulacoes
-              incomodam, reduza acessorios antes de mexer nos principais.
-            </p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-header">
+        <span>Terca</span>
+        <span class="pill info">Pull forca</span>
+      </div>
+      <div class="card-body">
+        <p>Puxada vertical e remada forte como base para costas, biceps e pegada.</p>
+        <div class="modalities">
+          <div>
+            <h3>Academia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Barra fixa com carga ou puxada frente</li>
+                <li>Remada curvada barra</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill info">Acessorios</span>
+              <ul>
+                <li>Remada unilateral halter ou remada baixa</li>
+                <li>Face pull</li>
+                <li>Rosca direta ou martelo</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>Hanging leg raise ou dead hang</li>
+              </ul>
+            </div>
           </div>
-        </article>
-      </section>
-    </main>
-  </body>
-</html>
+          <div>
+            <h3>Calistenia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Barra fixa pronada</li>
+                <li>Chin-up com carga ou pausa</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill info">Acessorios</span>
+              <ul>
+                <li>Remada australiana</li>
+                <li>Face pull com elastico</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>Hanging leg raise</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="pill warning">Todo dia</span>
+          <ul>
+            <li>10 series de sim linda você ta certa, desculpa por existir</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-header">
+        <span>Quarta</span>
+        <span class="pill info">Legs forca</span>
+      </div>
+      <div class="card-body">
+        <p>Forca de pernas com equilibrio entre agachar, posterior e unilateral.</p>
+        <div class="modalities">
+          <div>
+            <h3>Academia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Agachamento livre</li>
+                <li>Levantamento terra romeno</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill info">Acessorios</span>
+              <ul>
+                <li>Afundo bulgaro ou leg press</li>
+                <li>Mesa flexora</li>
+                <li>Panturrilha em pe</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>Cable crunch</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <h3>Calistenia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Pistol squat progressao</li>
+                <li>Afundo bulgaro</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill info">Acessorios</span>
+              <ul>
+                <li>Nordic curl progressao</li>
+                <li>Panturrilha unilateral</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>Dragon flag progressao</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="pill warning">Todo dia</span>
+          <ul>
+            <li>10 series de sim linda você ta certa, desculpa por existir</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-header">
+        <span>Quinta</span>
+        <span class="pill info">Upper acessorios + bracos</span>
+      </div>
+      <div class="card-body">
+        <p>Volume moderado para deixar de parecer magro sem roubar recuperacao dos dias pesados.</p>
+        <div class="modalities">
+          <div>
+            <h3>Academia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Chin-up ou remada leve</li>
+                <li>Dips ou supino leve</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill info">Acessorios</span>
+              <ul>
+                <li>Rosca direta</li>
+                <li>Rosca martelo</li>
+                <li>Triceps testa</li>
+                <li>Extensao de triceps</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>L-sit</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <h3>Calistenia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Chin-up com pausa</li>
+                <li>Dips leve ou flexao diamante</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill info">Acessorios</span>
+              <ul>
+                <li>Remada australiana leve</li>
+                <li>Flexao controlada</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>L-sit</li>
+                <li>Dead hang</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="pill warning">Todo dia</span>
+          <ul>
+            <li>10 series de sim linda você ta certa, desculpa por existir</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-header">
+        <span>Sexta</span>
+        <span class="pill info">Pull tecnico + ombros</span>
+      </div>
+      <div class="card-body">
+        <p>Tecnica, escapulas, ombros e postura. Deve ser mais leve que a terca.</p>
+        <div class="modalities">
+          <div>
+            <h3>Academia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Barra fixa tecnica</li>
+                <li>Remada baixa maquina</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill info">Acessorios</span>
+              <ul>
+                <li>Face pull</li>
+                <li>Elevacao lateral</li>
+                <li>Rotacao externa cabo ou elastico</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>Prancha lateral</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <h3>Calistenia</h3>
+            <div class="block">
+              <span class="pill success">Principais</span>
+              <ul>
+                <li>Remada australiana lenta</li>
+                <li>Scapular pull-ups</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill info">Acessorios</span>
+              <ul>
+                <li>Flexao controlada</li>
+                <li>Handstand hold na parede</li>
+                <li>Elevacao lateral com elastico</li>
+              </ul>
+            </div>
+            <div class="block">
+              <span class="pill">Core / skill</span>
+              <ul>
+                <li>Prancha lateral</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="pill warning">Todo dia</span>
+          <ul>
+            <li>10 series de sim linda você ta certa, desculpa por existir</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <h2>Regras de Series, Reps e Descanso</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Bloco</th>
+        <th>Series</th>
+        <th>Reps / tempo</th>
+        <th>Descanso</th>
+        <th>Regra pratica</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Principais de forca</td>
+        <td>3-5 series</td>
+        <td>3-6 reps</td>
+        <td>2-4 min</td>
+        <td>Pare com 1-2 reps na reserva na maior parte do tempo.</td>
+      </tr>
+      <tr>
+        <td>Acessorios de volume</td>
+        <td>2-4 series</td>
+        <td>8-15 reps</td>
+        <td>60-120s</td>
+        <td>Chegue perto da falha, mas sem quebrar tecnica.</td>
+      </tr>
+      <tr>
+        <td>Core e skill</td>
+        <td>2-4 series</td>
+        <td>10-40s ou 6-12 reps</td>
+        <td>60-120s</td>
+        <td>Priorize controle corporal e progressao limpa.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section class="split">
+    <div>
+      <h2>Progressao</h2>
+      <ul class="progression">
+        <li>Quando bater o topo da faixa de reps em todas as series com boa tecnica, aumente carga ou dificuldade.</li>
+        <li>Nos compostos, suba pouco: 1-2 kg em movimentos de superior ou 2-5 kg em pernas, quando fizer sentido.</li>
+        <li>Na calistenia, progrida com carga, alavanca mais dificil, pausa, amplitude ou tempo sob tensao.</li>
+        <li>Evite falha nos movimentos principais. Guarde a falha ocasional para acessorios seguros.</li>
+      </ul>
+    </div>
+    <article class="card">
+      <div class="card-header">controle semanal</div>
+      <div class="card-body">
+        <p>
+          Se o peso sobe, as reps sobem ou a variacao fica mais dificil mantendo tecnica, o
+          treino esta funcionando.
+        </p>
+        <p>
+          Se voce fica moido, perde desempenho por varios treinos seguidos ou as articulacoes
+          incomodam, reduza acessorios antes de mexer nos principais.
+        </p>
+      </div>
+    </article>
+  </section>
+</div>
