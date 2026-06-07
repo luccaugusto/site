@@ -20,10 +20,10 @@ title: Lucca Augusto
                 <li><a href="{{ site.wish_amazon }}" target="_blank">Wishlist da Amazon</a></li>
                 <li><a href="{{ site.url_orkut }}" target="_blank">Orkut</a></li>
                 <li><a href="/downloads/" target="_blank">Downloads</a></li>
-                <li><a href="/agenda.html">Agenda</a></li>
+                <li><a href="/agenda">Agenda</a></li>
                 <li><a href="/images/meu-mapa-astral.jpeg">Meu Mapa Astral</a></li>
                 <li><a href="/downloads/Regras Camelô.pdf">Regras Camelô</a></li>
-                <li><a href="/treino.html">Planilha de Treino</a></li>
+                <li><a href="/treino">Planilha de Treino</a></li>
             </ul>
         </div>
     </div>
@@ -56,26 +56,32 @@ title: Lucca Augusto
     </div>
 
     <!-- 5. Blog -->
-    <div class="zine-panel panel-blog">
-        <a href="/blog">
-            <div class="crooked-header">Blog</div>
-        </a>
-        <div class="panel-content">
-            {% include last_posts.html %}
+    <div class="panel-blog-wrap">
+        <div id="panel-eye">
+            <img src="/assets/img/eye.png"/>
+        </div>
+        <div class="zine-panel panel-blog">
+            <a href="/blog">
+                <div class="crooked-header">Blog</div>
+            </a>
+            <div class="panel-content">
+                {% include last_posts.html %}
+            </div>
         </div>
     </div>
 
     <!-- 6. Pictures -->
     <div class="zine-panel panel-pictures">
         <div class="crooked-header">Fotos</div>
-        <div class="panel-content">
-            <a href="/gram.html">Feed</a>
-        </div>
-    </div>
-
-    <!-- 7. Skull picture -->
-    <div id="panel-skull">
-        <img src="/assets/img/tattoo-caveira.png"/>
+        <a href="/gram">
+            <div class="panel-content">
+                <img id="camera-pic" src="/assets/img/camera.png"/>
+            </div>
+        </a>
     </div>
 
 </div>
+
+    <div id="panel-skull">
+        <img src="/assets/img/tattoo-caveira.png"/>
+    </div>
