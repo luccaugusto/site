@@ -1,11 +1,17 @@
 (() => {
   const PB = window.GRAM_PB_URL;
   const PER_PAGE = 12;
+  const SEARCH_DEBOUNCE_MS = 300;
   const feedEl = document.getElementById("gram-feed");
   const statusEl = document.getElementById("gram-status");
+  const searchEl = document.getElementById("gram-search");
+  const searchInput = document.getElementById("gram-search-input");
+  const searchClear = document.getElementById("gram-search-clear");
 
   let page = 1;
   let totalPages = 1;
+  let query = ""; // current active search term (trimmed)
+  let queryGen = 0; // bumped on each new search so stale responses can be ignored
 
   // Build a file URL for a media/poster record + filename, optional thumbnail size.
   function fileUrl(record, filename, thumb) {
@@ -75,7 +81,7 @@
     return btn;
   }
 
-  function renderImage(m) {
+  function renderImage(m, withDownload) {
     const item = document.createElement("div");
     item.className = "gram-media__item";
     const img = document.createElement("img");
@@ -85,11 +91,12 @@
     img.dataset.full = fileUrl(m, m.file); // full-res once the post is expanded
     img.alt = m.alt || "";
     item.appendChild(img);
-    item.appendChild(downloadButton(img.dataset.full, mediaName(m)));
+    // Download button lives only in the expanded modal, not in the feed.
+    if (withDownload) item.appendChild(downloadButton(img.dataset.full, mediaName(m)));
     return item;
   }
 
-  function renderVideo(m) {
+  function renderVideo(m, withDownload) {
     const item = document.createElement("div");
     item.className = "gram-media__item gram-media__item--video";
     const video = document.createElement("video");
@@ -99,23 +106,25 @@
     source.src = fileUrl(m, m.file);
     video.appendChild(source);
     item.appendChild(video);
-    item.appendChild(downloadButton(fileUrl(m, m.file), mediaName(m)));
+    if (withDownload) item.appendChild(downloadButton(fileUrl(m, m.file), mediaName(m)));
     return item;
   }
 
-  function renderMedia(m) {
-    return m.type === "video" ? renderVideo(m) : renderImage(m);
+  function renderMedia(m, withDownload) {
+    return m.type === "video"
+      ? renderVideo(m, withDownload)
+      : renderImage(m, withDownload);
   }
 
   const CHEVRON = { prev: "m15 18-6-6 6-6", next: "m9 18 6-6-6-6" };
 
-  function renderCarousel(media) {
+  function renderCarousel(media, withDownload) {
     const wrap = document.createElement("div");
     wrap.className = "gram-media";
 
     const track = document.createElement("div");
     track.className = "gram-carousel";
-    media.forEach((m) => track.appendChild(renderMedia(m)));
+    media.forEach((m) => track.appendChild(renderMedia(m, withDownload)));
     wrap.appendChild(track);
 
     const currentIndex = () => Math.round(track.scrollLeft / track.clientWidth);
@@ -170,12 +179,13 @@
   }
 
   // Render a post's media (single item or carousel) into a fresh container.
-  function renderPostMedia(media) {
-    if (media.length > 1) return renderCarousel(media);
+  // Download buttons are added only when withDownload is set (the modal view).
+  function renderPostMedia(media, withDownload) {
+    if (media.length > 1) return renderCarousel(media, withDownload);
     if (media.length === 1) {
       const single = document.createElement("div");
       single.className = "gram-media";
-      single.appendChild(renderMedia(media[0]));
+      single.appendChild(renderMedia(media[0], withDownload));
       return single;
     }
     return null;
@@ -254,7 +264,7 @@
 
   function openModal(media, caption) {
     modalBody.innerHTML = "";
-    const mediaEl = renderPostMedia(media);
+    const mediaEl = renderPostMedia(media, true); // download buttons only in the modal
     if (mediaEl) {
       // Full-res images and playable videos in the expanded view.
       mediaEl.querySelectorAll("img[data-full]").forEach((img) => {
@@ -287,29 +297,67 @@
   let loading = false;
   let sentinelVisible = false;
 
-  async function loadPage() {
-    if (loading) return;
-    loading = true;
-    statusEl.textContent = "Carregando…";
-    const url =
+  // Escape a user term for safe inclusion in a PocketBase filter string literal,
+  // so a stray quote/backslash can't break the expression.
+  function escapeFilter(s) {
+    return s.replace(/[\\']/g, "\\$&");
+  }
+
+  // Build the records endpoint for the current page, adding a tag/description
+  // filter when there's an active search term.
+  function buildUrl() {
+    let url =
       `${PB}/api/collections/posts/records` +
       `?sort=-pinned,-created` +
       `&perPage=${PER_PAGE}&page=${page}`;
+    if (query) {
+      const q = escapeFilter(query);
+      const filter = `(description~'${q}' || tag~'${q}')`;
+      url += `&filter=${encodeURIComponent(filter)}`;
+    }
+    return url;
+  }
+
+  async function loadPage() {
+    if (loading) return;
+    loading = true;
+    const gen = queryGen; // snapshot — a new search invalidates this request
+    statusEl.textContent = "Carregando…";
     try {
-      const res = await fetch(url);
+      const res = await fetch(buildUrl());
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
+      if (gen !== queryGen) return; // superseded by a newer search; the active request owns state
       totalPages = data.totalPages;
       data.items.forEach((post) => feedEl.appendChild(renderPost(post)));
       statusEl.textContent =
-        data.totalItems === 0 ? "Nada por aqui ainda." : "";
+        data.totalItems === 0
+          ? query
+            ? `Nada encontrado para “${query}”.`
+            : "Nada por aqui ainda."
+          : "";
       loading = false;
       maybeLoadMore(); // keep filling while the sentinel stays on-screen
     } catch (err) {
+      if (gen !== queryGen) return; // stale failure — don't clobber the active request
       statusEl.textContent = "Não consegui carregar o feed.";
       console.error("gram feed:", err);
       loading = false;
     }
+  }
+
+  // Switch to a new search term (or clear it). Resets pagination, drops any
+  // in-flight request via queryGen, and reloads the feed from page 1.
+  function runSearch(term) {
+    const next = term.trim();
+    if (next === query) return;
+    query = next;
+    queryGen += 1;
+    page = 1;
+    totalPages = 1;
+    loading = false; // release the guard so the in-flight request can be superseded
+    feedEl.innerHTML = "";
+    loadPage();
   }
 
   // Load the next page if there is one and the bottom sentinel is near view.
@@ -331,8 +379,44 @@
   );
   sentinel.observe(statusEl);
 
+  // ---- search wiring -------------------------------------------------------
+  if (searchInput) {
+    let debounceTimer = null;
+
+    searchInput.addEventListener("input", () => {
+      searchClear.hidden = searchInput.value === "";
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(
+        () => runSearch(searchInput.value),
+        SEARCH_DEBOUNCE_MS,
+      );
+    });
+
+    // Enter fires the search immediately, bypassing the debounce.
+    searchEl.addEventListener("submit", (e) => {
+      e.preventDefault();
+      clearTimeout(debounceTimer);
+      runSearch(searchInput.value);
+    });
+
+    searchClear.addEventListener("click", () => {
+      searchInput.value = "";
+      searchClear.hidden = true;
+      clearTimeout(debounceTimer);
+      runSearch("");
+      searchInput.focus();
+    });
+  }
+
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !modal.hidden) closeModal();
+    if (e.key !== "Escape") return;
+    if (!modal.hidden) {
+      closeModal();
+    } else if (searchInput && document.activeElement === searchInput && searchInput.value) {
+      searchInput.value = "";
+      searchClear.hidden = true;
+      runSearch("");
+    }
   });
   loadPage();
 })();

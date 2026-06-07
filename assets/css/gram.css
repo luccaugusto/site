@@ -1,10 +1,37 @@
 /* Instagram-like feed — deliberately minimal; skin into the synthwave look later. */
+
+/* ---- search bar (zine-skinned) -------------------------------------------- */
+.gram-search { position: absolute; width: 40%; margin: 0 auto 2rem; top: 5%; left: 30%}
+.gram-search__input {
+  width: 100%; box-sizing: border-box; font: inherit; font-size: 1rem;
+  padding: 0.7rem 2.8rem 0.7rem 2.8rem; color: #1a1a1a;
+  background: #f4f0e6; border: 3px solid #000; border-radius: 0;
+  box-shadow: 4px 4px 0 #000; outline: none;
+  transition: box-shadow 0.15s ease, background 0.15s ease;
+}
+.gram-search__input::placeholder { color: #555; }
+.gram-search__input:focus { background: #fff; box-shadow: 4px 4px 0 #000, 0 0 12px 2px #00f3ff; }
+/* Suppress the browser's native search clear — we ship our own for a consistent look. */
+.gram-search__input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.gram-search__icon {
+  position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; color: #ff2d95; pointer-events: none;
+}
+.gram-search__clear {
+  position: absolute; right: 0.6rem; top: 50%; transform: translateY(-50%);
+  width: 26px; height: 26px; padding: 0; border: none; background: none;
+  font-size: 22px; line-height: 1; cursor: pointer; color: #000;
+  display: flex; align-items: center; justify-content: center;
+}
+.gram-search__clear[hidden] { display: none; }
+.gram-search__clear:hover { color: #ff2d95; }
+
 .gram-feed { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; max-width: 960px; margin: 0 auto; }
 @media (max-width: 600px) { .gram-feed { grid-template-columns: 1fr; } }
-.gram-post { width: 100%; break-inside: avoid; }
+.gram-post { width: 100%; break-inside: avoid; cursor: pointer; }
 .gram-post__caption { margin: 0.5rem 0 0; }
 .gram-media { position: relative; }
-.gram-media img, .gram-media video { width: 100%; height: auto; display: block; border-radius: 8px; }
+.gram-media img, .gram-media video { width: 20rem; height: 20rem; object-fit: cover; display: block; border-radius: 8px; }
 .gram-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 0.5rem; scrollbar-width: none; }
 .gram-carousel::-webkit-scrollbar { display: none; }
 .gram-carousel > * { flex: 0 0 100%; scroll-snap-align: center; }
@@ -14,10 +41,10 @@
 .gram-feed__status { text-align: center; opacity: 0.7; margin-top: 1rem; }
 
 /* ---- click-to-expand (modal) ---------------------------------------------- */
-.gram-post { cursor: pointer; }
 
 /* Media item wrapper — anchors the download button and play hint. */
 .gram-media__item { position: relative; }
+.gram-modal__dialog img, .gram-modal__dialog video{ height: auto; }
 
 /* Download button overlaid on each media item. */
 .gram-download {

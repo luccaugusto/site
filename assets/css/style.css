@@ -613,7 +613,23 @@ h2{
 }
 .panel-portals { top: 15vh; right: 15vw; width: 250px; height: 200px; transform: rotate(2deg); }
 .panel-piada { top: 50vh; left: 5vw; width: 280px; transform: rotate(3deg); } /* extra zine chaos */
-.panel-uriel { top: 45vh; right: 10vw; width: 350px; transform: rotate(-2deg); }
+.panel-uriel {
+	top: 2vh;
+	right: -2vw;
+	width: 31em;
+	font-size: 10pt;
+    position: absolute;
+    gap: 10px;
+    background-color: #57fff9;
+    color: #000;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0 80px; /* Less height, much more width */
+    transform: skewX(30deg) rotate(19deg);
+    z-index: 3;
+    box-shadow: -7px 7px 18px 3px #7ae5ff;
+	opacity: 0.5;
+}
 .panel-blog { top: 75vh; left: 30vw; width: 400px; transform: rotate(1.5deg); }
 .panel-pictures { top: 85vh; right: 20vw; width: 200px; transform: rotate(-3deg); }
 

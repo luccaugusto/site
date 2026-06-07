@@ -3,6 +3,17 @@ layout: post
 title: Feed
 ---
 <link rel="stylesheet" href="/assets/css/gram.css">
+<form class="gram-search" id="gram-search" role="search">
+  <svg class="gram-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+  </svg>
+  <input type="search" id="gram-search-input" class="gram-search__input"
+         placeholder="Buscar por tag ou descrição…" aria-label="Buscar posts"
+         autocomplete="off" autocapitalize="off" spellcheck="false">
+  <button type="button" class="gram-search__clear" id="gram-search-clear"
+          aria-label="Limpar busca" hidden>×</button>
+</form>
 <div id="gram-feed" class="gram-feed" aria-live="polite"></div>
 <div class="gram-feed__status" id="gram-status"></div>
 <script>
