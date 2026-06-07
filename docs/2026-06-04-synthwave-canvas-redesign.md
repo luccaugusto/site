@@ -1,7 +1,12 @@
 # Synthwave Canvas Redesign — Design Spec
 
 **Date:** 2026-06-04
-**Status:** Draft — visual direction only, no code yet
+**Status:** Implemented (with divergence) — **historical spec.** The redesign
+shipped; the live layout (zine canvas + magazine pages) is documented in
+[architecture.md](architecture.md), which is the source of truth. The built home
+diverged from §3/§7 below: actual panels are *Meus Trem · Portais · Piada do Dia
+· Salve Uriel · Blog · Fotos*, not the *Sobre/Projetos/Blog/Contato* set drafted
+here. Kept for the original design rationale.
 **Reference image:** `assets/synthwave-canvas-reference.png` (generated mockup)
 
 ---

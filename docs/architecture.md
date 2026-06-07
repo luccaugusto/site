@@ -31,10 +31,12 @@ A standard Jekyll 4 layout with a few deliberate choices in `_config.yml`:
   `404` (otherwise WEBrick logs an ERROR on every dev request).
 - **`sass: { quiet_deps, silence_deprecations: [import, color-functions] }`** —
   silences Dart Sass deprecation noise from minima's third-party SCSS.
-- A block of **`url_*` site variables** holds every external link (GitHub,
-  Spotify, Letterboxd, MyAnimeList, Orkut, LinkedIn, Amazon wishlist, and the
-  sibling subdomains `pds.`/`dev.`/portfolio). Templates reference them as
-  `{{ site.url_spot }}`, etc. — change a link in one place.
+- A block of **`url_*` site variables** holds most external links (Spotify,
+  Letterboxd, MyAnimeList, Orkut, LinkedIn, and the sibling subdomains
+  `pds.`/`dev.`/portfolio). Templates reference them as `{{ site.url_spot }}`,
+  etc. — change a link in one place. (Two links don't follow the convention:
+  GitHub is `github_username` and the Amazon wishlist is `wish_amazon`, both
+  also in `_config.yml`.)
 
 ### `_data/` (gallery sources)
 
@@ -50,8 +52,8 @@ Each gallery page renders from a YAML list of `{ nome, link, thumb }` entries.
 - `assets/` — `css/`, `js/`, `icons/` (favicons + social/link icons), `img/`
   (UI element images: backgrounds, back/window buttons, `fdp_logo.png`), the
   `Ethnocentric-Regular.otf` heading font, and synthwave reference mockups.
-- `cursores/` — `.cur` cursor files (Adventure Time, etc.) consumed by
-  `cursores.sh` to generate `assets/js/cursores.js`.
+- `cursors/` — `.cur` cursor files (Adventure Time, etc.) read at build time by
+  the Liquid-templated `assets/js/random_cursor.js` (no shell generator).
 - `images/` — content media (personal photos, downloadable art, the per-gallery
   folders `fotos-skate/`, `wallpapers/`, `flores/`, `minhas-fotos/`,
   `suspensao/`, `brain/`, `gongo/`). Site-chrome graphics live in `assets/`
@@ -85,7 +87,7 @@ pages.
 
 | Include | Purpose |
 |---------|---------|
-| `head.html` | `<head>`: meta, `<title>`, favicons, loads `style.css`, and **defers the four global JS files** (`floating-window`, `cursores`, `piada`, `calendar`). Included by every layout. |
+| `head.html` | `<head>`: meta, `<title>`, favicons, loads `style.css`, and **defers the four global JS files** (`floating-window`, `random_cursor`, `piada`, `calendar`). Included by every layout. |
 | `back.html` | "Back" button (`history.back()`). Used by `post`, `gallery`, `fotos`, `random` + directly by `fdp`. |
 | `last_posts.html` | First 6 blog post titles as links (homepage Blog panel). |
 | `galery.html` | Reusable gallery loop (image/video aware), `srcset` thumbnails. Used by `eu`. |
@@ -139,7 +141,7 @@ Used consistently across the redesign and the two scoped stylesheets:
 Headings use the **`Ethnocentric`** font (`@font-face`, loaded from
 `assets/Ethnocentric-Regular.otf`).
 
-### `assets/css/style.css` (global, ~765 lines)
+### `assets/css/style.css` (global, ~780 lines)
 
 Loaded on every page via `head.html`. It is layered by era — older utility
 classes sit alongside the newer redesign systems:
@@ -160,7 +162,7 @@ classes sit alongside the newer redesign systems:
   `.zine-panel`s are **absolutely positioned** at hand-tuned `top/left/right` +
   `rotate()` for an intentionally off-grid, poster-like collage. `.crooked-header`
   is the skewed "taped" header strip (with a `::before` star marker from
-  `assets/star-marker.png` and a hard `box-shadow`). A `max-width: 808px` query
+  `assets/img/star-marker.png` and a hard `box-shadow`). A `max-width: 808px` query
   collapses the absolute layout into a centered flex column.
 - **Magazine layout (blog / fotos redesign):** `.zine-body` (beige) centers a
   `.magazine-layout` "paper" sheet that fakes an **open-magazine center fold**
@@ -201,7 +203,7 @@ All vanilla, no bundler, no dependencies. `head.html` loads four scripts
 | File | What it does |
 |------|--------------|
 | `floating-window.js` | Draggable **window chrome**. A dependency-free rewrite of the 2006 dhtmlgoodies library: pointer-events dragging, minimize/maximize toggle, close, click-to-front z-index stacking, and body `min-height` tracking (absolutely-positioned windows don't grow the page). Preserves the original `.window` markup contract so layouts didn't have to change. Drives `random` layout + the `window.html` include. |
-| `cursores.js` | On load, randomly swaps the page cursor for one of eight `.cur` files (Adventure Time, kunai, …) — roughly a 1-in-9 chance of each, default otherwise. **Generated** by `cursores.sh`; edit the generator/cursor files, not this output. |
+| `random_cursor.js` | On load, randomly swaps the page cursor for one of eight `.cur` files (Adventure Time, kunai, …) — roughly a 1-in-9 chance of each, default otherwise. **Liquid-templated**: front matter + a `site.static_files` loop builds the cursor array from `cursors/*.cur` at Jekyll build time. Add/remove `.cur` files in `cursors/`, don't hand-edit the array. |
 | `piada.js` | Picks a random "piada do dia" (dad-joke pun) from an inline array and injects it into `#p-piada` (homepage panel). |
 | `calendar.js` | Easter egg: counts clicks; after 69 it reveals a hidden `#eroCalendar` element. Wired to `fdp.html`'s calendar link. |
 
@@ -250,7 +252,8 @@ Jekyll-serve runtime needs, not as content plugins.
 - **Embeds** — YouTube (FDP video, the unused welcome window), Spotify/Deezer
   (Gongo podcast episode).
 - **Profile/links** — GitHub, Spotify, Letterboxd, MyAnimeList, Orkut, LinkedIn,
-  and an Amazon wishlist, all stored as `url_*` vars in `_config.yml`.
+  and an Amazon wishlist, stored in `_config.yml` (mostly as `url_*` vars;
+  GitHub is `github_username`, the wishlist is `wish_amazon`).
 - **Sibling subdomains** — `pds.luccaaugusto.xyz` (Papo de Sauna),
   `dev.luccaaugusto.xyz` (dev portfolio).
 
@@ -261,7 +264,6 @@ Jekyll-serve runtime needs, not as content plugins.
 | Script | Purpose |
 |--------|---------|
 | `build.sh` | Production build: regenerate galleries + thumbnails, stamp blog "Atualizado em" dates, `jekyll build`, strip `*.sh` from `_site/`. Run by CI. |
-| `cursores.sh` | Regenerates `assets/js/cursores.js` from the files in `cursores/`. |
 | `compress_img.sh <dirs…>` | Flattens PNGs to compressed JPEGs via ImageMagick. |
 | `css_inutil.sh` | Lists CSS classes in `style.css` not referenced by any HTML — a dead-CSS finder. |
 | `datahoje.sh` | Stamps the current year-month into `agenda.html`'s title. |

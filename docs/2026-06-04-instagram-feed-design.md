@@ -1,7 +1,11 @@
 # Instagram-like Feed — Design Spec
 
 **Date:** 2026-06-04
-**Status:** Approved (design) — implementation not started
+**Status:** Client side implemented — `gram.html`, `assets/js/gram.js`,
+`assets/css/gram.css`, and `scripts/pb-bulk-import.mjs` all shipped (see
+[architecture.md](architecture.md)). The page currently renders from a
+**TEST-DATA mock** in `gram.html`; the PocketBase backend is VPS ops the author
+runs from the plan. Remaining: stand up PocketBase + remove the mock block.
 **Author context:** Personal Jekyll site (`luccaaugusto.xyz`), static build deployed via GitHub Actions → `rsync` to a self-managed VPS.
 
 ---

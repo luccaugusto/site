@@ -4,6 +4,17 @@
 >
 > **Note on testing:** This project has no automated test framework, and much of the work is one-time server ops on a VPS. Each task therefore uses an explicit **Verify** step (exact command + expected output, or a browser check) instead of unit tests. Commit every change that lives in the git repo; server config files live on the VPS and are noted as such.
 
+> **Status (as built):** The **repo-side tasks landed** — `gram.html`,
+> `assets/js/gram.js`, `assets/css/gram.css`, and `scripts/pb-bulk-import.mjs`
+> all exist on `main` (Tasks 6–8, 12). Note the shipped `gram.html` **diverged
+> from Task 6**: it uses `layout: post` (not `gallery`) and drops the
+> `.central`/`.main` wrappers — treat [architecture.md](architecture.md) as the
+> source of truth for what shipped, not the snippet below. The page also still
+> carries its **TEST-DATA mock** block. The **VPS tasks (1–5, 9–11)** — install,
+> systemd, nginx/TLS, the collections, deploy, backups — are the author's to run
+> and verify on the box; the checkboxes below are unchecked because they track
+> that work, not the repo work.
+
 **Goal:** Add a dynamic, Instagram-like photo/video feed (single posts + carousels) to the site, backed by a self-hosted PocketBase instance, rendered client-side so posts publish instantly from any device.
 
 **Architecture:** PocketBase (single binary: SQLite + auth + admin UI + file storage + REST API) runs on the VPS behind nginx+TLS at a subdomain. The existing static Jekyll site gets one new page whose JavaScript fetches posts from the PocketBase REST API at view time and renders them. The static build/deploy pipeline is unchanged.
