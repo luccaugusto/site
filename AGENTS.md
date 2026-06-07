@@ -64,11 +64,11 @@ _blog/  _ded/  _tablaturas/   Collections (output: true → clean, dateless URLs
 
 *.html               Top-level pages (index, blog, gram, treino, gongo, …)
 assets/css/          style.css (global), gram.css (feed), treino.css (workout sheet)
-assets/js/           floating-window, cursores, piada, calendar, gram, treino
+assets/js/           floating-window, random_cursor, piada, calendar, gram, treino
 assets/icons/        favicons + social/link icons (github, spotify, deezer, …)
 assets/img/          UI element images (backgrounds, back/window buttons, fdp_logo)
 assets/              Ethnocentric-Regular.otf (heading font), reference images
-cursores/            .cur cursor files (consumed by cursores.sh → cursores.js)
+cursors/             .cur cursor files (read at build time by random_cursor.js)
 images/  downloads/  Content media (photos, galleries) and downloadable PDFs
 docs/                Design specs + architecture.md
 scripts/             pb-bulk-import.mjs (seed the PocketBase feed)
@@ -99,8 +99,9 @@ scripts/             pb-bulk-import.mjs (seed the PocketBase feed)
   `_data/gongo.yml` and `_data/brain.yml` are the exceptions — maintained by hand.
 - **`gram.html` ships a TEST-DATA `<script>`** that mocks the PocketBase API with
   placeholder media. **Delete/comment that block before relying on the live feed.**
-- **`assets/js/cursores.js` is generated** by `cursores.sh` from the `cursores/`
-  directory — edit the script generator or the cursor files, not the output JS.
+- **`assets/js/random_cursor.js` is Liquid-templated** — it loops over
+  `site.static_files` to build its cursor list from `cursors/*.cur` at Jekyll
+  build time. Add/remove `.cur` files in `cursors/`; don't hand-edit the array.
 - Two includes, `window.html` and `time.html`, are **defined but unused**.
 - No automated test framework — verify changes by loading pages in the running
   container (`http://localhost:4000`).
@@ -111,7 +112,7 @@ scripts/             pb-bulk-import.mjs (seed the PocketBase feed)
 
 - **[docs/architecture.md](docs/architecture.md)** — CSS styling system, JS
   modules, page-by-page inventory, layouts/includes, integrations.
-- **docs/2025-06-04-synthwave-canvas-redesign.md** — the visual direction.
+- **docs/2026-06-04-synthwave-canvas-redesign.md** — the visual direction.
 - **docs/2026-06-04-instagram-feed-design.md / -plan.md** — the PocketBase feed.
 </content>
 </invoke>

@@ -598,7 +598,7 @@ h2{
     flex: 0 0 auto;
     width: 1.1em;
     height: 1.1em;
-    background-image: url("/assets/star-marker.png");
+    background-image: url("/assets/img/star-marker.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

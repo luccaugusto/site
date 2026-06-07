@@ -3,7 +3,6 @@
   const PER_PAGE = 12;
   const feedEl = document.getElementById("gram-feed");
   const statusEl = document.getElementById("gram-status");
-  const moreBtn = document.getElementById("gram-more");
 
   let page = 1;
   let totalPages = 1;
@@ -22,8 +21,11 @@
   function mediaName(m) {
     const f = m.file || "";
     if (/^https?:\/\//.test(f)) {
-      try { return decodeURIComponent(new URL(f).pathname.split("/").pop()) || ""; }
-      catch (e) { return ""; }
+      try {
+        return decodeURIComponent(new URL(f).pathname.split("/").pop()) || "";
+      } catch (e) {
+        return "";
+      }
     }
     return f;
   }
@@ -63,10 +65,13 @@
     btn.className = "gram-download";
     btn.setAttribute("aria-label", "Baixar");
     btn.innerHTML =
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"'
-      + ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
-      + '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>';
-    btn.addEventListener("click", (e) => { e.stopPropagation(); downloadFile(url, name); });
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"' +
+      ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>';
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      downloadFile(url, name);
+    });
     return btn;
   }
 
@@ -88,9 +93,8 @@
     const item = document.createElement("div");
     item.className = "gram-media__item gram-media__item--video";
     const video = document.createElement("video");
-    video.preload = "metadata";   // poster/first frame only; controls added on expand
+    video.preload = "metadata"; // first frame only; controls added on expand
     video.playsInline = true;
-    if (m.poster) video.poster = fileUrl(m, m.poster);
     const source = document.createElement("source");
     source.src = fileUrl(m, m.file);
     video.appendChild(source);
@@ -127,9 +131,9 @@
       btn.className = `gram-arrow gram-arrow--${dir}`;
       btn.setAttribute("aria-label", label);
       btn.innerHTML =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"'
-        + ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
-        + `<path d="${CHEVRON[dir]}"/></svg>`;
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"' +
+        ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        `<path d="${CHEVRON[dir]}"/></svg>`;
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         goTo(currentIndex() + (dir === "next" ? 1 : -1));
@@ -146,14 +150,20 @@
       dot.type = "button";
       dot.setAttribute("aria-label", `Ir para ${i + 1}`);
       if (i === 0) dot.setAttribute("aria-current", "true");
-      dot.addEventListener("click", (e) => { e.stopPropagation(); goTo(i); });
+      dot.addEventListener("click", (e) => {
+        e.stopPropagation();
+        goTo(i);
+      });
       dots.appendChild(dot);
     });
     // Update the active dot as the track scrolls.
     track.addEventListener("scroll", () => {
       const idx = currentIndex();
       [...dots.children].forEach((d, i) =>
-        i === idx ? d.setAttribute("aria-current", "true") : d.removeAttribute("aria-current"));
+        i === idx
+          ? d.setAttribute("aria-current", "true")
+          : d.removeAttribute("aria-current"),
+      );
     });
     wrap.appendChild(dots);
     return wrap;
@@ -171,9 +181,38 @@
     return null;
   }
 
+  // The flat `posts` schema has no per-file metadata, so infer video from the
+  // file extension; everything else is treated as an image.
+  const VIDEO_EXTENSIONS = [
+    "mp4",
+    "m4v",
+    "mov",
+    "webm",
+    "ogv",
+    "ogg",
+    "avi",
+    "mkv",
+    "3gp",
+  ];
+
+  // Turn a post's `media` filename array into render objects. Each carries the
+  // post's collectionId/id so fileUrl() can build the file endpoint. Carousel
+  // order is simply the order of the files in the array.
+  function normalizeMedia(post) {
+    return (post.media || []).map((filename) => {
+      const split_name = filename.split(".");
+      const extension = split_name.length > 1 ? split_name[1] : null;
+      return {
+        collectionId: post.collectionId,
+        id: post.id,
+        file: filename,
+        type: VIDEO_EXTENSIONS.includes(extension) ? "video" : "image",
+      };
+    });
+  }
+
   function renderPost(post) {
-    const media = (post.expand && post.expand.media_via_post) || [];
-    media.sort((x, y) => (x.order || 0) - (y.order || 0));
+    const media = normalizeMedia(post);
 
     const article = document.createElement("article");
     article.className = "gram-post";
@@ -181,17 +220,11 @@
     const mediaEl = renderPostMedia(media);
     if (mediaEl) article.appendChild(mediaEl);
 
-    if (post.caption) {
-      const cap = document.createElement("p");
-      cap.className = "gram-post__caption";
-      cap.textContent = post.caption;
-      article.appendChild(cap);
-    }
-
+    // The caption is shown only in the expanded modal, never inline in the feed.
     // Click a post to open it in the modal; ignore clicks on interactive controls.
     article.addEventListener("click", (e) => {
       if (e.target.closest("button, a")) return;
-      openModal(media, post.caption);
+      openModal(media, post.description);
     });
     return article;
   }
@@ -214,7 +247,9 @@
   modal.appendChild(modalClose);
   modal.appendChild(modalDialog);
   // Click on the dimmed backdrop (but not the dialog) closes the modal.
-  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
   document.body.appendChild(modal);
 
   function openModal(media, caption) {
@@ -222,8 +257,12 @@
     const mediaEl = renderPostMedia(media);
     if (mediaEl) {
       // Full-res images and playable videos in the expanded view.
-      mediaEl.querySelectorAll("img[data-full]").forEach((img) => { img.src = img.dataset.full; });
-      mediaEl.querySelectorAll("video").forEach((v) => { v.controls = true; });
+      mediaEl.querySelectorAll("img[data-full]").forEach((img) => {
+        img.src = img.dataset.full;
+      });
+      mediaEl.querySelectorAll("video").forEach((v) => {
+        v.controls = true;
+      });
       modalBody.appendChild(mediaEl);
     }
     if (caption) {
@@ -233,7 +272,7 @@
       modalBody.appendChild(cap);
     }
     modal.hidden = false;
-    document.body.style.overflow = "hidden";   // freeze the feed behind the modal
+    document.body.style.overflow = "hidden"; // freeze the feed behind the modal
     modalClose.focus();
   }
 
@@ -244,27 +283,54 @@
     document.body.style.overflow = "";
   }
 
+  // ---- feed loading + infinite scroll --------------------------------------
+  let loading = false;
+  let sentinelVisible = false;
+
   async function loadPage() {
+    if (loading) return;
+    loading = true;
     statusEl.textContent = "Carregando…";
-    moreBtn.hidden = true;
-    const url = `${PB}/api/collections/posts/records`
-      + `?sort=-pinned,-published&expand=media_via_post`
-      + `&perPage=${PER_PAGE}&page=${page}`;
+    const url =
+      `${PB}/api/collections/posts/records` +
+      `?sort=-pinned,-created` +
+      `&perPage=${PER_PAGE}&page=${page}`;
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       totalPages = data.totalPages;
       data.items.forEach((post) => feedEl.appendChild(renderPost(post)));
-      statusEl.textContent = data.totalItems === 0 ? "Nada por aqui ainda." : "";
-      moreBtn.hidden = page >= totalPages;
+      statusEl.textContent =
+        data.totalItems === 0 ? "Nada por aqui ainda." : "";
+      loading = false;
+      maybeLoadMore(); // keep filling while the sentinel stays on-screen
     } catch (err) {
       statusEl.textContent = "Não consegui carregar o feed.";
       console.error("gram feed:", err);
+      loading = false;
     }
   }
 
-  moreBtn.addEventListener("click", () => { page += 1; loadPage(); });
+  // Load the next page if there is one and the bottom sentinel is near view.
+  function maybeLoadMore() {
+    if (!loading && sentinelVisible && page < totalPages) {
+      page += 1;
+      loadPage();
+    }
+  }
+
+  // Infinite scroll: watch the status element at the end of the feed and pull
+  // the next page as it approaches the viewport.
+  const sentinel = new IntersectionObserver(
+    (entries) => {
+      sentinelVisible = entries.some((e) => e.isIntersecting);
+      maybeLoadMore();
+    },
+    { rootMargin: "600px 0px" },
+  );
+  sentinel.observe(statusEl);
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !modal.hidden) closeModal();
   });
