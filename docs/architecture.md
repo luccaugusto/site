@@ -45,18 +45,18 @@ Each gallery page renders from a YAML list of `{ nome, link, thumb }` entries.
 | File | Source of truth | Notes |
 |------|-----------------|-------|
 | `skate.yml`, `wallpapers.yml`, `flores.yml`, `minhas_fotos.yml`, `suspensao.yml` | **Generated** by `build.sh` | Do **not** hand-edit — regenerated from `images/<dir>/` on every build. |
-| `gongo.yml`, `brain.yml` | **Hand-maintained** | Not touched by `build.sh`. |
+| `gongo.yml` | **Hand-maintained** | Not touched by `build.sh`. |
 
 ### Directories at a glance
 
 - `assets/` — `css/`, `js/`, `icons/` (favicons + social/link icons), `img/`
-  (UI element images: backgrounds, back/window buttons, `fdp_logo.png`), the
+  (UI element images: backgrounds, the back button), the
   `Ethnocentric-Regular.otf` heading font, and synthwave reference mockups.
 - `cursors/` — `.cur` cursor files (Adventure Time, etc.) read at build time by
   the Liquid-templated `assets/js/random_cursor.js` (no shell generator).
 - `images/` — content media (personal photos, downloadable art, the per-gallery
   folders `fotos-skate/`, `wallpapers/`, `flores/`, `minhas-fotos/`,
-  `suspensao/`, `brain/`, `gongo/`). Site-chrome graphics live in `assets/`
+  `suspensao/`, `gongo/`). Site-chrome graphics live in `assets/`
   instead. Generated `thumbs/` subfolders are gitignored.
 - `downloads/` — downloadable PDFs (Excel course, "Regras Camelô", calendars).
 - `docs/` — design specs and this document.
@@ -70,12 +70,11 @@ Each gallery page renders from a YAML list of `{ nome, link, thumb }` entries.
 
 | Layout | Body / shell | Used by |
 |--------|--------------|---------|
-| `home.html` | Minimal: `<body class="palmtree">` + `{{ content }}`. The page supplies its own structure. | `index`, `gongo`, `flores`, `fdp` |
+| `home.html` | Minimal: `<body class="palmtree">` + `{{ content }}`. The page supplies its own structure. | `index`, `gongo`, `flores` |
 | `post.html` | **Magazine** shell (`.zine-body` → `.magazine-layout`): back button, optional rotated title, content, scroll-to-top. | blog posts, `gram`, `treino`, `standup` |
 | `todos_posts.html` | Magazine shell built for **list** pages (always shows the title). | `blog`, `ded` |
 | `fotos.html` | Magazine shell variant that hides the title when it's literally "Fotos". | `skate` |
-| `gallery.html` | Legacy shell: `<body class="palmtree">` + `.geral` wrapper + back button. | `brain`, `wallpapers`, `eu`, `suspensao` |
-| `random.html` | Renders content inside a draggable **floating window** (title bar + min/close buttons) over `/assets/img/background.jpg`. | `agenda` |
+| `gallery.html` | Legacy shell: `<body class="palmtree">` + `.geral` wrapper + back button. | `wallpapers`, `eu`, `suspensao` |
 | `default` | minima's built-in fallback. | `404` |
 
 Two visual systems coexist: the **magazine** shell (`zine-body` / `post`,
@@ -87,12 +86,11 @@ pages.
 
 | Include | Purpose |
 |---------|---------|
-| `head.html` | `<head>`: meta, `<title>`, favicons, loads `style.css`, and **defers the four global JS files** (`floating-window`, `random_cursor`, `piada`, `calendar`). Included by every layout. |
-| `back.html` | "Back" button (`history.back()`). Used by `post`, `gallery`, `fotos`, `random` + directly by `fdp`. |
+| `head.html` | `<head>`: meta, `<title>`, favicons, loads `style.css`, and **defers the two global JS files** (`random_cursor`, `piada`). Included by every layout. |
+| `back.html` | "Back" button (`history.back()`). Used by `post`, `gallery`, `fotos`. |
 | `last_posts.html` | First 6 blog post titles as links (homepage Blog panel). |
 | `galery.html` | Reusable gallery loop (image/video aware), `srcset` thumbnails. Used by `eu`. |
-| `rodape.html` | Footer with `{{ site.copyright }}`. Used by `random`. |
-| `window.html`, `time.html` | **Defined but currently unused** (a YouTube "welcome" window and a clock image). |
+| `rodape.html` | Footer with `{{ site.copyright }}`. **Currently unused** (only the removed `random` layout included it). |
 
 ---
 
@@ -106,14 +104,11 @@ pages.
 | Treino | `/treino.html` | `post` | A structured **workout sheet**; JS clones today's card to the top. |
 | Gongo | `/gongo.html` | `home` | "Você e o Gongo" — podcast/video links + an image guide (from `gongo.yml`). |
 | DeD | `/ded.html` | `todos_posts` | Dungeons & Dragons campaign material (`_ded` collection). |
-| FDP | `/fdp.html` | `home` | "Viagem do Fundo" YouTube video + a hidden-calendar easter egg. |
 | Eu | `/eu.html` | `gallery` | "Eu e meus trem" personal-photo gallery (`minhas_fotos.yml`). |
 | Skate | `/skate.html` | `fotos` | Skate photos & clips (`skate.yml`). |
 | Wallpapers | `/wallpapers.html` | `gallery` | Wallpapers the author made (`wallpapers.yml`). |
 | Flores | `/flores.html` | `home` | Hand-drawn flowers, zig-zag layout (`flores.yml`). |
-| Brain | `/brain.html` | `gallery` | "Coisas que saíram do meu cérebro" — art grid (`brain.yml`). |
 | Suspensão | `/suspensao.html` | `gallery` | Body-suspension photos/clips (`suspensao.yml`). |
-| Agenda | `/agenda.html` | `random` | A joke "agenda" inside a floating window. |
 | Standup | `/standup.html` | `post` | A standup-comedy video. |
 | 404 | `/404.html` | `default` | Custom not-found page. |
 | Tablaturas | — | — | `_tablaturas` collection (guitar tabs); rendered per-item, no index page yet. |
@@ -151,10 +146,7 @@ classes sit alongside the newer redesign systems:
   `.w100`…), alignment helpers, and neon glow boxes (`.neon`, `.neon-y` =
   big colored `box-shadow`). Class names are Portuguese.
 - **Page backgrounds:** body classes set fixed, cover background images —
-  `.palmtree`, `.random`, `.skate`, `.take-me-away`.
-- **Window chrome:** `.window`, `.window_top`, `.top_buttons`, `.windowMiddle`,
-  `.windowContent`, `.window_bottom` — the blue-bordered draggable window driven
-  by `floating-window.js`.
+  `.palmtree`, `.skate`, `.take-me-away`.
 - **Gallery primitives:** `.galeria`, `.central` (the bordered neon content box),
   `.container-img` / `.container-flor`, `.imagem` (`object-fit: cover`),
   `.linha*` flex rows, `.thumbnail`, `.gongo-item`.
@@ -195,17 +187,15 @@ shadow to read as "this is today". Grids collapse to one column under 900px.
 
 ## 5. JavaScript
 
-All vanilla, no bundler, no dependencies. `head.html` loads four scripts
+All vanilla, no bundler, no dependencies. `head.html` loads two scripts
 **`defer`** on every page; two more are page-local.
 
 ### Global (loaded everywhere)
 
 | File | What it does |
 |------|--------------|
-| `floating-window.js` | Draggable **window chrome**. A dependency-free rewrite of the 2006 dhtmlgoodies library: pointer-events dragging, minimize/maximize toggle, close, click-to-front z-index stacking, and body `min-height` tracking (absolutely-positioned windows don't grow the page). Preserves the original `.window` markup contract so layouts didn't have to change. Drives `random` layout + the `window.html` include. |
 | `random_cursor.js` | On load, randomly swaps the page cursor for one of eight `.cur` files (Adventure Time, kunai, …) — roughly a 1-in-9 chance of each, default otherwise. **Liquid-templated**: front matter + a `site.static_files` loop builds the cursor array from `cursors/*.cur` at Jekyll build time. Add/remove `.cur` files in `cursors/`, don't hand-edit the array. |
 | `piada.js` | Picks a random "piada do dia" (dad-joke pun) from an inline array and injects it into `#p-piada` (homepage panel). |
-| `calendar.js` | Easter egg: counts clicks; after 69 it reveals a hidden `#eroCalendar` element. Wired to `fdp.html`'s calendar link. |
 
 ### Page-local
 
@@ -266,7 +256,6 @@ Jekyll-serve runtime needs, not as content plugins.
 | `build.sh` | Production build: regenerate galleries + thumbnails, stamp blog "Atualizado em" dates, `jekyll build`, strip `*.sh` from `_site/`. Run by CI. |
 | `compress_img.sh <dirs…>` | Flattens PNGs to compressed JPEGs via ImageMagick. |
 | `css_inutil.sh` | Lists CSS classes in `style.css` not referenced by any HTML — a dead-CSS finder. |
-| `datahoje.sh` | Stamps the current year-month into `agenda.html`'s title. |
 | `scripts/pb-bulk-import.mjs` | Node helper: each subfolder becomes a post, its files become ordered media, uploaded to PocketBase. |
 
 > Reminder: per [AGENTS.md](../AGENTS.md), run all of these **inside the Docker

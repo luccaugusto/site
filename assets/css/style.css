@@ -319,21 +319,6 @@ h2{
 	top: 1%;
 }
 
-.take-me-away > .window{
-	width:60%;
-	margin-bottom: 3%;
-	right: 20%;
-}
-.random > .window{
-	width:60%;
-	margin-bottom: 3%;
-	right: 20%;
-}
-.fotos > .window{
-	width:70%;
-	margin-bottom: 3%;
-	right: 15%;
-}
 .window div{
 	position:relative;
 }
@@ -496,9 +481,6 @@ h2{
 	.cabecalho{
 		width: 110%;
 	}
-	.main > .window{
-		display: none;
-	}
 	.central{
 		margin: 20% auto;
 		width: 85%;
@@ -512,17 +494,6 @@ h2{
 		position: absolute;
 		top: 15pt;
 		left: 15pt;
-	}
-	.take-me-away > .window{
-		width: 90%;
-		margin-bottom: 3%;
-		left: 5%;
-		top: 10%;
-	}
-	.fotos > .window{
-		width: 95%;
-		margin-bottom: 3%;
-		right: 2%;
 	}
 	.mobile-hidden{
 		display:none;
