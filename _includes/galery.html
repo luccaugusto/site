@@ -1,13 +1,13 @@
 {% for img in include.content limit:include.limit %}
     {% assign titulo = img.nome | split: '.' %}
     {% if titulo[1] == 'mp4' %}
-        <div class="item">
+        <div class="gallery-item">
             <video class="imagem" controls preload="metadata">
                 <source src="{{ img.link }}" type="video/mp4">
             </video>
         </div>
     {% else %}
-        <div class="item">
+        <div class="gallery-item">
             <a href="{{ img.link }}" target="blank">
                 <img src="{{ img.thumb | default: img.link }}" srcset="{{ img.thumb | default: img.link }} 600w, {{ img.link }} 1600w" sizes="(max-width: 808px) 45vw, 18vw" alt="{{ img.nome }}" class="imagem"/>
             </a>

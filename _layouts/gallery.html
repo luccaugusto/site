@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-	  {% include head.html %}
-  </head>
-  {% include back.html %}
-  <body class="palmtree">
-	<div class="geral">
-    		{{ content }}
-	</div>
-  </body>
+	<head>
+		{% include head.html %}
+	</head>
+	<body class="zine-body palmtree">
+		{% include back.html %}
+
+		<div class="gallery-layout">
+			{% if page.title and page.title != "" %}
+			<div class="magazine-header">
+				<h1 class="magazine-title">{{ page.title }}</h1>
+			</div>
+			{% endif %}
+
+			<div class="gallery-grid">
+				{{ content }}
+			</div>
+
+			<div class="scroll-to-top-container">
+				<a href="#" class="scroll-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">↑ Topo</a>
+			</div>
+		</div>
+	</body>
 </html>
