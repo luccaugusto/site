@@ -108,3 +108,22 @@
 }
 .gram-close:hover { background: rgba(0, 0, 0, 0.85); }
 .gram-modal__close { position: absolute; top: 1rem; right: 1rem; z-index: 1010; }
+
+.magazine-layout {
+    background-image: url(/assets/img/revista-level-up-aberta-pb.png);
+    background-size: cover;
+	background-repeat: repeat-y;
+}
+
+@media (max-width: 808px) {
+	.gram-search {
+		position: absolute;
+		width: 90%;
+		margin: 0 auto 2rem;
+		top: 13%;
+		left: 5%;
+	}
+	.magazine-header {
+		margin-bottom: 100pt;
+	}
+}

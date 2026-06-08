@@ -548,8 +548,8 @@ h2{
     border-radius: 20px;
     color: #fff;
     padding: 20px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); /* dark shadow */
     z-index: 10;
+	box-shadow: rgba(240, 46, 170, 0.4) 5px 5px, rgba(240, 46, 170, 0.3) 10px 10px, rgba(240, 46, 170, 0.2) 15px 15px, rgba(240, 46, 170, 0.1) 20px 20px, rgba(240, 46, 170, 0.05) 25px 25px;
 }
 
 .zine-panel a {
@@ -564,6 +564,8 @@ h2{
 .panel-content {
     position: relative;
     z-index: 2;
+	display: flex;
+	justify-content: center;
 }
 
 /* Links Panel Specifics */
@@ -767,9 +769,9 @@ h2{
 
 #magazine-holding-hand {
     position: absolute;
-    bottom: -16.5em;
-    left: -12.6em;
-    width: 23em;
+	bottom: -36em;
+    left: -27.5em;
+    width: 50em;
     height: auto;
     z-index: 10;
     pointer-events: none;
