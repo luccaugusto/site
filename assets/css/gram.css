@@ -113,6 +113,7 @@
     background-image: url(/assets/img/revista-level-up-aberta-pb.png);
     background-size: cover;
 	background-repeat: repeat-y;
+	background-blend-mode: color-burn;
 }
 
 @media (max-width: 808px) {

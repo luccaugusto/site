@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Crystallized - The Vintage Caravan
+single_column: true
 ---
 
 <div class="tcenter">

@@ -520,7 +520,7 @@ h2{
     color: #fff;
     padding: 20px;
     z-index: 10;
-	box-shadow: rgba(240, 46, 170, 0.4) 5px 5px, rgba(240, 46, 170, 0.3) 10px 10px, rgba(240, 46, 170, 0.2) 15px 15px, rgba(240, 46, 170, 0.1) 20px 20px, rgba(240, 46, 170, 0.05) 25px 25px;
+	box-shadow:  rgb(121 184 207) 0px 5px 15px;
 }
 
 .zine-panel a {
@@ -634,6 +634,7 @@ h2{
     z-index: 2;         /* paints above #panel-eye (z-index: 0) */
 }
 .panel-pictures { top: 85vh; right: 20vw; width: 200px; transform: rotate(-3deg); }
+.panel-misc { top: 60vh; right: 5vw; width: 200px; transform: rotate(-4deg); }
 
 /* Responsive fallback for mobile */
 @media (max-width: 808px) {
@@ -661,6 +662,117 @@ h2{
     #panel-eye {
         display: none;
     }
+}
+
+/* ==========================================================================
+   MISC PAGE (zine-panel launcher grid)
+   ========================================================================== */
+
+.misc-header {
+    text-align: center;
+    margin: 90px auto 70px;
+}
+
+.misc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 70px 90px;
+    max-width: 760px;
+    margin: 0 auto 120px;
+    padding: 0 20px;
+}
+
+/* Reset the absolute index placement so panels flow as grid items */
+.misc-grid .zine-panel {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: auto;
+    min-height: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.misc-grid .zine-panel:nth-child(odd)  { transform: rotate(-3deg); }
+.misc-grid .zine-panel:nth-child(even) { transform: rotate(3deg); }
+.misc-grid .zine-panel:hover { transform: rotate(0deg) scale(1.04); }
+
+/* Smaller tape labels so they sit proportionally on the cards */
+.misc-grid .crooked-header {
+    font-size: 1.2rem;
+    padding: 8px 30px;
+}
+
+.misc-icon {
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+}
+
+@media (max-width: 808px) {
+    .misc-grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+}
+
+/* ==========================================================================
+   LISTA LAYOUT (zine-panel content listings: blog, ded, tablaturas)
+   ========================================================================== */
+
+.lista-layout {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 110px 20px 80px;
+    box-sizing: border-box;
+}
+
+/* Reset the absolute index placement so the panel centers in the layout */
+.panel-lista {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    max-width: 620px;
+    padding: 55px 45px 35px;
+    transform: rotate(-1deg);
+}
+
+.lista-itens {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.lista-itens li {
+    margin-bottom: 16px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    font-style: italic;
+    line-height: 1.3;
+}
+
+/* Star bullet to match the zine crooked-header marker */
+.lista-itens li::before {
+    content: "";
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    margin-right: 0.5em;
+    vertical-align: -0.1em;
+    background-image: url("/assets/img/star-marker.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 /* ==========================================================================
@@ -738,6 +850,20 @@ h2{
     margin-bottom: 20px;
 }
 
+/* Single-column override (e.g. tablaturas: wide <pre> tabs must not split) */
+.magazine-content.single-column {
+    column-width: auto;
+    column-count: 1;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+}
+
+/* No center fold/shadow behind a single centered column */
+.magazine-layout:has(.single-column) {
+    background-image: none;
+}
+
 #magazine-holding-hand {
     position: absolute;
 	bottom: -36em;
@@ -775,32 +901,6 @@ h2{
     transform: rotate(0deg) scale(1.1);
     background-color: #ff2d95;
     color: #fff;
-}
-
-.blog-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-.blog-list li {
-    margin-bottom: 40px;
-    break-inside: avoid; /* Prevents a blog post snippet from splitting across columns */
-}
-
-.blog-list h2 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    border-bottom: none;
-}
-
-.blog-list a {
-    color: #ff2d95;
-    text-decoration: none;
-}
-
-.blog-list a:hover {
-    text-decoration: underline;
 }
 
 @media (max-width: 808px) {

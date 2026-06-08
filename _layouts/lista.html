@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% include head.html %}
+	</head>
+	<body class="palmtree">
+		{% include back.html %}
+
+		<div class="lista-layout">
+			<div class="zine-panel panel-lista">
+				<div class="crooked-header">{{ page.title }}</div>
+				<ul class="lista-itens">
+					{% for item in site[page.collection] %}
+						<li><a href="{{ item.url }}">{{ item.title }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>

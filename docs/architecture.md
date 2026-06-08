@@ -72,22 +72,23 @@ Each gallery page renders from a YAML list of `{ nome, link, thumb }` entries.
 |--------|--------------|---------|
 | `home.html` | Minimal: `<body class="palmtree">` + `{{ content }}`. The page supplies its own structure. | `index`, `gongo`, `flores` |
 | `post.html` | **Magazine** shell (`.zine-body` → `.magazine-layout`): back button, optional rotated title, content, scroll-to-top. | blog posts, `gram`, `treino`, `standup` |
-| `todos_posts.html` | Magazine shell built for **list** pages (always shows the title). | `blog`, `ded` |
+| `lista.html` | **Zine-panel list** shell (`palmtree` bg + a single `.zine-panel`): back button, crooked-header title, and a star-bulleted list of `site[page.collection]` items as title links. | `blog`, `ded`, `tablaturas` |
 | `fotos.html` | Magazine shell variant that hides the title when it's literally "Fotos". | `skate` |
 | `gallery.html` | Legacy shell: `<body class="palmtree">` + `.geral` wrapper + back button. | `wallpapers`, `eu`, `suspensao` |
 | `default` | minima's built-in fallback. | `404` |
 
 Two visual systems coexist: the **magazine** shell (`zine-body` / `post`,
-`todos_posts`, `fotos`) is the current redesign; the **`palmtree` + `.central`
+`fotos`) is the current redesign; the **`palmtree` + `.central`
 neon-box** shell (`home`, `gallery`) is the older look still used by several
-pages.
+pages. The `lista` layout is part of the redesign too, but floats a single
+`.zine-panel` on the `palmtree` background instead of using the magazine shell.
 
 ### Includes (`_includes/`)
 
 | Include | Purpose |
 |---------|---------|
 | `head.html` | `<head>`: meta, `<title>`, favicons, loads `style.css`, and **defers the two global JS files** (`random_cursor`, `piada`). Included by every layout. |
-| `back.html` | "Back" button (`history.back()`). Used by `post`, `gallery`, `fotos`. |
+| `back.html` | "Back" button (`history.back()`). Used by `post`, `gallery`, `fotos`, `lista`, `misc`. |
 | `last_posts.html` | First 6 blog post titles as links (homepage Blog panel). |
 | `galery.html` | Reusable gallery loop (image/video aware), `srcset` thumbnails. Used by `eu`. |
 | `rodape.html` | Footer with `{{ site.copyright }}`. **Currently unused** (only the removed `random` layout included it). |
@@ -98,12 +99,14 @@ pages.
 
 | Page | URL | Layout | What it is |
 |------|-----|--------|------------|
-| Home | `/` | `home` | **Zine canvas** of floating panels: *Meus Trem* (link hub), *Portais* (empty placeholder), *Piada do Dia* (random joke), *Salve Uriel* (ASCII art), *Blog* (latest posts), *Fotos*. |
-| Blog | `/blog` | `todos_posts` | List of all `_blog` posts with excerpts; each post renders via `post`. |
+| Home | `/` | `home` | **Zine canvas** of floating panels: *Meus Trem* (link hub), *Portais* (empty placeholder), *Piada do Dia* (random joke), *Salve Uriel* (ASCII art), *Blog* (latest posts), *Fotos*, *Misc*. |
+| Blog | `/blog` | `lista` | Zine-panel list of all `_blog` posts as title links; each post renders via `post`. |
 | Feed | `/gram.html` | `post` | **Instagram-like feed** — client-side fetch from PocketBase, carousels, video, lightbox. |
 | Treino | `/treino.html` | `post` | A structured **workout sheet**; JS clones today's card to the top. |
 | Gongo | `/gongo.html` | `home` | "Você e o Gongo" — podcast/video links + an image guide (from `gongo.yml`). |
-| DeD | `/ded.html` | `todos_posts` | Dungeons & Dragons campaign material (`_ded` collection). |
+| DeD | `/ded.html` | `lista` | Dungeons & Dragons campaign material (`_ded` collection). |
+| Tablaturas | `/tablaturas.html` | `lista` | Guitar tabs (`_tablaturas` collection); each tab renders via `post` with `single_column`. |
+| Misc | `/misc.html` | `home` | Launcher grid of zine-panel cards linking to DeD, Tablaturas, Flores, Wallpapers. |
 | Eu | `/eu.html` | `gallery` | "Eu e meus trem" personal-photo gallery (`minhas_fotos.yml`). |
 | Skate | `/skate.html` | `fotos` | Skate photos & clips (`skate.yml`). |
 | Wallpapers | `/wallpapers.html` | `gallery` | Wallpapers the author made (`wallpapers.yml`). |
