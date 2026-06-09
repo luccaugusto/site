@@ -9,6 +9,10 @@ h1, h2, h3, h4, h5, h6, .crooked-header, .magazine-title {
     font-family: 'Ethnocentric', sans-serif;
 }
 
+.gongo h1, .gongo h2, .gongo h3, .gongo h4, .gongo h5, .gongo h6 {
+    font-family: inherit;
+}
+
 html{
 	min-height: 100%;
 }
