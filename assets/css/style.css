@@ -779,6 +779,29 @@ h2{
     background-position: center;
 }
 
+/* Downloads page: per-folder section heading + file-type badge */
+.download-group {
+    margin: 26px 0 12px;
+    font-size: 1.6rem;
+}
+
+.download-group:first-of-type {
+    margin-top: 0;
+}
+
+.download-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 0 6px;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    font-style: normal;
+    vertical-align: middle;
+    opacity: 0.75;
+}
+
 /* ==========================================================================
    MAGAZINE LAYOUT (Blog & Fotos)
    ========================================================================== */

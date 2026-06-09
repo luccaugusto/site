@@ -1,0 +1,12 @@
+{% comment %}
+  Renders one <li> for a static file in downloads/. Pass the static file as `file`.
+  Prettify: drop the extension, turn -/_ into spaces, upper-case the first letter.
+  The extension shows as a small badge so source files (.ms/.xcf) read as different.
+{% endcomment %}
+{% assign label = include.file.basename | replace: "-", " " | replace: "_", " " %}
+{% assign head = label | slice: 0 | upcase %}
+{% assign tail = label | slice: 1, 200 %}
+<li>
+	<a href="{{ include.file.path }}">{{ head }}{{ tail }}</a>
+	<span class="download-badge">{{ include.file.extname | remove: "." | upcase }}</span>
+</li>
