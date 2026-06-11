@@ -175,7 +175,7 @@ h2{
 	vertical-align: middle;
 }
 .icone-grande{
-	width: 48px;
+	width: 58px;
 	vertical-align: middle;
 }
 #random{
@@ -545,10 +545,17 @@ h2{
 
 /* Links Panel Specifics */
 .main-icons {
+	margin-top: 30pt;
     display: flex;
-    gap: 15px;
+    flex-wrap: wrap;
+    gap: 5px;
     margin-bottom: 15px;
     justify-content: center;
+}
+
+.main-icons > a {
+    flex: 0 0 calc(33.333% - 10px);
+    text-align: center;
 }
 
 .extra-links {
@@ -593,15 +600,20 @@ h2{
     background-position: center;
 }
 
-/* Specific Panel Placements (Rough Draft) */
+/* Specific Panel Placements */
 .panel-links {
-	top: 18vh;
+	top: 10vh;
     left: 20vw;
     width: 40em;
-    transform: rotate(14deg);
+    transform: rotate(-2deg);
+}
+.panel-links .panel-content {
+	justify-content: space-evenly;
+}
+.panel-links .crooked-header {
+	transform: rotate(-12deg);
 }
 .panel-portals { top: 15vh; right: 15vw; width: 250px; height: 200px; transform: rotate(2deg); }
-.panel-piada { top: 50vh; left: 5vw; width: 280px; transform: rotate(3deg); } /* extra zine chaos */
 .panel-uriel {
 	top: 2vh;
 	right: -3vw;
@@ -624,10 +636,13 @@ h2{
    background paints over it — a child can never go behind its parent's bg. */
 .panel-blog-wrap {
     position: absolute;
-    top: 100vh;
-    left: 15vw;
-    transform: rotate(3deg);
+    top: 70vh;
+    left: 10vw;
+    transform: rotate(12deg);
     z-index: 10;
+}
+.panel-blog .crooked-header {
+	transform: rotate(-12deg);
 }
 .panel-blog {
     position: relative; /* override .zine-panel's absolute; anchors #panel-eye */
@@ -637,8 +652,82 @@ h2{
     transform: none;    /* rotation now lives on the wrapper */
     z-index: 2;         /* paints above #panel-eye (z-index: 0) */
 }
-.panel-pictures { top: 85vh; right: 20vw; width: 200px; transform: rotate(-3deg); }
-.panel-misc { top: 60vh; right: 5vw; width: 200px; transform: rotate(-4deg); }
+.panel-pictures { bottom: -50vh; right: 45vw; width: 200px; transform: rotate(-15deg); }
+.panel-pictures .crooked-header {
+	transform: skewX(350deg) rotate(10deg);
+}
+.panel-misc { bottom: -30vh; right: 29vw; width: 200px; transform: rotate(-15deg); }
+.panel-misc .icone-grande {
+	width: 150px;
+}
+
+/* ==========================================================================
+   CAVEIRA ANFITRIÃ — bottom-left mascot that tells the "piada do dia" in a
+   speech balloon. The container is pointer-events:none so the corner stays
+   click-through; the balloon/skull re-enable it, and clicks bubble to the
+   container's onclick (re-rolls the joke via piada()).
+   ========================================================================== */
+#caveira-anfitriao {
+    position: absolute;
+    top: 100vh;
+    left: 5vw;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    pointer-events: none;
+}
+#caveira-anfitriao img {
+    width: 25em;
+    height: auto;
+    display: block;
+    pointer-events: auto;
+    cursor: pointer;
+}
+/* Clippy-style bubble, dressed in the zine palette (orange + hard black shadow) */
+.balao-piada {
+    position: relative;
+    max-width: 19em;
+    margin: 0 0 -0.4em 3.5em; /* sit above-and-right of the skull's head */
+    background-color: #f0a830;
+    color: #000;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+    font-style: italic;
+    font-weight: bold;
+    line-height: 1.35;
+    box-shadow: 4px 4px 0 #000;
+    pointer-events: auto;
+    cursor: pointer;
+}
+.balao-piada p {
+    margin: 0;
+}
+/* Tail pointing down toward the skull's head */
+.balao-piada::after {
+    content: "";
+    position: absolute;
+    bottom: -13px;
+    left: 26px;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 13px solid #f0a830;
+}
+/* Tiny black under-triangle so the tail keeps the bubble's border */
+.balao-piada::before {
+    content: "";
+    position: absolute;
+    bottom: -16px;
+    left: 24px;
+    width: 0;
+    height: 0;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-top: 15px solid #000;
+}
 
 /* Responsive fallback for mobile */
 @media (max-width: 808px) {
@@ -665,6 +754,21 @@ h2{
     }
     #panel-eye {
         display: none;
+    }
+    /* Mascot leaves the corner and flows in at the bottom of the column,
+       so the joke survives on small screens. */
+    #caveira-anfitriao {
+        position: static;
+        align-items: center;
+        margin: 1.5em auto 2.5em;
+    }
+    .balao-piada {
+        margin-left: 0;
+    }
+    .balao-piada::after,
+    .balao-piada::before {
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 
@@ -945,115 +1049,93 @@ h2{
     }
 }
 
-/* GALLERY GRID (gallery.html layout) */
-.gallery-layout {
-    width: 90vw;
-    max-width: 1200px;
-    min-height: 80vh;
-    margin: 0 auto;
-    padding: 60px 80px;
-    position: relative;
-    /* background image (repeat-y) to be added later */
+/* BILLBOARD GALLERY (gallery.html layout) */
+
+/* Single non-scrolling viewport; only the billboard screen scrolls.
+   Scoped to .billboard-page so other .zine-body layouts are untouched. */
+.billboard-page {
+    overflow: hidden;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;   /* board sits in the upper part of the page */
 }
 
-/* Neon beam segments down the building's edges, staggered so they hop side-to-side.
-   Period 240px, 60px segment; the right edge is offset half a period to interleave. */
-.gallery-layout::before,
-.gallery-layout::after {
-    content: "";
+/* Outer board: holds the billboard frame image + the screen. The box matches
+   the image's aspect ratio so the whole billboard shows and the screen `inset`
+   below maps directly onto the image. Skew matches the board's perspective. */
+.billboard {
+	--bb-skew: 4deg;
+    position: fixed;
+    width: 60%;            /* size lives here; img fills it, screen insets off it */
+    perspective: none;     /* matrix3d on .billboard-screen carries its own perspective */
+	bottom: -35%;
+	left:  23%;
+}
+
+/* The frame image fills the board and therefore DEFINES its box size, so the
+   screen's percentage inset below maps to a fixed fraction of the image. */
+.billboard-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* The display surface — the ONLY scrollable area. `inset` is a % of .billboard
+   (= the image box), so the screen stays aligned to the frame at every size.
+   Values are the transparent display hole measured from billboard.png
+   (hole = 1030x642 at 74,60 in a 1109x1138 image). inset: top right bottom left. */
+.billboard-screen {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    pointer-events: none;
-    z-index: 5;
+    inset: 5.3% 0.5% 38.3% 6.7%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #14141f;
+    /* GIMP perspective homography baked into CSS. transform-origin MUST be 0 0
+       (GIMP's matrix is top-left-relative). Column-major embedding of the 3x3:
+       matrix3d(h11,h21,0,h31, h12,h22,0,h32, 0,0,1,0, h13,h23,0,h33). */
+    transform-origin: 0 0;
+    transform: matrix3d(1.09777, 0.12171, 0, 0.00011,
+        0.00005, 0.90085, 0, -0.00003,
+        0, 0, 1, 0,
+        -1.8155, -1.4738, 0, 1);
 }
 
-.gallery-layout::before {
-    left: 0;
-    background: repeating-linear-gradient(
-        to bottom,
-        #00f3ff 0, #00f3ff 400px,
-        transparent 400px, transparent 840px
-    );
-    filter: drop-shadow(0 0 8px #00f3ff) drop-shadow(0 0 3px #00f3ff);
-}
-
-.gallery-layout::after {
-    right: 0;
-    background: repeating-linear-gradient(
-        to bottom,
-        transparent 0, transparent 120px,
-        #ff2d95 120px, #ff2d95 380px,
-        transparent 380px, transparent 840px
-    );
-    filter: drop-shadow(0 0 8px #ff2d95) drop-shadow(0 0 3px #ff2d95);
+/* Content plane, skewed onto the angled board */
+.billboard-content {
+    transform-origin: center top;
+    padding: 24px;
 }
 
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 28px; /* "wall" between windows + room for the neon glow */
-    margin-top: 40px;
+    gap: 18px;
 }
 
-/* Each photo is a lit window set into the building facade */
+/* Clean photo tile — no window chrome */
 .gallery-item {
     position: relative;
     box-sizing: border-box;
     aspect-ratio: 1 / 1;
-    padding: 10px;             /* the window casing thickness */
-    background: #14141f;       /* dark frame */
-    border: 3px solid #0a0a12; /* outer casing edge */
-    box-shadow:
-        0 0 16px 3px var(--win-glow, #00f3ff), /* neon halo on the wall */
-        0 0 4px 1px var(--win-glow, #00f3ff);
-    transition: box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-/* Alternate the glow so the building reads as a grid of differently-lit windows */
-.gallery-item:nth-child(3n + 1) { --win-glow: #00f3ff; } /* cyan    */
-.gallery-item:nth-child(3n + 2) { --win-glow: #ff2d95; } /* magenta */
-.gallery-item:nth-child(3n + 3) { --win-glow: #ffb100; } /* amber   */
-
-.gallery-item a {
-    display: block;
-    width: 100%;
-    height: 100%;
     overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+
+.gallery-item a { display: block; width: 100%; height: 100%; overflow: hidden; }
 
 .gallery-item img,
-.gallery-item video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
+.gallery-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* Recessed-glass effect: darken the edges so the photo sits inside the frame */
-.gallery-item::after {
-    content: "";
-    position: absolute;
-    inset: 10px; /* match the casing padding */
-    pointer-events: none;
-    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.55);
-}
-
-/* The window "lights up" on hover */
+/* Hover un-skews the tile: the inverse of the screen's skew cancels it to flat,
+   then scale up + lift. */
 .gallery-item:hover {
-    transform: translateY(-2px);
-    box-shadow:
-        0 0 28px 8px var(--win-glow, #00f3ff),
-        0 0 8px 2px var(--win-glow, #00f3ff);
+    transform: skewY(calc(-1 * var(--bb-skew))) scale(1.06);
+    z-index: 5;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 808px) {
-    .gallery-layout {
-        padding: 30px 20px;
-    }
-    .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 18px;
-    }
+    .billboard { height: auto; width: 92vw; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
