@@ -11,9 +11,12 @@ title: Lucca Augusto
         <div class="crooked-header">Meus Trem</div>
         <div class="panel-content">
             <div class="main-icons">
-                <a href="https://github.com/{{ site.github_username }}" target="_blank"><img class="icone-grande" src="/assets/icons/github-icon.png" alt="Github"/></a>
+                <a href="https://github.com/{{ site.github_username }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/github-icon.png" alt="Github"/></a>
                 <a href="{{ site.url_spot}}" target="_blank"><img class="icone-grande" src="/assets/icons/spotify-icon.png" alt="Spotify"/></a>
                 <a href="{{ site.url_letterboxd }}" target="_blank"><img class="icone-grande" src="/assets/icons/letterboxd-icon.png" alt="Letterboxd"/></a>
+                <a href="{{ site.url_linkedin }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/linkedin-icon.png" alt="LinkedIn"/></a>
+                <a href="{{ site.url_dev_portfolio }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/promptfolio-icon.png" alt="Promptfolio"/></a>
+                <a href="{{ site.url_portfolio }}" target="_blank"><img class="icone-grande" src="https://luccaaugusto.xyz/images/logo-flor-caveira.jpg" alt="Portfolio"/></a>
             </div>
             <ul class="extra-links">
                 <li><a href="{{ site.url_mal }}" target="_blank">MyAnimeList</a></li>
@@ -32,14 +35,6 @@ title: Lucca Augusto
         <div class="crooked-header">Portais</div>
         <div class="panel-content">
             <!-- Empty for now, art later -->
-        </div>
-    </div>
-
-    <!-- 3. Piadas -->
-    <div class="zine-panel panel-piada">
-        <div class="crooked-header">Piada do Dia</div>
-        <div class="panel-content">
-            <p id="p-piada"></p>
         </div>
     </div>
 
@@ -93,4 +88,12 @@ title: Lucca Augusto
 
     <div id="panel-skull">
         <img src="/assets/img/tattoo-caveira.png"/>
+    </div>
+
+    <!-- Caveira anfitriã — conta a piada do dia num balão de fala. Clique pra outra. -->
+    <div id="caveira-anfitriao" title="Clica pra outra piada" onclick="piada()">
+        <div class="balao-piada">
+            <p id="p-piada"></p>
+        </div>
+        <img src="/assets/img/caveira-anfitriao.png" alt="Caveira anfitriã contando uma piada"/>
     </div>
