@@ -31,7 +31,7 @@
 .gram-post { width: 100%; break-inside: avoid; cursor: pointer; }
 .gram-post__caption { margin: 0.5rem 0 0; }
 .gram-media { position: relative; }
-.gram-media img, .gram-media video { width: 20rem; height: 20rem; object-fit: cover; display: block; border-radius: 8px; }
+.gram-media img, .gram-media video { width: 100%; aspect-ratio: 1 / 1; height: auto; object-fit: cover; display: block; border-radius: 8px; }
 .gram-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 0.5rem; scrollbar-width: none; }
 .gram-carousel::-webkit-scrollbar { display: none; }
 .gram-carousel > * { flex: 0 0 100%; scroll-snap-align: center; }
@@ -95,7 +95,7 @@
 .gram-modal__body { padding: 1.25rem 1rem 1rem; }
 .gram-modal__body .gram-media img,
 .gram-modal__body .gram-media video {
-  max-height: 80vh; width: auto; max-width: 100%; margin: 0 auto;
+  max-height: 80vh; width: auto; max-width: 100%; aspect-ratio: auto; margin: 0 auto;
 }
 .gram-modal .gram-media__item--video::after { display: none; }
 
