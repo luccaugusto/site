@@ -64,6 +64,37 @@
 .treino ul { margin: 8px 0 0; padding-left: 20px; }
 .treino li { margin-bottom: 6px; }
 
+/* --- clickable exercises: tap the name to reveal a demo picture --- */
+.treino li[data-ex] {
+  list-style: none;
+  margin-left: -20px;          /* reclaim the ul's bullet indent for our caret */
+  cursor: pointer;
+  outline: none;
+}
+.treino li[data-ex]::before {
+  content: "\25B8";            /* ▸ */
+  display: inline-block;
+  width: 1.1em;
+  color: #ff2d95;
+  font-weight: 700;
+}
+.treino li[data-ex].open::before { content: "\25BE"; } /* ▾ */
+.treino li[data-ex]:hover,
+.treino li[data-ex]:focus-visible { color: #ff2d95; }
+.treino .ex-img {
+  display: none;
+  margin: 8px 0 10px 1.1em;
+}
+.treino li[data-ex].open > .ex-img { display: block; }
+.treino .ex-img img {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  border: 2px solid #000;
+  background: #fff;
+  box-shadow: 3px 3px 0 #000;
+}
+
 /* --- rules table --- */
 .treino table { width: 100%; border-collapse: collapse; border: 2px solid #000; background: #fff; margin-top: 8px; box-shadow: 4px 4px 0 #000; }
 .treino th, .treino td { padding: 12px; border-bottom: 1px solid #000; text-align: left; vertical-align: top; }
