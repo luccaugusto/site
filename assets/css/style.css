@@ -56,15 +56,31 @@ h2{
 	background-position: center;
 	background-attachment: fixed;
 }
+/* ── 404 / página não encontrada ──────────────────────────────────── */
+.erro-404{
+	min-height: 100vh;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: radial-gradient(ellipse at center, #1a0b2e 0%, #07040d 70%);
+}
+.erro-404-img{
+	width: 100%;
+	max-width: min(90vw, 700px);
+	height: auto;
+}
+.erro-404-msg{
+	margin-top: 24px;
+	color: #e8d9ff;
+	text-align: center;
+}
+.erro-404-msg a{
+	color: #eb8ce4;
+}
 .title{
 	padding-left: 5%;
-}
-
-.rodape{
-	margin-top: -4px;
-	position: fixed;
-	bottom: 0;
-	z-index: 1001;
 }
 
 .central{
@@ -818,8 +834,8 @@ h2{
 }
 
 .misc-icon {
-    width: 88px;
-    height: 88px;
+    width: 128px;
+    height: 128px;
     object-fit: contain;
 }
 
@@ -1090,7 +1106,7 @@ h2{
     inset: 5.3% 0.5% 38.3% 6.7%;
     overflow-y: auto;
     overflow-x: hidden;
-    background: #14141f;
+    background: #a13e6c;
     /* GIMP perspective homography baked into CSS. transform-origin MUST be 0 0
        (GIMP's matrix is top-left-relative). Column-major embedding of the 3x3:
        matrix3d(h11,h21,0,h31, h12,h22,0,h32, 0,0,1,0, h13,h23,0,h33). */
@@ -1109,7 +1125,7 @@ h2{
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(var(--gallery-columns, 4), 1fr);
     gap: 18px;
 }
 
@@ -1138,4 +1154,43 @@ h2{
 @media (max-width: 808px) {
     .billboard { height: auto; width: 92vw; }
     .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
+
+/* ── Full-site film-grain noise overlay ──────────────────────────────
+   `.overlay` is the hidden base; `.overlay.noise` (in _includes/noise.html,
+   dropped into every layout's <body>) is the active film-grain layer. It's
+   oversized + offset so the `grain` jitter never exposes an edge, sits above
+   page content (z-index 800) and lets clicks pass through (pointer-events). */
+.overlay {
+    top: 0;
+    left: 0;
+    position: fixed;
+    pointer-events: none;
+    display: none;
+}
+
+.overlay.noise {
+    display: block;
+    z-index: 800;
+    animation: grain 8s steps(10) infinite;
+    background-image: url(/assets/img/noise.png);
+    height: 400%;
+    left: -50%;
+    top: -150%;
+    width: 300%;
+    background-size: auto;
+    opacity: 0.2;
+}
+
+@keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    10%  { transform: translate(-5%, -10%); }
+    20%  { transform: translate(-15%, 5%); }
+    30%  { transform: translate(7%, -25%); }
+    40%  { transform: translate(-5%, 25%); }
+    50%  { transform: translate(-15%, 10%); }
+    60%  { transform: translate(15%, 0%); }
+    70%  { transform: translate(0%, 15%); }
+    80%  { transform: translate(3%, 35%); }
+    90%  { transform: translate(-10%, 10%); }
 }

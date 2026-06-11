@@ -91,7 +91,6 @@ pages. The `lista` layout is part of the redesign too, but floats a single
 | `back.html` | "Back" button (`history.back()`). Used by `post`, `gallery`, `fotos`, `lista`, `misc`. |
 | `last_posts.html` | First 6 blog post titles as links (homepage Blog panel). |
 | `galery.html` | Reusable gallery loop (image/video aware), `srcset` thumbnails. Used by `eu`. |
-| `rodape.html` | Footer with `{{ site.copyright }}`. **Currently unused** (only the removed `random` layout included it). |
 
 ---
 
