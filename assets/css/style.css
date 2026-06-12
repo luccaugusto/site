@@ -604,6 +604,10 @@ h2{
     box-shadow: 3px 3px 0px #000;
 }
 
+a .crooked-header {
+	color: #ff53ad;
+}
+
 /* Star marker to the left of each header's text */
 .crooked-header::before {
     content: "";
@@ -1024,7 +1028,11 @@ h2{
 
 .scroll-to-top-container {
     position: absolute;
-    bottom: 20px;
+    /* Hug the gallery, not the shaft. The screen hole's bottom is at 61.7% of
+       board height (1 − 38.3% bottom inset of .billboard-screen); the shaft below
+       now runs off-screen, so anchor the button just under the hole instead of at
+       the board's bottom. % of board height keeps it tracking the board's size. */
+    top: 63%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -1082,11 +1090,24 @@ h2{
    below maps directly onto the image. Skew matches the board's perspective. */
 .billboard {
 	--bb-skew: 4deg;
+	/* Viewport-height line where the SCREEN's center should sit. Nudge up/down
+	   to taste (e.g. 46% for a touch higher); the gallery stays there at every
+	   aspect ratio, so this is the only knob you need. */
+	--bb-anchor: 50%;
     position: fixed;
     width: 60%;            /* size lives here; img fills it, screen insets off it */
     perspective: none;     /* matrix3d on .billboard-screen carries its own perspective */
-	bottom: -35%;
 	left:  23%;
+	/* Board HEIGHT scales with viewport WIDTH (width:60% + auto height), but the
+	   screen should sit on a viewport-HEIGHT line. Anchoring by `bottom` (a % of
+	   viewport height) mixed the two axes, so the board drifted DOWN on narrow
+	   viewports and UP on wide ones. Instead: drop the board's top on --bb-anchor,
+	   then lift it by the screen's own center fraction so the SCREEN's center —
+	   not the board's — lands on that line, independent of board size. The screen
+	   hole spans 5.3%–61.7% of board height (see .billboard-screen inset), so its
+	   center is at 33.5%. The shaft below just shows more/less as the board grows. */
+	top: var(--bb-anchor);
+	transform: translateY(-33.5%);
 }
 
 /* The frame image fills the board and therefore DEFINES its box size, so the
