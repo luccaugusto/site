@@ -42,19 +42,9 @@ plugins:
   - jekyll-feed
   - jekyll-loading-lazy
 
-# Silence Dart Sass deprecation warnings coming from the minima theme's SCSS
-# (lighten() and @import) — third-party code we don't control.
-sass:
-  quiet_deps: true
-  silence_deprecations:
-    - import
-    - color-functions
-
 # Treat my posts as collections so i dont have that stupid date on url
 collections:
   blog:
-    output: true
-  ded:
     output: true
   tablaturas:
     output: true

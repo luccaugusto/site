@@ -46,10 +46,8 @@ gen_gallery()
 
 uploadarquivos()
 {
-	gen_gallery images/fotos-skate  _data/skate.yml         /images/fotos-skate
 	gen_gallery images/wallpapers   _data/wallpapers.yml    /images/wallpapers
 	gen_gallery images/flores       _data/flores.yml        /images/flores
-	gen_gallery images/minhas-fotos _data/minhas_fotos.yml  /images/minhas-fotos
 	gen_gallery images/suspensao    _data/suspensao.yml     /images/suspensao
 }
 
