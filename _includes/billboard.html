@@ -1,0 +1,16 @@
+<div class="billboard">
+	<img class="billboard-img" src="/assets/img/billboard.png"/>
+	<div class="billboard-screen">
+		<div class="billboard-content">
+			{{ include.content }}
+		</div>
+	</div>
+
+	<div class="scroll-to-top-container">
+		<a href="#" class="scroll-to-top"
+			onclick="this.closest('.billboard').querySelector('.billboard-screen').scrollTo({top: 0, behavior: 'smooth'}); return false;">↑ Topo</a>
+	</div>
+</div>
+
+<!-- Re-solves the screen's perspective warp on resize so it stays aligned to the billboard hole at any size. Static matrix3d in style.css is the no-JS fallback. -->
+<script src="/assets/js/billboard-screen.js" defer></script>

@@ -58,12 +58,6 @@ title: Lucca Augusto
         </a>
     </div>
 
-    <div class="panel-blog-wrap">
-        <div id="panel-eye">
-            <img src="/assets/img/eye.png"/>
-        </div>
-    </div>
-
     <!-- 6. Pictures -->
     <div class="zine-panel panel-pictures">
         <div class="crooked-header">Fotos</div>
@@ -84,8 +78,25 @@ title: Lucca Augusto
         </a>
     </div>
 
-</div>
+    <!-- Portais — two side-by-side portfolio iframes inside the billboard screen.
+         Built here and passed as `content` so the shared billboard include stays
+         generic (the gallery layout passes its grid the same way). -->
+    {% capture portais_content %}
+    <div class="portais-grid">
+        <div class="portal-frame">
+            <iframe class="portal-iframe" src="{{ site.url_dev_portfolio }}" title="Portfólio de Dev" loading="lazy"></iframe>
+        </div>
+        <div class="portal-frame">
+            <iframe class="portal-iframe" src="{{ site.url_portfolio }}" title="Portfólio de Arte" loading="lazy"></iframe>
+        </div>
+    </div>
+    {% endcapture %}
+    {% include billboard.html content=portais_content %}
 
+</div>
+    <div id="panel-eye">
+        <img src="/assets/img/eye.png"/>
+    </div>
     <div id="panel-skull">
         <img src="/assets/img/tattoo-caveira.png"/>
     </div>

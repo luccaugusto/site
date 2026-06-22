@@ -224,15 +224,15 @@ h2{
 #panel-skull {
 	position: absolute;
 	right: -21em;
-	top: 15em;
+	top: 25em;
 	height: 42em;
 	z-index: 1;
 }
 #panel-eye {
     position: absolute;
-    top: -9.5em;
-    right: -12.5em;
-    width: 30em;
+    top: 60vh;
+    left: -6vw;
+    width: 40em;
     z-index: 0;
     transform: rotate(10deg);
     pointer-events: none;
@@ -629,7 +629,7 @@ a .crooked-header {
 /* Specific Panel Placements */
 .panel-links {
 	top: 10vh;
-    left: 20vw;
+    left: 16vw;
     width: 22em;
     transform: rotate(-4deg);
 }
@@ -660,7 +660,7 @@ a .crooked-header {
 }
 .panel-blog {
     top: 16vh;
-    right: 20vw;
+    right: 26vw;
     transform: rotate(12deg);
     z-index: 10;
     width: 400px;
@@ -668,13 +668,29 @@ a .crooked-header {
 .panel-blog .crooked-header {
 	transform: rotate(-12deg);
 }
-.panel-pictures { bottom: 20vh; right: 18vw; width: 200px; transform: rotate(-15deg); }
-.panel-pictures .crooked-header, .panel-misc .crooked-header {
+.panel-pictures { bottom: 20vh; right: 30vw; width: 200px; transform: rotate(-15deg); }
+.panel-pictures .crooked-header {
 	transform: skewX(350deg) rotate(10deg);
 }
-.panel-misc { bottom: -8vh; right: 15vw; width: 200px; transform: rotate(-15deg); }
+.panel-misc { bottom: -95vh; right: 20vw; width: 200px; transform: rotate(15deg); }
 .panel-misc .icone-grande {
 	width: 150px;
+}
+
+/* Home variant: the billboard is ABSOLUTE (part of the document, not fixed), set
+   below the first screen so you scroll down a bit to reach it, near the caveira
+   anfitriã at the bottom of the canvas. Overrides the gallery-layout fixed
+   centering inherited from .billboard (this selector only matches the index, so
+   the .billboard-page gallery layout is untouched). Knobs: --bb-width sizes it,
+   --bb-top slides it up/down (lower vh = less scroll to reach it). */
+.zine-canvas .billboard {
+	position: absolute;
+	z-index: 10;
+	left: 50%;
+	right: auto;
+	top: 75vh;
+	bottom: auto;
+	transform: translateX(-50%);
 }
 
 /* ==========================================================================
@@ -685,7 +701,7 @@ a .crooked-header {
    ========================================================================== */
 #caveira-anfitriao {
     position: absolute;
-    top: 80vh;
+    bottom: -95vh;
     left: 5vw;
     z-index: 30;
     display: flex;
@@ -1179,6 +1195,30 @@ a .crooked-header {
     padding: 24px;
 }
 
+/* Portais — two side-by-side portfolio iframes filling the billboard screen on
+   the homepage. Each div is half the width and full height; stacks on narrow
+   viewports (see media query below). The full-height chain is scoped to
+   .zine-canvas so the gallery layout's use of .billboard-content is untouched. */
+.zine-canvas .billboard-content {
+    height: 100%;
+    box-sizing: border-box;
+}
+.portais-grid {
+    display: flex;
+    gap: 18px;
+    height: 100%;
+}
+.portal-frame {
+    flex: 1;
+    min-width: 0;
+}
+.portal-iframe {
+    width: 100%;
+    height: 100%;
+    border: 2px solid #000;
+    display: block;
+}
+
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(var(--gallery-columns, 4), 1fr);
@@ -1210,6 +1250,9 @@ a .crooked-header {
 @media (max-width: 808px) {
     .billboard { height: auto; width: 92vw; }
     .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .portais-grid { flex-direction: column; height: auto; }
+    .portal-frame { width: 100%; }
+    .portal-iframe { height: 320px; }
 }
 
 /* ── Full-site film-grain noise overlay ──────────────────────────────

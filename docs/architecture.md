@@ -90,7 +90,7 @@ pages. The `lista` layout is part of the redesign too, but floats a single
 | `head.html` | `<head>`: meta, `<title>`, favicons, loads `style.css`, and **defers the two global JS files** (`random_cursor`, `piada`). Included by every layout. |
 | `back.html` | "Back" button (`history.back()`). Used by `post`, `gallery`, `fotos`, `lista`, `misc`. |
 | `last_posts.html` | First 6 blog post titles as links (homepage Blog panel). |
-| `galery.html` | Reusable gallery loop (image/video aware), `srcset` thumbnails. Used by `eu`. |
+| `billboard.html` | The synthwave billboard frame (frame image + perspective-warped `.billboard-screen` + scroll-to-top + warp script). Renders `include.content` inside the screen. Used by the `gallery` layout (wraps a `.gallery-grid`) and the homepage. |
 
 ---
 
