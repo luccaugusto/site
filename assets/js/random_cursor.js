@@ -9,7 +9,7 @@ const cursors = [
 ];
 
 function randomize_cursor() {
-  var bodyElement = document.getElementsByTagName("body")[0];
+  var bodyElement = document.getElementsByTagName("html")[0];
   // one extra slot is a no-op, so sometimes the default cursor stays
   var index = Math.floor(Math.random() * (cursors.length + 1));
   if (index === cursors.length) return;

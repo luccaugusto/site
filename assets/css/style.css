@@ -224,7 +224,7 @@ h2{
 #panel-skull {
 	position: absolute;
 	right: -21em;
-	top: 30em;
+	top: 15em;
 	height: 42em;
 	z-index: 1;
 }
@@ -582,8 +582,7 @@ h2{
 }
 
 .extra-links {
-    list-style-type: none;
-    padding: 0;
+    list-style-type: japanese-informal;
     margin: 0;
 }
 
@@ -631,11 +630,12 @@ a .crooked-header {
 .panel-links {
 	top: 10vh;
     left: 20vw;
-    width: 40em;
-    transform: rotate(-2deg);
+    width: 22em;
+    transform: rotate(-4deg);
 }
 .panel-links .panel-content {
 	justify-content: space-evenly;
+	flex-direction: column;
 }
 .panel-links .crooked-header {
 	transform: rotate(-12deg);
@@ -658,32 +658,21 @@ a .crooked-header {
     box-shadow: -7px 7px 18px 3px #7ae5ff;
 	opacity: 0.5;
 }
-/* Wrapper carries the placement so the eye can sit BEHIND the blog card.
-   The eye is a sibling of the card (not a child), so the card's opaque
-   background paints over it — a child can never go behind its parent's bg. */
-.panel-blog-wrap {
-    position: absolute;
-    top: 70vh;
-    left: 10vw;
+.panel-blog {
+    top: 16vh;
+    right: 20vw;
     transform: rotate(12deg);
     z-index: 10;
+    width: 400px;
 }
 .panel-blog .crooked-header {
 	transform: rotate(-12deg);
 }
-.panel-blog {
-    position: relative; /* override .zine-panel's absolute; anchors #panel-eye */
-    top: auto;
-    left: auto;
-    width: 400px;
-    transform: none;    /* rotation now lives on the wrapper */
-    z-index: 2;         /* paints above #panel-eye (z-index: 0) */
-}
-.panel-pictures { bottom: -50vh; right: 45vw; width: 200px; transform: rotate(-15deg); }
-.panel-pictures .crooked-header {
+.panel-pictures { bottom: 20vh; right: 18vw; width: 200px; transform: rotate(-15deg); }
+.panel-pictures .crooked-header, .panel-misc .crooked-header {
 	transform: skewX(350deg) rotate(10deg);
 }
-.panel-misc { bottom: -30vh; right: 29vw; width: 200px; transform: rotate(-15deg); }
+.panel-misc { bottom: -8vh; right: 15vw; width: 200px; transform: rotate(-15deg); }
 .panel-misc .icone-grande {
 	width: 150px;
 }
@@ -696,7 +685,7 @@ a .crooked-header {
    ========================================================================== */
 #caveira-anfitriao {
     position: absolute;
-    top: 100vh;
+    top: 80vh;
     left: 5vw;
     z-index: 30;
     display: flex;
@@ -757,23 +746,25 @@ a .crooked-header {
 }
 
 /* ==========================================================================
-   SPLASH TEXT — Minecraft-style daily tagline. Free-floating over the canvas;
-   the text is filled in by assets/js/splash.js (one line per day, same for all
-   visitors). The wrapper holds the static crooked tilt; the inner <span> does
-   the breathing scale so the tilt stays put. Nudge top/left to reposition.
+   SPLASH TEXT — Minecraft-style daily tagline. Pinned to the bottom-right
+   corner of .panel-links (its positioned ancestor); the text is filled in by
+   assets/js/splash.js (one line per day, same for all visitors). The wrapper
+   holds the static crooked tilt; the inner <span> does the breathing scale so
+   the tilt stays put. white-space:nowrap + right-anchoring let it extend past
+   the panel's width instead of wrapping. Nudge right/bottom to reposition.
    ========================================================================== */
 #splash-text {
-    position: absolute;
-    top: 48vh;
-    left: 55vw;
+    position: relative;
+    right: 0;
     z-index: 20;
     pointer-events: none; /* purely decorative — never intercept clicks */
-    transform: translate(-50%, -50%) rotate(-18deg);
+    transform-origin: bottom right;
+    transform: rotate(-18deg);
 }
 #splash-text span {
     display: inline-block;
     font-family: 'BetterVCR', monospace;
-    font-size: 1.7rem;
+    font-size: 1.4rem;
     color: #ffff00;
     text-shadow: 2px 2px 0 #2b2b00; /* hard Minecraft-y drop shadow */
     white-space: nowrap;

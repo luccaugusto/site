@@ -6,42 +6,7 @@ title: Lucca Augusto
 
 <div class="zine-canvas">
 
-    <!-- 0. Splash text — daily-rotating crooked tagline, filled by splash.js -->
-    <div id="splash-text"><span></span></div>
-
-    <!-- 1. Links (Meus Trem) -->
-    <div class="zine-panel panel-links">
-        <div class="crooked-header">Meus Trem</div>
-        <div class="panel-content">
-            <div class="main-icons">
-                <a href="https://github.com/{{ site.github_username }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/github-icon.png" alt="Github"/></a>
-                <a href="{{ site.url_spot}}" target="_blank"><img class="icone-grande" src="/assets/icons/spotify-icon.png" alt="Spotify"/></a>
-                <a href="{{ site.url_letterboxd }}" target="_blank"><img class="icone-grande" src="/assets/icons/letterboxd-icon.png" alt="Letterboxd"/></a>
-                <a href="{{ site.url_linkedin }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/linkedin-icon.png" alt="LinkedIn"/></a>
-                <a href="{{ site.url_dev_portfolio }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/promptfolio-icon.png" alt="Promptfolio"/></a>
-                <a href="{{ site.url_portfolio }}" target="_blank"><img class="icone-grande" src="https://luccaaugusto.xyz/images/logo-flor-caveira.jpg" alt="Portfolio"/></a>
-            </div>
-            <ul class="extra-links">
-                <li><a href="{{ site.url_mal }}" target="_blank">MyAnimeList</a></li>
-                <li><a href="{{ site.wish_amazon }}" target="_blank">Wishlist da Amazon</a></li>
-                <li><a href="{{ site.url_orkut }}" target="_blank">Orkut</a></li>
-                <li><a href="/downloads/" target="_blank">Downloads</a></li>
-                <li><a href="/images/meu-mapa-astral.jpeg">Meu Mapa Astral</a></li>
-                <li><a href="/downloads/Regras Camelô.pdf">Regras Camelô</a></li>
-                <li><a href="/treino">Planilha de Treino</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- 2. Portais (Other websites) -->
-    <div class="zine-panel panel-portals">
-        <div class="crooked-header">Portais</div>
-        <div class="panel-content">
-            <!-- Empty for now, art later -->
-        </div>
-    </div>
-
-    <!-- 4. Salve Uriel -->
+    <!-- Salve Uriel -->
     <div class="panel-uriel">
         <pre id="salve-uriel">
    _____       __              __  __     _      __
@@ -52,22 +17,50 @@ title: Lucca Augusto
         </pre>
     </div>
 
+
+    <!-- Links (Meus Trem) -->
+    <div class="zine-panel panel-links">
+        <div class="crooked-header">Meus Trem</div>
+        <div class="panel-content">
+            <div class="main-icons">
+                <a href="https://github.com/{{ site.github_username }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/github-icon.png" alt="Github"/></a>
+                <a href="{{ site.url_media_server }}" target="_blank"><img class="icone-grande" src="/assets/icons/jellyfin-icon.png" alt="Jellyfin"/></a>
+                <a href="{{ site.url_letterboxd }}" target="_blank"><img class="icone-grande" src="/assets/icons/letterboxd-icon.png" alt="Letterboxd"/></a>
+                <a href="{{ site.url_linkedin }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/linkedin-icon.png" alt="LinkedIn"/></a>
+                <a href="https://instagram.com/{{ site.user_instagram }}" target="_blank"><img class="icone-grande" src="/assets/icons/instagram-icon.png"/></a>
+            </div>
+            <ul class="extra-links">
+                <li><a href="{{ site.url_mal }}" target="_blank">MyAnimeList</a></li>
+                <li><a href="{{ site.wish_amazon }}" target="_blank">Wishlist da Amazon</a></li>
+                <li><a href="/downloads/">Downloads</a></li>
+                <li><a href="/images/meu-mapa-astral.jpeg" target="_blank">Meu Mapa Astral</a></li>
+                <li><a href="/downloads/Regras Camelô.pdf" target="_blank">Regras Camelô</a></li>
+                <li><a href="/treino">Planilha de Treino</a></li>
+                <li><a href="{{ site.backend_login_url }}">Admin</a></li>
+            </ul>
+        </div>
+        <!-- Splash text — daily-rotating crooked tagline, filled by splash.js.
+             Anchored to this panel's bottom-right corner (see #splash-text CSS). -->
+        <div id="splash-text"><span></span></div>
+    </div>
+
     <!-- 5. Blog -->
+    <div class="zine-panel panel-blog">
+        <a href="/blog">
+            <div class="crooked-header">Blog</div>
+        </a>
+        <div class="panel-content">
+            {% include last_posts.html %}
+        </div>
+
+        <a href="/blog">
+            Todos os posts
+        </a>
+    </div>
+
     <div class="panel-blog-wrap">
         <div id="panel-eye">
             <img src="/assets/img/eye.png"/>
-        </div>
-        <div class="zine-panel panel-blog">
-            <a href="/blog">
-                <div class="crooked-header">Blog</div>
-            </a>
-            <div class="panel-content">
-                {% include last_posts.html %}
-            </div>
-
-            <a href="/blog">
-                Todos os posts
-            </a>
         </div>
     </div>
 

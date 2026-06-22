@@ -26,13 +26,14 @@ url_portfolio: "https://luccaaugusto.xyz"
 url_dev_portfolio: "https://dev.luccaaugusto.xyz"
 url_mal: "https://myanimelist.net/profile/luccaugusto"
 url_letterboxd: "https://letterboxd.com/luccaugusto/"
+url_linkedin: "https://www.linkedin.com/in/luccaugusto"
+url_media_server: "https://filmes.luccaaugusto.xyz"
+user_instagram: "underlineluccaaugustounderline"
 user_mal: "luccaugusto"
 user_spot: "luccaugusto"
 user_letterboxd: "luccaugusto"
-url_spot: "https://open.spotify.com/user/luccaugusto"
-url_linkedin: "https://www.linkedin.com/in/luccaugusto"
-url_orkut: "https://www.orkut.br.com/MainProfile?uid=2736677"
 wish_amazon: "https://www.amazon.com.br/hz/wishlist/ls/YICR8H5942MX?ref_=wl_share"
+backend_login_url: "https://pics.luccaaugusto.xyz/_/#/login"
 
 # Build settings
 markdown: kramdown
