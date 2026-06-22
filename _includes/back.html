@@ -1,5 +1,31 @@
-<a onClick="history.back();" style="cursor:pointer">
+{% if page.collection == "blog" and page.layout == "post" %}{% assign back_fallback = "/blog" %}{% else %}{% assign back_fallback = "/" %}{% endif %}
+<a onClick="goBack('{{ back_fallback }}')" style="cursor:pointer">
 	<img src="/assets/img/back.png" class="back-button"
 		onmouseover="this.src='/assets/img/back-hover.png'"
 		onmouseout="this.src='/assets/img/back.png'"/>
 </a>
+<script>
+	// Back button behaviour:
+	//  - On the blog index (/blog) always return home, so back never dives
+	//    back into a post we navigated here from.
+	//  - Otherwise go back to the previous in-site page when there is one,
+	//    falling back to a sensible landing page (blog posts -> /blog, else home).
+	//    history.back() is a silent no-op when the page was opened directly
+	//    (typed URL, bookmark, external link, new tab), hence the referrer check.
+	function goBack(fallback) {
+		var path = location.pathname.replace(/\/$/, "");
+		if (path === "/blog" || path === "/blog.html") {
+			location.href = "/";
+			return;
+		}
+		var sameSite = false;
+		if (document.referrer) {
+			try { sameSite = new URL(document.referrer).origin === location.origin; } catch (e) {}
+		}
+		if (sameSite) {
+			history.back();
+		} else {
+			location.href = fallback;
+		}
+	}
+</script>
