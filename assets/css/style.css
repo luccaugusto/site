@@ -628,8 +628,9 @@ a .crooked-header {
 
 /* Specific Panel Placements */
 .panel-links {
+    z-index: 11;
 	top: 10vh;
-    left: 16vw;
+    left: 20vw;
     width: 22em;
     transform: rotate(-4deg);
 }
@@ -672,7 +673,7 @@ a .crooked-header {
 .panel-pictures .crooked-header {
 	transform: skewX(350deg) rotate(10deg);
 }
-.panel-misc { bottom: -95vh; right: 20vw; width: 200px; transform: rotate(15deg); }
+.panel-misc { bottom: -95vh; right: 20vw; width: 200px; transform: rotate(15deg); z-index: 100; }
 .panel-misc .icone-grande {
 	width: 150px;
 }
@@ -772,7 +773,6 @@ a .crooked-header {
 #splash-text {
     position: relative;
     right: 0;
-    z-index: 20;
     pointer-events: none; /* purely decorative — never intercept clicks */
     transform-origin: bottom right;
     transform: rotate(-18deg);
@@ -1077,6 +1077,14 @@ a .crooked-header {
     transform-origin: bottom left;
 }
 
+.magazine-layout .scroll-to-top-container {
+	position: relative;
+	bottom: 0;
+	left: 50%;
+	z-index: 10;
+	transform: none;
+}
+
 .scroll-to-top-container {
     position: absolute;
     /* Hug the gallery, not the shaft. The screen hole's bottom is at 61.7% of
@@ -1167,6 +1175,7 @@ a .crooked-header {
     display: block;
     width: 100%;
     height: auto;
+	z-index: 100;
 }
 
 /* The display surface — the ONLY scrollable area. `inset` is a % of .billboard
