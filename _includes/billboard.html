@@ -6,10 +6,12 @@
 		</div>
 	</div>
 
-	<div class="scroll-to-top-container">
-		<a href="#" class="scroll-to-top"
-			onclick="this.closest('.billboard').querySelector('.billboard-screen').scrollTo({top: 0, behavior: 'smooth'}); return false;">↑ Topo</a>
-	</div>
+    {% unless include.hide_scroll_to_top == "true" %}
+        <div class="scroll-to-top-container">
+            <a href="#" class="scroll-to-top"
+                onclick="this.closest('.billboard').querySelector('.billboard-screen').scrollTo({top: 0, behavior: 'smooth'}); return false;">↑ Topo</a>
+        </div>
+    {% endunless %}
 </div>
 
 <!-- Re-solves the screen's perspective warp on resize so it stays aligned to the billboard hole at any size. Static matrix3d in style.css is the no-JS fallback. -->
