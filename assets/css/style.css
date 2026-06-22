@@ -1211,6 +1211,7 @@ a .crooked-header {
 .zine-canvas .billboard-content {
     height: 100%;
     box-sizing: border-box;
+	background-color: #edca8f;
 }
 .portais-grid {
     display: flex;
@@ -1220,12 +1221,48 @@ a .crooked-header {
 .portal-frame {
     flex: 1;
     min-width: 0;
+    position: relative;
+}
+.portal-frame a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+/* Crooked zine banner pinned inside the narrow art frame (the canvas-panel
+   offsets would spill past the clipped billboard screen). */
+.portal-header {
+    top: 14px;
+    left: 50%;
+    padding: 6px 22px;
+    white-space: nowrap;
+    transform: translateX(-50%) skewX(350deg) rotate(353deg);
 }
 .portal-iframe {
     width: 100%;
     height: 100%;
-    border: 2px solid #000;
     display: block;
+}
+.portal-img {
+    width: 100%;
+    height: 100%;
+    border: 2px dotted #a71798;
+    object-fit: contain;
+    display: block;
+}
+
+/* Piada-style speech bubble floating over the PC image in the left portal
+   frame. Reuses .balao-piada's look (orange fill, hard shadow, down-tail);
+   this modifier just pins it near the top-center of the frame so the tail
+   points down at the computer. .portal-frame is the positioned ancestor. */
+.balao-pc {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    max-width: 14em;
+    text-align: center;
+    z-index: 2;
 }
 
 .gallery-grid {
@@ -1261,7 +1298,8 @@ a .crooked-header {
     .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .portais-grid { flex-direction: column; height: auto; }
     .portal-frame { width: 100%; }
-    .portal-iframe { height: 320px; }
+    .portal-iframe,
+    .portal-img { height: 320px; }
 }
 
 /* ── Full-site film-grain noise overlay ──────────────────────────────

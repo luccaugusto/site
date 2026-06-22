@@ -78,16 +78,21 @@ title: Lucca Augusto
         </a>
     </div>
 
-    <!-- Portais — two side-by-side portfolio iframes inside the billboard screen.
+    <!-- Portais — the dev portfolio iframe and the art piece side-by-side inside the billboard screen.
          Built here and passed as `content` so the shared billboard include stays
          generic (the gallery layout passes its grid the same way). -->
     {% capture portais_content %}
     <div class="portais-grid">
         <div class="portal-frame">
-            <iframe class="portal-iframe" src="{{ site.url_dev_portfolio }}" title="Portfólio de Dev" loading="lazy"></iframe>
+            <a href="{{ site.url_dev_portfolio }}" target="_blank">
+                <img class="portal-img" src="/assets/img/pc.png" alt="Clique para usar meu computador" loading="lazy"/>
+            </a>
         </div>
         <div class="portal-frame">
-            <iframe class="portal-iframe" src="{{ site.url_portfolio }}" title="Portfólio de Arte" loading="lazy"></iframe>
+            <a href="{{ site.url_portfolio }}" target="_blank">
+                <div class="crooked-header portal-header">Frutos do meu cérebro</div>
+                <img class="portal-img" src="/assets/img/art.png" alt="Portfólio de Arte" loading="lazy"/>
+            </a>
         </div>
     </div>
     {% endcapture %}
