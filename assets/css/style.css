@@ -1,3 +1,25 @@
+@font-face {
+    font-family: 'Ethnocentric';
+    src: url('/assets/Ethnocentric-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'BetterVCR';
+    src: url('/assets/BetterVCR 25.09.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1, h2, h3, h4, h5, h6, .crooked-header, .magazine-title {
+    font-family: 'Ethnocentric', sans-serif;
+}
+
+.gongo h1, .gongo h2, .gongo h3, .gongo h4, .gongo h5, .gongo h6 {
+    font-family: inherit;
+}
+
 html{
 	min-height: 100%;
 }
@@ -17,39 +39,55 @@ h2{
 	margin: auto;
 }
 .palmtree{
-	background-image: url('/images/background-2.jpg');
+	background-image: url('/assets/img/background-2.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-attachment: fixed;
 }
 .take-me-away{
-	background-image: url('/images/vaporwhat.jpg');
+	background-image: url('/assets/img/vaporwhat.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-attachment: fixed;
 }
 .random{
-	background-image: url('/images/background.jpg');
+	background-image: url('/assets/img/background.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-attachment: fixed;
 }
 .skate{
-	background-image: url('/images/skulls-background-2.jpg');
+	background-image: url('/assets/img/skulls-background-2.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
 	background-attachment: fixed;
 }
+/* ── 404 / página não encontrada ──────────────────────────────────── */
+.erro-404{
+	min-height: 100vh;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: radial-gradient(ellipse at center, #1a0b2e 0%, #07040d 70%);
+}
+.erro-404-img{
+	width: 100%;
+	max-width: min(90vw, 700px);
+	height: auto;
+}
+.erro-404-msg{
+	margin-top: 24px;
+	color: #e8d9ff;
+	text-align: center;
+}
+.erro-404-msg a{
+	color: #eb8ce4;
+}
 .title{
 	padding-left: 5%;
-}
-
-.rodape{
-	margin-top: -4px;
-	position: fixed;
-	bottom: 0;
-	z-index: 1001;
 }
 
 .central{
@@ -138,6 +176,8 @@ h2{
 	position: absolute;
 	top: 15pt;
 	left: 15pt;
+	transform: skewX(-15deg) rotate(-6deg);
+	z-index: 100;
 }
 .nome{
 	height: 80pt;
@@ -158,7 +198,7 @@ h2{
 	vertical-align: middle;
 }
 .icone-grande{
-	width: 48px;
+	width: 58px;
 	vertical-align: middle;
 }
 #random{
@@ -180,6 +220,30 @@ h2{
 	left: 0;
 	top: 165pt;
 	z-index: 550;
+}
+#panel-skull {
+	position: absolute;
+	right: -21em;
+	top: 25em;
+	height: 42em;
+	z-index: 1;
+}
+#panel-eye {
+    position: absolute;
+    top: 60vh;
+    left: -6vw;
+    width: 40em;
+    z-index: 0;
+    transform: rotate(10deg);
+    pointer-events: none;
+}
+#panel-eye img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+#camera-pic {
+	width: 12em;
 }
 /*ALIGNMENT*/
 .to-the-right{
@@ -282,21 +346,6 @@ h2{
 	top: 1%;
 }
 
-.take-me-away > .window{
-	width:60%;
-	margin-bottom: 3%;
-	right: 20%;
-}
-.random > .window{
-	width:60%;
-	margin-bottom: 3%;
-	right: 20%;
-}
-.fotos > .window{
-	width:70%;
-	margin-bottom: 3%;
-	right: 15%;
-}
 .window div{
 	position:relative;
 }
@@ -459,9 +508,6 @@ h2{
 	.cabecalho{
 		width: 110%;
 	}
-	.main > .window{
-		display: none;
-	}
 	.central{
 		margin: 20% auto;
 		width: 85%;
@@ -476,17 +522,6 @@ h2{
 		top: 15pt;
 		left: 15pt;
 	}
-	.take-me-away > .window{
-		width: 90%;
-		margin-bottom: 3%;
-		left: 5%;
-		top: 10%;
-	}
-	.fotos > .window{
-		width: 95%;
-		margin-bottom: 3%;
-		right: 2%;
-	}
 	.mobile-hidden{
 		display:none;
 	}
@@ -495,4 +530,775 @@ h2{
 		height: unset;
 		margin: 0;
 	}
+}
+
+/* ==========================================================================
+   ZINE CANVAS LAYOUT (Redesign)
+   ========================================================================== */
+
+.zine-canvas {
+}
+
+/* Base Panel Style */
+.zine-panel {
+    position: absolute;
+    background-color: #282828;
+    border-radius: 20px;
+    color: #fff;
+    padding: 20px;
+    z-index: 10;
+	box-shadow:  rgb(121 184 207) 0px 5px 15px;
+}
+
+.zine-panel a {
+    color: #d6b744;
+    text-decoration: none;
+}
+
+.zine-panel a:hover {
+    color: #ff2d95;
+}
+
+.panel-content {
+    position: relative;
+    z-index: 2;
+	display: flex;
+	justify-content: center;
+}
+
+/* Links Panel Specifics */
+.main-icons {
+	margin-top: 30pt;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.main-icons > a {
+    flex: 0 0 calc(33.333% - 10px);
+    text-align: center;
+}
+
+.extra-links {
+    list-style-type: japanese-informal;
+    margin: 0;
+}
+
+.extra-links li {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+/* Crooked Headers (Slanted Tape Look) */
+.crooked-header {
+    position: absolute;
+    top: -20px;
+    left: -30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f0a830;
+    color: #000;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 1.5rem; /* Bigger headings */
+    padding: 10px 80px; /* Less height, much more width */
+    transform: skewX(350deg) rotate(355deg);
+    z-index: 3;
+    box-shadow: 3px 3px 0px #000;
+}
+
+a .crooked-header {
+	color: #ff53ad;
+}
+
+/* Star marker to the left of each header's text */
+.crooked-header::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 1.1em;
+    height: 1.1em;
+    background-image: url("/assets/img/star-marker.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Specific Panel Placements */
+.panel-links {
+    z-index: 11;
+	top: 10vh;
+    left: 20vw;
+    width: 22em;
+    transform: rotate(-4deg);
+}
+.panel-links .panel-content {
+	justify-content: space-evenly;
+	flex-direction: column;
+}
+.panel-links .crooked-header {
+	transform: rotate(-12deg);
+}
+.panel-portals { top: 15vh; right: 15vw; width: 250px; height: 200px; transform: rotate(2deg); }
+.panel-uriel {
+	top: 2vh;
+	right: -3vw;
+	width: 31em;
+	font-size: 10pt;
+    position: absolute;
+    gap: 10px;
+    background-color: #57fff9;
+    color: #000;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0 80px; /* Less height, much more width */
+    transform: skewX(30deg) rotate(19deg);
+    z-index: 3;
+    box-shadow: -7px 7px 18px 3px #7ae5ff;
+	opacity: 0.5;
+}
+.panel-blog {
+    top: 16vh;
+    right: 26vw;
+    transform: rotate(12deg);
+    z-index: 10;
+    width: 400px;
+}
+.panel-blog .crooked-header {
+	transform: rotate(-12deg);
+}
+.panel-pictures { bottom: 20vh; right: 30vw; width: 200px; transform: rotate(-15deg); }
+.panel-pictures .crooked-header {
+	transform: skewX(350deg) rotate(10deg);
+}
+.panel-misc { bottom: -95vh; right: 20vw; width: 200px; transform: rotate(15deg); z-index: 100; }
+.panel-misc .icone-grande {
+	width: 150px;
+}
+
+/* Home variant: the billboard is ABSOLUTE (part of the document, not fixed), set
+   below the first screen so you scroll down a bit to reach it, near the caveira
+   anfitriã at the bottom of the canvas. Overrides the gallery-layout fixed
+   centering inherited from .billboard (this selector only matches the index, so
+   the .billboard-page gallery layout is untouched). Knobs: --bb-width sizes it,
+   --bb-top slides it up/down (lower vh = less scroll to reach it). */
+.zine-canvas .billboard {
+	position: absolute;
+	z-index: 10;
+	left: 50%;
+	right: auto;
+	top: 75vh;
+	bottom: auto;
+	transform: translateX(-50%);
+}
+
+/* ==========================================================================
+   CAVEIRA ANFITRIÃ — bottom-left mascot that tells the "piada do dia" in a
+   speech balloon. The container is pointer-events:none so the corner stays
+   click-through; the balloon/skull re-enable it, and clicks bubble to the
+   container's onclick (re-rolls the joke via piada()).
+   ========================================================================== */
+#caveira-anfitriao {
+    position: absolute;
+    bottom: -95vh;
+    left: 5vw;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    pointer-events: none;
+}
+#caveira-anfitriao img {
+    width: 25em;
+    height: auto;
+    display: block;
+    pointer-events: auto;
+    cursor: pointer;
+}
+/* Clippy-style bubble, dressed in the zine palette (orange + hard black shadow) */
+.balao-piada {
+    position: relative;
+    max-width: 19em;
+    margin: 0 0 -0.4em 3.5em; /* sit above-and-right of the skull's head */
+    background-color: #f0a830;
+    color: #000;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+    font-style: italic;
+    font-weight: bold;
+    line-height: 1.35;
+    box-shadow: 4px 4px 0 #000;
+    pointer-events: auto;
+    cursor: pointer;
+}
+.balao-piada p {
+    margin: 0;
+}
+/* Tail pointing down toward the skull's head */
+.balao-piada::after {
+    content: "";
+    position: absolute;
+    bottom: -13px;
+    left: 26px;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 13px solid #f0a830;
+}
+/* Tiny black under-triangle so the tail keeps the bubble's border */
+.balao-piada::before {
+    content: "";
+    position: absolute;
+    bottom: -16px;
+    left: 24px;
+    width: 0;
+    height: 0;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-top: 15px solid #000;
+}
+
+/* ==========================================================================
+   SPLASH TEXT — Minecraft-style daily tagline. Pinned to the bottom-right
+   corner of .panel-links (its positioned ancestor); the text is filled in by
+   assets/js/splash.js (one line per day, same for all visitors). The wrapper
+   holds the static crooked tilt; the inner <span> does the breathing scale so
+   the tilt stays put. white-space:nowrap + right-anchoring let it extend past
+   the panel's width instead of wrapping. Nudge right/bottom to reposition.
+   ========================================================================== */
+#splash-text {
+    position: relative;
+    right: 0;
+    pointer-events: none; /* purely decorative — never intercept clicks */
+    transform-origin: bottom right;
+    transform: rotate(-18deg);
+}
+#splash-text span {
+    display: inline-block;
+    font-family: 'BetterVCR', monospace;
+    font-size: 1.4rem;
+    color: #ffff00;
+    text-shadow: 2px 2px 0 #2b2b00; /* hard Minecraft-y drop shadow */
+    white-space: nowrap;
+    animation: splash-breath 3.5s ease-in-out infinite;
+}
+@keyframes splash-breath {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.08); }
+}
+
+/* Responsive fallback for mobile */
+@media (max-width: 808px) {
+    .zine-canvas {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        padding: 40px 10px;
+        min-height: auto;
+    }
+    .zine-panel {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        width: 90% !important;
+        transform: none !important;
+    }
+    /* Collapse the wrapper so the blog card flows into the column like the
+       other panels; the decorative eye is hidden on small screens. */
+    .panel-blog-wrap {
+        display: contents;
+    }
+    #panel-eye {
+        display: none;
+    }
+    /* Mascot leaves the corner and flows in at the bottom of the column,
+       so the joke survives on small screens. */
+    #caveira-anfitriao {
+        position: static;
+        align-items: center;
+        margin: 1.5em auto 2.5em;
+    }
+    .balao-piada {
+        margin-left: 0;
+    }
+    .balao-piada::after,
+    .balao-piada::before {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    /* Splash flows into the column instead of floating over the layout. */
+    #splash-text {
+        position: static;
+        transform: rotate(-18deg);
+        margin: 1em auto;
+    }
+    #splash-text span {
+        font-size: 1.2rem;
+    }
+}
+
+/* ==========================================================================
+   MISC PAGE (zine-panel launcher grid)
+   ========================================================================== */
+
+.misc-header {
+    text-align: center;
+    margin: 90px auto 70px;
+}
+
+.misc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 70px 90px;
+    max-width: 760px;
+    margin: 0 auto 120px;
+    padding: 0 20px;
+}
+
+/* Reset the absolute index placement so panels flow as grid items */
+.misc-grid .zine-panel {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: auto;
+    min-height: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.misc-grid .zine-panel:nth-child(odd)  { transform: rotate(-3deg); }
+.misc-grid .zine-panel:nth-child(even) { transform: rotate(3deg); }
+.misc-grid .zine-panel:hover { transform: rotate(0deg) scale(1.04); }
+
+/* Smaller tape labels so they sit proportionally on the cards */
+.misc-grid .crooked-header {
+    font-size: 1.2rem;
+    padding: 8px 30px;
+}
+
+.misc-icon {
+    width: 128px;
+    height: 128px;
+    object-fit: contain;
+}
+
+@media (max-width: 808px) {
+    .misc-grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+}
+
+/* ==========================================================================
+   LISTA LAYOUT (zine-panel content listings: blog, ded, tablaturas)
+   ========================================================================== */
+
+.lista-layout {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 110px 20px 80px;
+    box-sizing: border-box;
+}
+
+/* Reset the absolute index placement so the panel centers in the layout */
+.panel-lista {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    max-width: 620px;
+    padding: 55px 45px 35px;
+    transform: rotate(-1deg);
+}
+
+.lista-itens {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.lista-itens li {
+    margin-bottom: 16px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    font-style: italic;
+    line-height: 1.3;
+}
+
+/* Star bullet to match the zine crooked-header marker */
+.lista-itens li::before {
+    content: "";
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    margin-right: 0.5em;
+    vertical-align: -0.1em;
+    background-image: url("/assets/img/star-marker.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Downloads page: per-folder section heading + file-type badge */
+.download-group {
+    margin: 26px 0 12px;
+    font-size: 1.6rem;
+}
+
+.download-group:first-of-type {
+    margin-top: 0;
+}
+
+.download-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 0 6px;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    font-style: normal;
+    vertical-align: middle;
+    opacity: 0.75;
+}
+
+/* ==========================================================================
+   MAGAZINE LAYOUT (Blog & Fotos)
+   ========================================================================== */
+
+.zine-body {
+    background-color: #e8d5b7; /* Beige zine background */
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.magazine-layout {
+    background-color: #f4f0e6; /* Off-white paper color */
+    width: 90vw;
+    max-width: 1200px;
+    min-height: 80vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 50px rgba(0,0,0,0.05);
+    border-radius: 2px;
+    padding: 60px 80px;
+    position: relative;
+    color: #1a1a1a;
+
+    /* Fold in the middle to look like an open magazine */
+    background-image: linear-gradient(to left,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0) 48%,
+        rgba(0,0,0,0.22) 51%,
+        rgba(255,255,255,0) 57%,
+        rgba(255,255,255,0) 100%);
+}
+
+.magazine-header {
+    margin-bottom: 40px;
+}
+
+.magazine-title {
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+    text-align: left;
+    display: inline-block;
+    background-color: #ff2d95; /* Magenta zine accent */
+    color: white;
+    padding: 10px 20px;
+    transform: rotate(-2deg);
+    box-shadow: 4px 4px 0px #000;
+}
+
+.magazine-content {
+    column-width: 400px;
+    column-gap: 80px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.magazine-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+    break-inside: avoid;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+}
+
+.magazine-content p {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* Single-column override (e.g. tablaturas: wide <pre> tabs must not split) */
+.magazine-content.single-column {
+    column-width: auto;
+    column-count: 1;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+}
+
+/* No center fold/shadow behind a single centered column */
+.magazine-layout:has(.single-column) {
+    background-image: none;
+}
+
+#magazine-holding-hand {
+    position: absolute;
+	bottom: -36em;
+    left: -27.5em;
+    width: 50em;
+    height: auto;
+    z-index: 10;
+    pointer-events: none;
+    transform-origin: bottom left;
+}
+
+.magazine-layout .scroll-to-top-container {
+	position: relative;
+	bottom: 0;
+	left: 50%;
+	z-index: 10;
+	transform: none;
+}
+
+.scroll-to-top-container {
+    position: absolute;
+    /* Hug the gallery, not the shaft. The screen hole's bottom is at 61.7% of
+       board height (1 − 38.3% bottom inset of .billboard-screen); the shaft below
+       now runs off-screen, so anchor the button just under the hole instead of at
+       the board's bottom. % of board height keeps it tracking the board's size. */
+    top: 63%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.scroll-to-top {
+    display: inline-block;
+    background-color: #00f3ff; /* Cyan zine accent */
+    color: #000;
+    font-weight: bold;
+    font-style: italic;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    text-decoration: none;
+    transform: rotate(3deg);
+    box-shadow: 3px 3px 0px #000;
+    transition: transform 0.2s ease;
+}
+
+.scroll-to-top:hover {
+    transform: rotate(0deg) scale(1.1);
+    background-color: #ff2d95;
+    color: #fff;
+}
+
+@media (max-width: 808px) {
+    .magazine-layout {
+        padding: 30px 20px;
+        background-image: none; /* No fold on mobile */
+    }
+    .magazine-content {
+        column-count: 1;
+    }
+    #magazine-holding-hand {
+        width: 100px;
+        bottom: -15px;
+        left: -20px;
+    }
+}
+
+/* BILLBOARD GALLERY (gallery.html layout) */
+
+/* Single non-scrolling viewport; only the billboard screen scrolls.
+   Scoped to .billboard-page so other .zine-body layouts are untouched. */
+.billboard-page {
+    overflow: hidden;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;   /* board sits in the upper part of the page */
+}
+
+/* Outer board: holds the billboard frame image + the screen. The box matches
+   the image's aspect ratio so the whole billboard shows and the screen `inset`
+   below maps directly onto the image. Skew matches the board's perspective. */
+.billboard {
+	--bb-skew: 4deg;
+	/* Viewport-height line where the SCREEN's center should sit. Nudge up/down
+	   to taste (e.g. 46% for a touch higher); the gallery stays there at every
+	   aspect ratio, so this is the only knob you need. */
+	--bb-anchor: 50%;
+    position: fixed;
+    width: 60%;            /* size lives here; img fills it, screen insets off it */
+    perspective: none;     /* matrix3d on .billboard-screen carries its own perspective */
+	left:  23%;
+	/* Board HEIGHT scales with viewport WIDTH (width:60% + auto height), but the
+	   screen should sit on a viewport-HEIGHT line. Anchoring by `bottom` (a % of
+	   viewport height) mixed the two axes, so the board drifted DOWN on narrow
+	   viewports and UP on wide ones. Instead: drop the board's top on --bb-anchor,
+	   then lift it by the screen's own center fraction so the SCREEN's center —
+	   not the board's — lands on that line, independent of board size. The screen
+	   hole spans 5.3%–61.7% of board height (see .billboard-screen inset), so its
+	   center is at 33.5%. The shaft below just shows more/less as the board grows. */
+	top: var(--bb-anchor);
+	transform: translateY(-33.5%);
+}
+
+/* The frame image fills the board and therefore DEFINES its box size, so the
+   screen's percentage inset below maps to a fixed fraction of the image. */
+.billboard-img {
+    display: block;
+    width: 100%;
+    height: auto;
+	z-index: 100;
+}
+
+/* The display surface — the ONLY scrollable area. `inset` is a % of .billboard
+   (= the image box), so the screen stays aligned to the frame at every size.
+   Values are the transparent display hole measured from billboard.png
+   (hole = 1030x642 at 74,60 in a 1109x1138 image). inset: top right bottom left. */
+.billboard-screen {
+    position: absolute;
+    inset: 5.3% 0.5% 38.3% 6.7%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #a13e6c;
+    /* GIMP perspective homography baked into CSS. transform-origin MUST be 0 0
+       (GIMP's matrix is top-left-relative). Column-major embedding of the 3x3:
+       matrix3d(h11,h21,0,h31, h12,h22,0,h32, 0,0,1,0, h13,h23,0,h33). */
+    transform-origin: 0 0;
+    transform: matrix3d(1.09777, 0.12171, 0, 0.00011,
+        0.00005, 0.90085, 0, -0.00003,
+        0, 0, 1, 0,
+        -1.8155, -1.4738, 0, 1);
+}
+
+/* Content plane, skewed onto the angled board */
+.billboard-content {
+    transform-origin: center top;
+    padding: 24px;
+}
+
+/* Portais — two side-by-side portfolio iframes filling the billboard screen on
+   the homepage. Each div is half the width and full height; stacks on narrow
+   viewports (see media query below). The full-height chain is scoped to
+   .zine-canvas so the gallery layout's use of .billboard-content is untouched. */
+.zine-canvas .billboard-content {
+    height: 100%;
+    box-sizing: border-box;
+}
+.portais-grid {
+    display: flex;
+    gap: 18px;
+    height: 100%;
+}
+.portal-frame {
+    flex: 1;
+    min-width: 0;
+}
+.portal-iframe {
+    width: 100%;
+    height: 100%;
+    border: 2px solid #000;
+    display: block;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--gallery-columns, 4), 1fr);
+    gap: 18px;
+}
+
+/* Clean photo tile — no window chrome */
+.gallery-item {
+    position: relative;
+    box-sizing: border-box;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.gallery-item a { display: block; width: 100%; height: 100%; overflow: hidden; }
+
+.gallery-item img,
+.gallery-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Hover un-skews the tile: the inverse of the screen's skew cancels it to flat,
+   then scale up + lift. */
+.gallery-item:hover {
+    transform: skewY(calc(-1 * var(--bb-skew))) scale(1.06);
+    z-index: 5;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 808px) {
+    .billboard { height: auto; width: 92vw; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .portais-grid { flex-direction: column; height: auto; }
+    .portal-frame { width: 100%; }
+    .portal-iframe { height: 320px; }
+}
+
+/* ── Full-site film-grain noise overlay ──────────────────────────────
+   `.overlay` is the hidden base; `.overlay.noise` (in _includes/noise.html,
+   dropped into every layout's <body>) is the active film-grain layer. It's
+   oversized + offset so the `grain` jitter never exposes an edge, sits above
+   page content (z-index 800) and lets clicks pass through (pointer-events). */
+.overlay {
+    top: 0;
+    left: 0;
+    position: fixed;
+    pointer-events: none;
+    display: none;
+}
+
+.overlay.noise {
+    display: block;
+    z-index: 800;
+    animation: grain 8s steps(10) infinite;
+    background-image: url(/assets/img/noise.png);
+    height: 400%;
+    left: -50%;
+    top: -150%;
+    width: 300%;
+    background-size: auto;
+    opacity: 0.2;
+}
+
+@keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    10%  { transform: translate(-5%, -10%); }
+    20%  { transform: translate(-15%, 5%); }
+    30%  { transform: translate(7%, -25%); }
+    40%  { transform: translate(-5%, 25%); }
+    50%  { transform: translate(-15%, 10%); }
+    60%  { transform: translate(15%, 0%); }
+    70%  { transform: translate(0%, 15%); }
+    80%  { transform: translate(3%, 35%); }
+    90%  { transform: translate(-10%, 10%); }
 }

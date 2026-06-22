@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
-  <head>
-	  {% include head.html %}
-  </head>
-  {% include back.html %}
-  <body class="palmtree">
-	<div class="geral">
-    		{{ content }}
-	</div>
-  </body>
+	<head>
+		{% include head.html %}
+	</head>
+	<body class="zine-body palmtree billboard-page">
+		{% include noise.html %}
+		{% include back.html %}
+
+		{% capture gallery_grid %}<div class="gallery-grid" style="--gallery-columns: {{ page.columns | default: 4 }};">{{ content }}</div>{% endcapture %}
+		{% include billboard.html content=gallery_grid %}
+	</body>
 </html>

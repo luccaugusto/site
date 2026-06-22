@@ -1,0 +1,41 @@
+---
+layout: home
+permalink: /downloads/
+title: Downloads
+# Section titles for the folders under downloads/. Files inside these folders
+# (and any loose files) are listed automatically — no edits needed when you add
+# one. Only a brand-new top-level folder needs a line added here.
+groups:
+  - dir: computadoresDoceis
+    title: Computadores Dóceis
+  - dir: cursoexcell
+    title: Curso de Excel
+---
+{% include back.html %}
+
+<div class="lista-layout">
+	<div class="zine-panel panel-lista">
+		<div class="crooked-header">{{ page.title }}</div>
+
+		{% assign downloads = site.static_files | where_exp: "f", "f.path contains '/downloads/'" | sort_natural: "name" %}
+
+		{% comment %} Curated folder groups (titles from page.groups; files auto-listed) {% endcomment %}
+		{% for group in page.groups %}
+			{% assign needle = group.dir | prepend: "/downloads/" | append: "/" %}
+			{% capture items %}{% for f in downloads %}{% if f.path contains needle %}{% include download_item.html file=f %}{% endif %}{% endfor %}{% endcapture %}
+			{% assign items_t = items | strip %}
+			{% if items_t != "" %}
+				<h2 class="download-group">{{ group.title }}</h2>
+				<ul class="lista-itens">{{ items }}</ul>
+			{% endif %}
+		{% endfor %}
+
+		{% comment %} Loose files sitting directly in downloads/ {% endcomment %}
+		{% capture avulsos %}{% for f in downloads %}{% assign rel = f.path | remove_first: "/downloads/" %}{% unless rel contains "/" %}{% include download_item.html file=f %}{% endunless %}{% endfor %}{% endcapture %}
+		{% assign avulsos_t = avulsos | strip %}
+		{% if avulsos_t != "" %}
+			<h2 class="download-group">Avulsos</h2>
+			<ul class="lista-itens">{{ avulsos }}</ul>
+		{% endif %}
+	</div>
+</div>

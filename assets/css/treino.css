@@ -1,0 +1,122 @@
+/* Workout sheet (treino) reskinned to the zine / magazine theme.
+   Everything is scoped under .treino. The wrapper uses column-span:all so the
+   page's grids and table break out of .magazine-content's newspaper columns and
+   stay full width — no edits to the shared layout or global CSS needed. */
+
+.treino {
+  column-span: all;   /* break out of the magazine multi-column flow */
+  text-align: left;   /* override .magazine-content's justify */
+  color: #1a1a1a;
+}
+
+.treino p { color: #333; }
+
+/* --- intro --- */
+.treino .intro { max-width: 840px; margin-bottom: 28px; }
+.treino .intro p { font-size: 1.05rem; }
+
+/* --- pills (zine stickers) --- */
+.treino .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.treino .pill {
+  display: inline-flex; align-items: center;
+  border: 2px solid #000; border-radius: 999px;
+  padding: 3px 12px; background: #fff; color: #1a1a1a;
+  font-size: 0.82rem; font-weight: 700;
+}
+.treino .pill.success { background: #00f3ff; }              /* cyan   */
+.treino .pill.info    { background: #ff2d95; color: #fff; } /* magenta */
+.treino .pill.warning { background: #f0a830; }              /* orange */
+
+/* --- shared zine card look: black border + hard offset shadow --- */
+.treino .stat,
+.treino .card,
+.treino .callout {
+  border: 2px solid #000;
+  background: #fff;
+  box-shadow: 4px 4px 0 #000;
+}
+
+/* --- stats grid --- */
+.treino .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 28px 0; }
+.treino .stat { padding: 16px; }
+.treino .stat strong { display: block; margin-bottom: 2px; font-size: 1.6rem; line-height: 1.1; font-family: 'Ethnocentric', sans-serif; }
+.treino .stat span { color: #555; font-size: 0.9rem; }
+
+/* --- callout --- */
+.treino .callout { padding: 16px 18px; margin: 24px 0; background: #f4f0e6; }
+.treino .callout strong { display: block; margin-bottom: 4px; color: #ff2d95; }
+.treino .callout p { margin: 0; }
+
+/* --- week: grid of day cards --- */
+.treino .week { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.treino .card-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 14px; border-bottom: 2px solid #000;
+  background: #00f3ff;
+  font-weight: 800; font-family: 'Ethnocentric', sans-serif; font-size: 0.95rem;
+}
+.treino .card-body { padding: 16px; }
+.treino .modalities { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.treino .block { margin-top: 14px; }
+.treino .block:first-of-type { margin-top: 8px; }
+.treino h3 { font-size: 1rem; margin: 0 0 10px; }
+
+.treino ul { margin: 8px 0 0; padding-left: 20px; }
+.treino li { margin-bottom: 6px; }
+
+/* --- clickable exercises: tap the name to reveal a demo picture --- */
+.treino li[data-ex] {
+  list-style: none;
+  margin-left: -20px;          /* reclaim the ul's bullet indent for our caret */
+  cursor: pointer;
+  outline: none;
+}
+.treino li[data-ex]::before {
+  content: "\25B8";            /* ▸ */
+  display: inline-block;
+  width: 1.1em;
+  color: #ff2d95;
+  font-weight: 700;
+}
+.treino li[data-ex].open::before { content: "\25BE"; } /* ▾ */
+.treino li[data-ex]:hover,
+.treino li[data-ex]:focus-visible { color: #ff2d95; }
+.treino .ex-img {
+  display: none;
+  margin: 8px 0 10px 1.1em;
+}
+.treino li[data-ex].open > .ex-img { display: block; }
+.treino .ex-img img {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  border: 2px solid #000;
+  background: #fff;
+  box-shadow: 3px 3px 0 #000;
+}
+
+/* --- rules table --- */
+.treino table { width: 100%; border-collapse: collapse; border: 2px solid #000; background: #fff; margin-top: 8px; box-shadow: 4px 4px 0 #000; }
+.treino th, .treino td { padding: 12px; border-bottom: 1px solid #000; text-align: left; vertical-align: top; }
+.treino thead th { background: #ff2d95; color: #fff; font-size: 0.86rem; }
+.treino tbody tr:nth-child(even) { background: #f4f0e6; }
+.treino tr:last-child td { border-bottom: 0; }
+
+/* --- split: progression list + control card --- */
+.treino .split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 18px; align-items: start; }
+
+/* --- "Hoje": today's workout, cloned to the top and centered --- */
+.treino .today { max-width: 720px; margin: 0 auto 32px; }
+.treino .today:empty { display: none; }          /* hidden until the script fills it (and if JS is off) */
+.treino .today h2 { text-align: center; }
+.treino .today .card { box-shadow: 6px 6px 0 #ff2d95; }  /* magenta offset = "this is today" */
+
+/* --- responsive: collapse all grids to one column --- */
+@media (max-width: 900px) {
+  .treino .stats,
+  .treino .week,
+  .treino .split,
+  .treino .modalities {
+    grid-template-columns: 1fr;
+  }
+}

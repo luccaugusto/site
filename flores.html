@@ -1,26 +1,25 @@
 ---
-layout: home
+layout: gallery
 title: Flores
+columns: 1
 ---
-<div class="main">
-    <div class="central neon light-pink">
-        <div class="tcenter">
-            <h2>Flores que eu desenho</h2>
-        </div>
-        {% for flor in site.data.flores %}
-            {% assign mod = forloop.index0 | modulo: 2 %}
-            {% if mod > 0 %}
-                {% assign pracima = "pracima" %}
-            {% endif %}
-            {% if mod == 0 %}
-                <div class="linha-na-direita {{ pracima }}">
-            {% else %}
-                <div class="linha-na-esquerda {{ pracima }}">
-            {% endif %}
-                <div class="container-flor">
-                    <a href="{{ flor.link }}" target="blank"><img src="{{ flor.thumb | default: flor.link }}" srcset="{{ flor.thumb | default: flor.link }} 600w, {{ flor.link }} 1600w" sizes="(max-width: 808px) 90vw, 45vw" alt="{{ flor.nome }}" class="imagem"/></a>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+<div class="single-column-gallery">
+	<div class="tcenter">
+		<h2>Flores que eu desenho</h2>
+	</div>
+	{% for flor in site.data.flores %}
+		{% assign mod = forloop.index0 | modulo: 2 %}
+		{% if mod > 0 %}
+			{% assign pracima = "pracima" %}
+		{% endif %}
+		{% if mod == 0 %}
+			<div class="linha-na-direita {{ pracima }}">
+		{% else %}
+			<div class="linha-na-esquerda {{ pracima }}">
+		{% endif %}
+			<div class="container-flor">
+				<a href="{{ flor.link }}" target="blank"><img src="{{ flor.thumb | default: flor.link }}" srcset="{{ flor.thumb | default: flor.link }} 600w, {{ flor.link }} 1600w" sizes="(max-width: 808px) 90vw, 45vw" alt="{{ flor.nome }}" class="imagem"/></a>
+			</div>
+		</div>
+	{% endfor %}
 </div>

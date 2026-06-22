@@ -3,30 +3,24 @@
 	<head>
 		{% include head.html %}
 	</head>
-	<body class="skate">
-		<div class="fotos">
-			{% include back.html %}
-			<div class="window">
-				<div class="window_top">
-					<div class="window_title to-the-right font15">
-						<h4 class="tiny-margin-top tiny-margin-bottom title-text greyish">
-							{{ page.title }}
-						</h4>
-					</div>
-					<div class="top_buttons">
-						<img class="minimizeButton" src="images/minimize.jpg"/>
-						<img class="closeButton" src="images/close.jpg"/>
-					</div>
-				</div>
-				<div class="windowMiddle">
-					<div id="windowContent1" class="windowContent synth-purple">
-						{{content}}
-					</div>
-				</div>  
-				<div class="window_bottom">
-				</div>
+	<body class="zine-body">
+		{% include noise.html %}
+		{% include back.html %}
+		
+		<div class="magazine-layout">
+			{% if page.title and page.title != "" and page.title != "Fotos" %}
+			<div class="magazine-header">
+				<h1 class="magazine-title">{{ page.title }}</h1>
+			</div>
+			{% endif %}
+			
+			<div class="magazine-content">
+				{{ content }}
+			</div>
+			
+			<div class="scroll-to-top-container">
+				<a href="#" class="scroll-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">↑ Topo</a>
 			</div>
 		</div>
-		{% include rodape.html %}
 	</body>
 </html>

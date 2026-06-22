@@ -1,32 +1,19 @@
 ---
 layout: gallery
 title: Minha iniciação na suspensão corporal
+columns: 4
 ---
-<div class="main">
-    <div id="grid" class="mauto central cool-red neon galeria">
-        <div class="tcenter">
-            <h2>Minha iniciação na suspensão corporal</h2>
+{% for img in site.data.suspensao %}
+    {% assign title = img.nome | split: '.' %}
+    {% if title[1] == 'mp4' %}
+        <div class="gallery-item">
+            <video controls preload="metadata">
+                <source src="{{ img.link }}" type="video/mp4">
+            </video>
         </div>
-        <div class="linha tcenter">
-            {% for img in site.data.suspensao %}
-                {% assign title = img.nome | split: '.' %}
-                {% assign mod = forloop.index0 | modulo: 5 %}
-                {% if mod == 0 %}
-                    </div>
-                    <div class="linha tcenter">
-                {% endif %}
-                {% if title[1] == 'mp4' %}
-                    <div class="container-img">
-                        <video  class="w100 h100" controls preload="metadata">
-                            <source src="{{ img.link }}" type="video/mp4">
-                        </video>
-                    </div>
-                {% else %}
-                    <div class="container-img">
-                        <a href="{{ img.link }}" target="blank"><img src="{{ img.thumb | default: img.link }}" srcset="{{ img.thumb | default: img.link }} 600w, {{ img.link }} 1600w" sizes="(max-width: 808px) 45vw, 18vw" alt="{{ img.nome }}" class="wallpaper imagem"/></a>
-                    </div>
-                {% endif %}
-            {% endfor %}
+    {% else %}
+        <div class="gallery-item">
+            <a href="{{ img.link }}" target="blank"><img src="{{ img.thumb | default: img.link }}" srcset="{{ img.thumb | default: img.link }} 600w, {{ img.link }} 1600w" sizes="(max-width: 808px) 45vw, 18vw" alt="{{ img.nome }}" class="imagem"/></a>
         </div>
-    </div>
-</div>
+    {% endif %}
+{% endfor %}

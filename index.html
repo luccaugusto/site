@@ -2,97 +2,109 @@
 layout: home
 title: Lucca Augusto
 ---
-<div class="main">
-	{% include window.html %}
-    <meta name="description" content="{{site.description}}"/>
-	<div class="central cool-red neon">
-		<div class="cabecalho blackground">
-			<img src="images/lucca-full-synth.jpg" class="nome fleft"/>
-			<img src="images/FDP_Synth.jpg" class="fdp-logo fright mobile-hidden small-width" onclick="location.href='/fdp.html'"/>
-		</div>
+<meta name="description" content="{{site.description}}"/>
 
-        <div class="p15">
-		    <h2> Meus Trem </h2>
-		    <ul>
-		    	<li><img class="icone" src="images/icons/github-icon.png"/>Github: <a href="https://github.com/{{ site.github_username }}" target="_blank">{{ site.github_username }}</a></li>
-		    	<li><img class="icone" src="images/icons/spotify-icon.png"/>Spotify: <a href="{{ site.url_spot}}" target="_blank">{{ site.user_spot }}</a></li>
-		    	<li><img class="icone" src="images/icons/mal.ico"/>MyAnimeList: <a href="{{ site.url_mal }}" target="_blank">{{ site.user_mal }}</a></li>
-		    	<li><img class="icone" src="images/icons/letterboxd-icon.png"/>Letterboxd: <a href="{{ site.url_letterboxd }}" target="_blank">{{ site.user_letterboxd }}</a></li>
-		    	<li><img class="icone" src="images/icons/favicon.ico"/>Website: <a href="{{ site.url }}" target="_blank">{{ site.url }}</a> </li>
-		    	<li><img class="icone" src="images/icons/amazon-icon.png"/><a href="{{ site.wish_amazon }}" target="_blank">Wishlist da Amazon</a> </li>
-		    	<li><img class="icone" src="images/icons/orkut-icon.png"/><a href="{{ site.url_orkut }}" target="_blank">Orkut</a> </li>
-		    	<li><img class="icone" src="images/icons/download-icon.png"/><a href="/downloads/" target="_blank">Downloads</a> </li>
-		    	<li><img class="icone" src="images/icons/agenda-icon.png"/><a href="/agenda.html">Agenda</a></li>
-                <li><img class="icone" src="images/icons/gemeos-icon.png"/><a href="/images/meu-mapa-astral.jpeg">Meu Mapa Astral</a></li>
-                <li><img class="icone" src="images/icons/download-icon.png"/><a href="/downloads/Regras Camelô.pdf">Regras Camelô</a></li>
-                <li><img class="icone" src="images/icons/favicon.ico"/><a href="/treino.html">Planilha de Treino</a></li>
-		    </ul>
+<div class="zine-canvas">
 
-		    <div class="bipartido">
-		    	<div class="parte">
-		    		<a href="{{ site.url_pds }}" target="_blank">
-		    			<h2> Papo de Sauna </h2>
-		    		</a>
-		    		<p>
-		    			Papo de Sauna é um podcast idealizado por mim, Felipe e Churros.
-                        Abandonamos a periodicidade que tinhamos e hoje o projeto caminha solto.
-                        Episódios novos a cada intervalo de tempo indefinido. Vale conferir.
-		    		</p>
-		    	</div>
-		    	<div class="parte">
-		    		<h2>
-		    			PIADA AUTORAL
-		    		</h2>
-		    		<!--piada selecionada aleatoriamente no js-->
-		    		<p id="p-piada"></p>
-		    	</div>
-		    </div>
-		    <div class="parte">
-		    	<h2>
-		    		Um salve pro maior apoiador do meu site:
-		    	</h2>
-		    	<pre id="salve-uriel">
+    <!-- Salve Uriel -->
+    <div class="panel-uriel">
+        <pre id="salve-uriel">
    _____       __              __  __     _      __
   / ___/____ _/ /   _____     / / / /____(_)__  / /
   \__ \/ __ `/ / | / / _ \   / / / / ___/ / _ \/ /
  ___/ / /_/ / /| |/ /  __/  / /_/ / /  / /  __/ /
-/____/\__,_/_/ |___/\___/   \____/_/  /_/\___/_/
-		    	</pre>
-		    </div>
+/____/\____/_/ |___/\___/   \____/_/  /_/\___/_/
+        </pre>
+    </div>
 
-		    <a href="/blog.html">
-		    	<h2> Blog </h2>
-		    </a>
-		    {% include last_posts.html %}
 
-		    <h2> Meus Outros Trem </h2>
-		    <div class="tripartido">
-		    	<div class="parte">
-		    		<a href="{{ site.url_portfolio }}" target="_blank">
-		    			<img src="images/portfolio.gif" class="img-skate" alt="Portfolio"/>
-		    		</a>
-		    	</div>
-		    	<div class="parte">
-		    		<a href="skate.html">
-		    			<img src="images/skate-or-die.png" class="img-skate" alt="SKATE"/>
-		    		</a>
-		    	</div>
-		    	<div class="parte">
-		    		<a href="wallpapers.html">
-		    			<img src="images/wallpapers.png" class="img-skate" alt="WALLPAPERS"/>
-		    		</a>
-		    	</div>
-		    	<div class="parte">
-		    		<a href="/ded.html">
-		    			<img src="images/dedlogo.png" class="img-skate" alt="DUNGEONS AND DRAGONS"/>
-		    		</a>
-		    	</div>
-		    </div>
-		    <div class="tripartido">
-		    </div>
-		    <p class="font15">
-		    	Queria um maravilhoso site pra você também? Contrate meus serviços de maravilhoso criador de sites.
-		    </p>
+    <!-- Links (Meus Trem) -->
+    <div class="zine-panel panel-links">
+        <div class="crooked-header">Meus Trem</div>
+        <div class="panel-content">
+            <div class="main-icons">
+                <a href="https://github.com/{{ site.github_username }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/github-icon.png" alt="Github"/></a>
+                <a href="{{ site.url_media_server }}" target="_blank"><img class="icone-grande" src="/assets/icons/jellyfin-icon.png" alt="Jellyfin"/></a>
+                <a href="{{ site.url_letterboxd }}" target="_blank"><img class="icone-grande" src="/assets/icons/letterboxd-icon.png" alt="Letterboxd"/></a>
+                <a href="{{ site.url_linkedin }}" target="_blank"><img class="icone-grande" src="https://dev.luccaaugusto.xyz/linkedin-icon.png" alt="LinkedIn"/></a>
+                <a href="https://instagram.com/{{ site.user_instagram }}" target="_blank"><img class="icone-grande" src="/assets/icons/instagram-icon.png"/></a>
+                <a href="{{ site.backend_login_url }}" target="_blank"><img class="icone-grande" src="/assets/icons/admin-icon.png"/></a>
+            </div>
+            <ul class="extra-links">
+                <li><a href="{{ site.url_mal }}" target="_blank">MyAnimeList</a></li>
+                <li><a href="{{ site.wish_amazon }}" target="_blank">Wishlist da Amazon</a></li>
+                <li><a href="/downloads/">Downloads</a></li>
+                <li><a href="/images/meu-mapa-astral.jpeg" target="_blank">Meu Mapa Astral</a></li>
+                <li><a href="/downloads/Regras Camelô.pdf" target="_blank">Regras Camelô</a></li>
+                <li><a href="/treino">Planilha de Treino</a></li>
+            </ul>
         </div>
-	</div>
+        <!-- Splash text — daily-rotating crooked tagline, filled by splash.js.
+             Anchored to this panel's bottom-right corner (see #splash-text CSS). -->
+        <div id="splash-text"><span></span></div>
+    </div>
+
+    <!-- 5. Blog -->
+    <div class="zine-panel panel-blog">
+        <a href="/blog">
+            <div class="crooked-header">Blog</div>
+        </a>
+        <div class="panel-content">
+            {% include last_posts.html %}
+        </div>
+
+        <a href="/blog">
+            Todos os posts
+        </a>
+    </div>
+
+    <!-- 6. Pictures -->
+    <div class="zine-panel panel-pictures">
+        <div class="crooked-header">Fotos</div>
+        <a href="/gram">
+            <div class="panel-content">
+                <img id="camera-pic" src="/assets/img/camera.png"/>
+            </div>
+        </a>
+    </div>
+
+    <!-- 7. Misc -->
+    <div class="zine-panel panel-misc">
+        <a href="/misc">
+            <div class="crooked-header">Misc</div>
+            <div class="panel-content">
+                <img class="icone-grande" src="/assets/icons/placeholder.svg" alt="Misc"/>
+            </div>
+        </a>
+    </div>
+
+    <!-- Portais — two side-by-side portfolio iframes inside the billboard screen.
+         Built here and passed as `content` so the shared billboard include stays
+         generic (the gallery layout passes its grid the same way). -->
+    {% capture portais_content %}
+    <div class="portais-grid">
+        <div class="portal-frame">
+            <iframe class="portal-iframe" src="{{ site.url_dev_portfolio }}" title="Portfólio de Dev" loading="lazy"></iframe>
+        </div>
+        <div class="portal-frame">
+            <iframe class="portal-iframe" src="{{ site.url_portfolio }}" title="Portfólio de Arte" loading="lazy"></iframe>
+        </div>
+    </div>
+    {% endcapture %}
+    {% include billboard.html content=portais_content %}
+
 </div>
+    <div id="panel-eye">
+        <img src="/assets/img/eye.png"/>
+    </div>
+    <div id="panel-skull">
+        <img src="/assets/img/tattoo-caveira.png"/>
+    </div>
+
+    <!-- Caveira anfitriã — conta a piada do dia num balão de fala. Clique pra outra. -->
+    <div id="caveira-anfitriao" title="Clica pra outra piada" onclick="piada()">
+        <div class="balao-piada">
+            <p id="p-piada"></p>
+        </div>
+        <img src="/assets/img/caveira-anfitriao.png" alt="Caveira anfitriã contando uma piada"/>
+    </div>
