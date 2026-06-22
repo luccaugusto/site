@@ -25,7 +25,7 @@ docker compose exec site <cmd>    # run any command in the container
 docker compose restart site       # restart (see _config.yml note below)
 ```
 
-- Dev server: `bundle exec jekyll serve` on **http://localhost:4000** with
+- Dev server: `bundle exec jekyll serve` on **http://localhost:4004** with
   `--livereload` (`--force_polling`, so edits picked up on a mounted volume).
   The service is named `site` (container `site-site-1`). Image: `ruby:4.0`.
 - Gems are cached in the `bundle_cache` volume (outside the project tree) so
@@ -103,7 +103,7 @@ scripts/             pb-bulk-import.mjs (seed the PocketBase feed)
   `site.static_files` to build its cursor list from `cursors/*.cur` at Jekyll
   build time. Add/remove `.cur` files in `cursors/`; don't hand-edit the array.
 - No automated test framework — verify changes by loading pages in the running
-  container (`http://localhost:4000`).
+  container (`http://localhost:4004`).
 
 ---
 

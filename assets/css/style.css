@@ -5,6 +5,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'BetterVCR';
+    src: url('/assets/BetterVCR 25.09.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 h1, h2, h3, h4, h5, h6, .crooked-header, .magazine-title {
     font-family: 'Ethnocentric', sans-serif;
 }
@@ -749,6 +756,34 @@ a .crooked-header {
     border-top: 15px solid #000;
 }
 
+/* ==========================================================================
+   SPLASH TEXT — Minecraft-style daily tagline. Free-floating over the canvas;
+   the text is filled in by assets/js/splash.js (one line per day, same for all
+   visitors). The wrapper holds the static crooked tilt; the inner <span> does
+   the breathing scale so the tilt stays put. Nudge top/left to reposition.
+   ========================================================================== */
+#splash-text {
+    position: absolute;
+    top: 48vh;
+    left: 55vw;
+    z-index: 20;
+    pointer-events: none; /* purely decorative — never intercept clicks */
+    transform: translate(-50%, -50%) rotate(-18deg);
+}
+#splash-text span {
+    display: inline-block;
+    font-family: 'BetterVCR', monospace;
+    font-size: 1.7rem;
+    color: #ffff00;
+    text-shadow: 2px 2px 0 #2b2b00; /* hard Minecraft-y drop shadow */
+    white-space: nowrap;
+    animation: splash-breath 3.5s ease-in-out infinite;
+}
+@keyframes splash-breath {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.08); }
+}
+
 /* Responsive fallback for mobile */
 @media (max-width: 808px) {
     .zine-canvas {
@@ -789,6 +824,15 @@ a .crooked-header {
     .balao-piada::before {
         left: 50%;
         transform: translateX(-50%);
+    }
+    /* Splash flows into the column instead of floating over the layout. */
+    #splash-text {
+        position: static;
+        transform: rotate(-18deg);
+        margin: 1em auto;
+    }
+    #splash-text span {
+        font-size: 1.2rem;
     }
 }
 

@@ -2,6 +2,8 @@ name: CI
 run-name: Jekyll Site deployment
 on:
   push:
+    branches:
+      - main
 
 jobs:
   build:
