@@ -68,16 +68,6 @@ title: Lucca Augusto
         </a>
     </div>
 
-    <!-- 7. Misc -->
-    <div class="zine-panel panel-misc">
-        <a href="/misc">
-            <div class="crooked-header">Misc</div>
-            <div class="panel-content">
-                <img class="icone-grande" src="/assets/icons/placeholder.svg" alt="Misc"/>
-            </div>
-        </a>
-    </div>
-
     <!-- Portais — the dev portfolio iframe and the art piece side-by-side inside the billboard screen.
          Built here and passed as `content` so the shared billboard include stays
          generic (the gallery layout passes its grid the same way). -->
@@ -96,7 +86,34 @@ title: Lucca Augusto
         </div>
     </div>
     {% endcapture %}
-    {% include billboard.html content=portais_content hide_scroll_to_top="true" %}
+    <!-- Bottom scene: the billboard stands with its shaft reaching the bottom of
+         the page (nothing scrolls past it). The misc panel sits to the right of
+         the shaft and the joke-telling caveira to its left, both below the board.
+         The billboard is in-flow here so the scene's height == the shaft's bottom. -->
+    <div class="bottom-scene">
+        {% include billboard.html content=portais_content hide_scroll_to_top="true" %}
+
+        <!-- Misc — right of the shaft -->
+        <div class="zine-panel panel-misc">
+            <a href="/misc">
+                <div class="crooked-header">Misc</div>
+                <div class="panel-content">
+                    <img class="icone-grande" src="/assets/icons/placeholder.svg" alt="Misc"/>
+                </div>
+            </a>
+        </div>
+
+        <!-- Caveira anfitriã — left of the shaft, tells the piada do dia in a speech
+             balloon. The container is pointer-events:none so the corner stays
+             click-through; the balloon/skull re-enable it, and clicks bubble to the
+             container's onclick (re-rolls the joke via piada()). -->
+        <div id="caveira-anfitriao" title="Clica pra outra piada" onclick="piada()">
+            <div class="balao-piada">
+                <p id="p-piada"></p>
+            </div>
+            <img src="/assets/img/caveira-anfitriao.png" alt="Caveira anfitriã contando uma piada"/>
+        </div>
+    </div>
 
 </div>
     <div id="panel-eye">
@@ -104,12 +121,4 @@ title: Lucca Augusto
     </div>
     <div id="panel-skull">
         <img src="/assets/img/tattoo-caveira.png"/>
-    </div>
-
-    <!-- Caveira anfitriã — conta a piada do dia num balão de fala. Clique pra outra. -->
-    <div id="caveira-anfitriao" title="Clica pra outra piada" onclick="piada()">
-        <div class="balao-piada">
-            <p id="p-piada"></p>
-        </div>
-        <img src="/assets/img/caveira-anfitriao.png" alt="Caveira anfitriã contando uma piada"/>
     </div>

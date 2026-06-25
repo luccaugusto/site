@@ -226,7 +226,7 @@ h2{
 	right: -21em;
 	top: 25em;
 	height: 42em;
-	z-index: 1;
+	z-index: 0;
 }
 #panel-eye {
     position: absolute;
@@ -673,25 +673,47 @@ a .crooked-header {
 .panel-pictures .crooked-header {
 	transform: skewX(350deg) rotate(10deg);
 }
-.panel-misc { bottom: -95vh; right: 20vw; width: 200px; transform: rotate(15deg); z-index: 100; }
+/* Misc panel — pinned to the scene's bottom edge, to the RIGHT of the shaft. */
+.bottom-scene .panel-misc {
+	position: absolute;
+	bottom: 5vh;
+	left: auto;
+	right: 12%;
+	width: 200px;
+	transform: rotate(15deg);
+	z-index: 100;
+}
 .panel-misc .icone-grande {
 	width: 150px;
 }
 
-/* Home variant: the billboard is ABSOLUTE (part of the document, not fixed), set
-   below the first screen so you scroll down a bit to reach it, near the caveira
-   anfitriã at the bottom of the canvas. Overrides the gallery-layout fixed
-   centering inherited from .billboard (this selector only matches the index, so
-   the .billboard-page gallery layout is untouched). Knobs: --bb-width sizes it,
-   --bb-top slides it up/down (lower vh = less scroll to reach it). */
-.zine-canvas .billboard {
+/* Home "bottom scene": the billboard stands below the first screen (scroll down
+   to reach it) with its shaft reaching the page bottom — nothing scrolls past it.
+   The scene is absolutely positioned at --bb-top; its height comes from the
+   in-flow billboard inside it, so the scene's bottom == the shaft's bottom ==
+   the page's bottom. The misc panel and the joke-telling caveira are pinned to
+   that bottom edge, flanking the shaft (rules below). Scoped to .bottom-scene so
+   the .billboard-page gallery layout (fixed, centered) is untouched.
+   Knob: --bb-top slides the whole scene up/down (lower vh = less scroll to reach). */
+.bottom-scene {
+	--bb-top: 75vh;
 	position: absolute;
+	top: var(--bb-top);
+	left: 0;
+	right: 0;
 	z-index: 10;
-	left: 50%;
+}
+/* In-flow inside the scene so it defines the scene's height; still a positioned
+   ancestor for .billboard-screen. Overrides the gallery .billboard (fixed). Width
+   is left to the base .billboard (60%) so the mobile 92vw override still wins. */
+.bottom-scene .billboard {
+	position: relative;
+	left: auto;
 	right: auto;
-	top: 75vh;
+	top: auto;
 	bottom: auto;
-	transform: translateX(-50%);
+	margin: 0 auto;          /* centre the board + shaft */
+	transform: none;
 }
 
 /* ==========================================================================
@@ -700,10 +722,12 @@ a .crooked-header {
    click-through; the balloon/skull re-enable it, and clicks bubble to the
    container's onclick (re-rolls the joke via piada()).
    ========================================================================== */
+/* Pinned to the bottom scene's bottom edge, to the LEFT of the billboard shaft.
+   (On mobile the .bottom-scene dissolves and the rule below re-flows this inline.) */
 #caveira-anfitriao {
     position: absolute;
-    bottom: -95vh;
-    left: 5vw;
+    bottom: 0;
+    left: 6%;
     z-index: 30;
     display: flex;
     flex-direction: column;
@@ -812,6 +836,11 @@ a .crooked-header {
     /* Collapse the wrapper so the blog card flows into the column like the
        other panels; the decorative eye is hidden on small screens. */
     .panel-blog-wrap {
+        display: contents;
+    }
+    /* Dissolve the bottom scene so the billboard, misc panel and caveira re-flow
+       into the mobile column (their per-element rules below/above take over). */
+    .bottom-scene {
         display: contents;
     }
     #panel-eye {
