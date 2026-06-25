@@ -1065,6 +1065,8 @@ a .crooked-header {
     font-size: 1.1rem;
     line-height: 1.6;
     text-align: justify;
+	scrollbar-color: #fff #000;
+	scrollbar-width: thin;
 }
 
 .magazine-content img {
@@ -1161,6 +1163,57 @@ a .crooked-header {
     }
 }
 
+/* ── Desktop: fixed magazine frame, two-column spread scrolls SIDEWAYS ──────
+   On wide screens the card stops growing with its content. It's pinned to most
+   of the viewport, the title stays as a static header, and .magazine-content
+   scrolls HORIZONTALLY through its columns — a long post adds more columns to
+   the right. The center fold stays put as a fixed spine while columns slide
+   past it, and the hand keeps gripping the now-fixed bottom-left corner, so it
+   is always in frame. `magazine-page` is only on multi-column posts (tablatura
+   `single_column` pages keep the normal vertical page-scroll above). */
+@media (min-width: 809px) {
+    .magazine-page {
+        height: 100vh;
+        overflow: hidden;          /* the window no longer scrolls; content does */
+        padding: 0 20px;           /* drop zine-body's 40px top/bottom so the frame fills */
+        box-sizing: border-box;
+    }
+
+    .magazine-page .magazine-layout {
+        height: 82vh;              /* fixed frame; the gap below holds the hand */
+        min-height: 0;             /* override base min-height: 80vh */
+        margin-top: 4vh;
+        padding: 40px 80px;        /* a touch less vertical padding → more reading height */
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
+
+    .magazine-page .magazine-header {
+        flex: 0 0 auto;            /* static header pinned to the top of the frame */
+    }
+
+    .magazine-page .magazine-content {
+        flex: 1 1 auto;
+        min-height: 0;             /* let the flex child shrink so overflow engages */
+        column-fill: auto;         /* fill each column to full height, then flow right */
+        overflow-x: auto;          /* → horizontal scroll through the columns */
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        padding-bottom: 8px;       /* breathing room above the scrollbar */
+    }
+
+    .magazine-page .scroll-to-top-container {
+        position: static;          /* sits as a flex item under the content */
+        flex: 0 0 auto;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        align-self: flex-end;      /* tuck Início into the bottom-right of the frame */
+        margin-top: 10px;
+    }
+}
+
 /* BILLBOARD GALLERY (gallery.html layout) */
 
 /* Single non-scrolling viewport; only the billboard screen scrolls.
@@ -1233,19 +1286,28 @@ a .crooked-header {
     padding: 24px;
 }
 
-/* Portais — two side-by-side portfolio iframes filling the billboard screen on
-   the homepage. Each div is half the width and full height; stacks on narrow
-   viewports (see media query below). The full-height chain is scoped to
-   .zine-canvas so the gallery layout's use of .billboard-content is untouched. */
+/* Portais — three side-by-side recommendation tiles filling the billboard screen
+   on the homepage, under a shared crooked banner. Each tile is an equal column,
+   full height; they stack on narrow viewports (see media query below). The
+   full-height chain is scoped to .zine-canvas so the gallery layout's use of
+   .billboard-content is untouched. */
 .zine-canvas .billboard-content {
     height: 100%;
     box-sizing: border-box;
 	background-color: #edca8f;
 }
+/* Column wrapper: banner on top, tile grid fills the rest. */
+.portais {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 12px;
+}
 .portais-grid {
     display: flex;
     gap: 18px;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
 }
 .portal-frame {
     flex: 1;
@@ -1257,14 +1319,20 @@ a .crooked-header {
     width: 100%;
     height: 100%;
 }
-/* Crooked zine banner pinned inside the narrow art frame (the canvas-panel
-   offsets would spill past the clipped billboard screen). */
-.portal-header {
-    top: 14px;
-    left: 50%;
-    padding: 6px 22px;
-    white-space: nowrap;
-    transform: translateX(-50%) skewX(350deg) rotate(353deg);
+/* Crooked zine banner spanning the top of the billboard screen, above the three
+   portais tiles. Overrides .crooked-header's absolute pin so it sits in the
+   flex-column flow and centers on the cross axis; max-width keeps the long
+   sentence from spilling past the clipped screen. */
+.portais-header {
+    position: relative;
+    top: auto;
+    left: auto;
+    align-self: center;
+    max-width: 100%;
+    text-align: center;
+    font-size: 1.15rem;
+    padding: 8px 30px;
+    transform: skewX(22deg) rotate(2deg);
 }
 .portal-iframe {
     width: 100%;
@@ -1325,6 +1393,7 @@ a .crooked-header {
 @media (max-width: 808px) {
     .billboard { height: auto; width: 92vw; }
     .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .portais { height: auto; }
     .portais-grid { flex-direction: column; height: auto; }
     .portal-frame { width: 100%; }
     .portal-iframe,
