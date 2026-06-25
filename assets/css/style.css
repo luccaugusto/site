@@ -1314,10 +1314,68 @@ a .crooked-header {
     min-width: 0;
     position: relative;
 }
+/* Each tile is a literal billboard ad: a poster card (white fill, thick black
+   border, hard offset shadow) stacking a headline, the media, and a CTA banner.
+   Cards sit at a slight pasted-on tilt that straightens + lifts on hover. */
 .portal-frame a {
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
+    text-decoration: none;
+    background-color: #fff;
+    border: 3px solid #000;
+    box-shadow: 6px 6px 0 #000;
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.portal-frame:nth-child(1) a { transform: rotate(-2deg); background-color: #57fff9; }
+.portal-frame:nth-child(2) a { transform: rotate(1.5deg); background-color: #f4e04d; }
+.portal-frame:nth-child(3) a { transform: rotate(-1.2deg); background-color: #eb8ce4; }
+.portal-frame:hover a {
+    transform: rotate(0deg) scale(1.03);
+    box-shadow: 9px 9px 0 #000;
+    z-index: 2;
+}
+.portal-ad-headline {
+    flex: 0 0 auto;
+    font-weight: bold;
+    font-style: italic;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.1;
+    font-size: 0.9rem;
+    padding: 8px 6px;
+    color: #000;
+    background-color: #f0a830;
+    border-bottom: 3px solid #000;
+}
+.portal-ad-media {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    /* Transparent so each card's distinct background (set per nth-child below)
+       shows through the media area and sets the ad apart from the board. */
+    background-color: transparent;
+}
+.portal-ad-cta {
+    flex: 0 0 auto;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+    padding: 8px 6px;
+    color: #fff;
+    background-color: #a71798;
+    border-top: 3px solid #000;
+    transition: background-color .15s ease, color .15s ease;
+}
+.portal-frame:hover .portal-ad-cta {
+    background-color: #ff53ad;
+    color: #000;
 }
 /* Crooked zine banner spanning the top of the billboard screen, above the three
    portais tiles. Overrides .crooked-header's absolute pin so it sits in the
@@ -1340,9 +1398,8 @@ a .crooked-header {
     display: block;
 }
 .portal-img {
-    width: 100%;
-    height: 100%;
-    border: 2px dotted #a71798;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
     display: block;
 }
@@ -1396,8 +1453,10 @@ a .crooked-header {
     .portais { height: auto; }
     .portais-grid { flex-direction: column; height: auto; }
     .portal-frame { width: 100%; }
-    .portal-iframe,
-    .portal-img { height: 320px; }
+    /* Stack upright (no tilt) and give each ad's media a fixed height so the
+       flex-column card doesn't collapse when the billboard goes height:auto. */
+    .portais-grid .portal-frame a { height: auto; transform: none; }
+    .portal-ad-media { height: 260px; }
 }
 
 /* ── Full-site film-grain noise overlay ──────────────────────────────
