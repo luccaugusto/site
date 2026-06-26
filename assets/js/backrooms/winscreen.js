@@ -8,7 +8,7 @@ export function showWinScreen(state, config) {
   // Normalize grid coords → pixels inside the map box.
   const xs = [...coords.values()].map(c => c.x), ys = [...coords.values()].map(c => c.y);
   const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
-  const PAD = 28, W = 504, H = 404, STEP = 64;
+  const PAD = 28, W = 504, H = 404;
   const spanX = (maxX - minX) || 1, spanY = (maxY - minY) || 1;
   const px = c => PAD + (W - 2 * PAD) * ((c.x - minX) / spanX);
   const py = c => PAD + (H - 2 * PAD) * ((c.y - minY) / spanY);

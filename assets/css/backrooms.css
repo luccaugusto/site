@@ -42,9 +42,6 @@ html, body { margin: 0; height: 100%; }
   color: var(--br-ink); font-weight: bold; max-width: 40%; text-align: center;
   text-shadow: 0 1px 0 rgba(255,255,255,.25); }
 
-/* Bootstrap placeholder (Task 8 only; removed once render.js lands). */
-.br-debug { position: absolute; top: 8px; left: 8px; color: var(--br-buzz);
-  font-size: 12px; white-space: pre; z-index: 10; }
 
 /* Cue strip + modal (Task 10). */
 .br-cues { position: fixed; left: 50%; bottom: 14%; transform: translateX(-50%);

@@ -23,6 +23,5 @@ export function playIntro(config) {
 
     // Fallback: if the video never starts (missing file / autoplay blocked), hold black then continue.
     video.play?.().catch(() => setTimeout(finish, config.INTRO_FALLBACK_MS));
-    setTimeout(() => { if (!video.duration) { /* no media loaded */ } }, config.INTRO_FALLBACK_MS + 200);
   });
 }
