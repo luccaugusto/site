@@ -1,5 +1,6 @@
-import { DIRS, RECIPROCAL, bfsDistances, shortestPath, neighborIds } from './graph.js';
+import { DIRS, RECIPROCAL, DELTA, bfsDistances, shortestPath, shortestStep, neighborIds } from './graph.js';
 import { randInt, pick, shuffle } from './rng.js';
+import * as C from './content.js';
 
 export function makeRoom(id) {
   return { id, doors: {}, props: [], hint: null, trap: null, isExit: false };
@@ -75,6 +76,15 @@ function pickExit(rooms, spawnId, config) {
     const d = dist.get(r.id) ?? -1;
     if (d > bestD) { bestD = d; best = r.id; }
   }
+  if (best === spawnId) {
+    // No degree-eligible room found — fall back to the farthest room regardless of cap,
+    // so the exit is never the spawn (a winnable map must have exit !== spawn).
+    for (const r of rooms) {
+      if (r.id === spawnId) continue;
+      const d = dist.get(r.id) ?? -1;
+      if (d > bestD) { bestD = d; best = r.id; }
+    }
+  }
   return best;
 }
 
@@ -86,6 +96,89 @@ export function generateMap(config, rng) {
   const spawnId = pickSpawn(rooms, config, rng);
   const exitId = pickExit(rooms, spawnId, config);
   rooms[exitId].isExit = true;
-  return { rooms, spawnId, exitId };
-  // NOTE: Task 4 inserts placeContent(map, config, rng) before returning.
+  const map = { rooms, spawnId, exitId };
+  placeContent(map, config, rng);
+  return map;
+}
+
+export function placeContent(map, config, rng) {
+  const { rooms, spawnId, exitId } = map;
+  const path = shortestPath(rooms, spawnId, exitId);
+  const truePathSet = new Set(path);
+  const trueDoors = new Set();           // `${roomId}:${dir}` of doors along spawn→exit
+  for (let i = 0; i < path.length - 1; i++) {
+    const a = path[i], b = path[i + 1];
+    const dir = DIRS.find(d => rooms[a].doors[d] === b);
+    trueDoors.add(`${a}:${dir}`);
+  }
+
+  // Props
+  for (const room of rooms) {
+    if (room.id === spawnId) continue;
+    const n = randInt(rng, config.PROPS_PER_ROOM[0], config.PROPS_PER_ROOM[1]);
+    for (let k = 0; k < n; k++) {
+      const kind = pick(rng, C.PROP_KINDS);
+      const rigged = room.id !== exitId && rng() < config.RIGGED_PROP_CHANCE;
+      room.props.push({ id: `${room.id}-${k}`, kind, rigged });
+    }
+  }
+
+  // Trap rooms: off the true path, never spawn/exit
+  const offPath = rooms.filter(r => !truePathSet.has(r.id) && r.id !== spawnId && r.id !== exitId);
+  for (const r of shuffle(rng, offPath).slice(0, config.TRAP_ROOM_COUNT)) r.trap = { kind: 'pit' };
+
+  // Hints
+  for (const room of rooms) {
+    if (room.id === exitId) continue;
+    if (rng() > config.HINT_ROOM_CHANCE) continue;
+    const doorDirs = DIRS.filter(d => room.doors[d] !== undefined);
+    if (!doorDirs.length) continue;
+    if (rng() < config.DECEPTIVE_HINT_RATIO) {
+      const lyingDirs = doorDirs.filter(d => !trueDoors.has(`${room.id}:${d}`));
+      if (!lyingDirs.length) continue;                 // can't lie without hitting the true path → skip
+      const dir = pick(rng, lyingDirs);
+      room.hint = { text: C.fillHint(pick(rng, C.HINT_DECEPTIVE), dir), deceptive: true, targetDir: dir };
+    } else {
+      const stepTo = shortestStep(rooms, room.id, exitId);
+      const dir = DIRS.find(d => room.doors[d] === stepTo) ?? pick(rng, doorDirs);
+      room.hint = { text: C.fillHint(pick(rng, C.HINT_TRUTHFUL), dir), deceptive: false, targetDir: dir };
+    }
+  }
+  return map;
+}
+
+export function chooseEntitySpawns(map, config, rng) {
+  const { rooms, spawnId } = map;
+  const dist = bfsDistances(rooms, spawnId);
+  const far = rooms.filter(r => r.id !== spawnId && (dist.get(r.id) ?? 0) >= 2).map(r => r.id);
+  const trapIds = rooms.filter(r => r.trap).map(r => r.id);
+  const all = rooms.map(r => r.id).filter(id => id !== spawnId);
+  const spawns = [];
+  let id = 0;
+  for (const entry of config.entities) {
+    for (let k = 0; k < entry.count; k++) {
+      let roomId;
+      if (entry.type === 'stalker' && trapIds.length) roomId = pick(rng, trapIds);
+      else roomId = pick(rng, far.length ? far : all);
+      spawns.push({ id: id++, type: entry.type, speed: entry.speed, roomId });
+    }
+  }
+  return spawns;
+}
+
+export function layoutVisited(rooms, visited, spawnId) {
+  const coords = new Map([[spawnId, { x: 0, y: 0 }]]);
+  const queue = [spawnId];
+  while (queue.length) {
+    const cur = queue.shift();
+    const { x, y } = coords.get(cur);
+    for (const dir of DIRS) {
+      const nb = rooms[cur].doors[dir];
+      if (nb === undefined || !visited.has(nb) || coords.has(nb)) continue;
+      const [dx, dy] = DELTA[dir];
+      coords.set(nb, { x: x + dx, y: y + dy });
+      queue.push(nb);
+    }
+  }
+  return coords;
 }
