@@ -1490,6 +1490,35 @@ a .crooked-header {
     .portal-ad-media { height: 260px; }
 	.portal-ad-headline { padding: 0; }
 	.portais-header { font-size: 0.9rem; top: -1rem; }
+
+	/* Gallery (.billboard-page) on mobile: ditch the billboard frame + perspective
+	   warp entirely — the tiny skewed screen-hole is unusable on a phone. Flatten
+	   the whole chain so the gallery grid shows flat in normal page flow. The home
+	   billboard (.zine-bottom) keeps its frame; only .billboard-page is flattened. */
+	.billboard-page {
+		height: auto;
+		overflow: visible;
+	}
+	.billboard-page .billboard {
+		position: static;
+		width: 100%;
+		transform: none;
+		top: auto;
+		left: auto;
+		--bb-skew: 0deg;       /* no board tilt → gallery-item hover stays flat */
+	}
+	.billboard-page .billboard-img { display: none; }     /* drop the frame image */
+	.billboard-page .billboard-screen {
+		position: static;
+		inset: auto;
+		transform: none;       /* remove the matrix3d perspective warp */
+		overflow: visible;
+		background: none;
+	}
+	.billboard-page .billboard-content { padding: 0; }
+	/* The Topo button scrolled the (now non-scrolling) screen — hide it; the
+	   window scrolls normally now. */
+	.billboard-page .scroll-to-top-container { display: none; }
 }
 
 /* ── Full-site film-grain noise overlay ──────────────────────────────

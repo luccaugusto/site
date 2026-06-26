@@ -63,6 +63,15 @@
   var screen;
   function apply() {
     if (!screen) return;
+    // Gallery pages flatten the billboard on mobile (see .billboard-page rules in
+    // style.css); don't re-apply the perspective warp there — clear any inline
+    // transform so the flat CSS layout wins. The home billboard keeps its warp.
+    if (document.body.classList.contains("billboard-page") &&
+        window.matchMedia("(max-width: 808px)").matches) {
+      screen.style.transform = "";
+      screen.style.transformOrigin = "";
+      return;
+    }
     var W = screen.offsetWidth, H = screen.offsetHeight;
     if (!W || !H) return;
     var src = [[0, 0], [W, 0], [W, H], [0, H]];
