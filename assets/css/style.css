@@ -871,6 +871,35 @@ a .crooked-header {
     .zine-bottom .billboard {
         width: 100%;
     }
+
+    /* Misc + caveira ride ABOVE the full-width billboard as a side-by-side row
+       (caveira left, misc right), dropping out of their desktop corner-pinning. */
+    .zine-bottom-panels {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4vw;
+        padding: 0 3vw 2vh;
+    }
+    #caveira-anfitriao {
+        position: static;
+        flex: 1 1 50%;
+        min-width: 0;
+        align-items: center;
+    }
+    #caveira-anfitriao img { width: 100%; max-width: 16em; }
+    /* Balloon centers above the skull instead of offset toward its head. */
+    .balao-piada { margin: 0 0 0.5em; max-width: 100%; }
+    .balao-piada::after,
+    .balao-piada::before { left: 50%; transform: translateX(-50%); }
+    .zine-bottom .panel-misc {
+        position: static;
+        bottom: auto;
+        right: auto;
+        flex: 0 0 auto;
+        width: auto;
+    }
+    .panel-misc .icone-grande { width: 28vw; max-width: 150px; }
 }
 
 /* ==========================================================================

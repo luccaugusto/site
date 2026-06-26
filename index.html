@@ -120,28 +120,34 @@ title: Lucca Augusto
          panel sits to the right of the shaft and the joke-telling caveira to its
          left, both below the board. In-flow, so it always sits beneath .zine-top. -->
     <div class="zine-bottom">
-        {% include billboard.html content=portais_content hide_scroll_to_top="true" %}
-
-        <!-- Misc — right of the shaft -->
-        <div class="zine-panel panel-misc">
-            <a href="/misc">
-                <div class="crooked-header">Misc</div>
-                <div class="panel-content">
-                    <img class="icone-grande" src="/assets/icons/placeholder.svg" alt="Misc"/>
+        <!-- Misc + caveira. On desktop they're absolutely pinned to the scene's
+             bottom corners, flanking the billboard shaft (caveira left, misc right),
+             so this wrapper collapses to no size. On mobile (≤860px) the wrapper
+             becomes a side-by-side row ABOVE the billboard: caveira left, misc right. -->
+        <div class="zine-bottom-panels">
+            <!-- Caveira anfitriã — tells the piada do dia in a speech balloon. The
+                 container is pointer-events:none so the corner stays click-through;
+                 the balloon/skull re-enable it, and clicks bubble to the container's
+                 onclick (re-rolls the joke via piada()). -->
+            <div id="caveira-anfitriao" title="Clica pra outra piada" onclick="piada()">
+                <div class="balao-piada">
+                    <p id="p-piada"></p>
                 </div>
-            </a>
+                <img src="/assets/img/caveira-anfitriao.png" alt="Caveira anfitriã contando uma piada"/>
+            </div>
+
+            <!-- Misc -->
+            <div class="zine-panel panel-misc">
+                <a href="/misc">
+                    <div class="crooked-header">Misc</div>
+                    <div class="panel-content">
+                        <img class="icone-grande" src="/assets/icons/placeholder.svg" alt="Misc"/>
+                    </div>
+                </a>
+            </div>
         </div>
 
-        <!-- Caveira anfitriã — left of the shaft, tells the piada do dia in a speech
-             balloon. The container is pointer-events:none so the corner stays
-             click-through; the balloon/skull re-enable it, and clicks bubble to the
-             container's onclick (re-rolls the joke via piada()). -->
-        <div id="caveira-anfitriao" title="Clica pra outra piada" onclick="piada()">
-            <div class="balao-piada">
-                <p id="p-piada"></p>
-            </div>
-            <img src="/assets/img/caveira-anfitriao.png" alt="Caveira anfitriã contando uma piada"/>
-        </div>
+        {% include billboard.html content=portais_content hide_scroll_to_top="true" %}
     </div>
 
 </div>
