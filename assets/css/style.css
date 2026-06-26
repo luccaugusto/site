@@ -1455,13 +1455,14 @@ a .crooked-header {
 @media (max-width: 808px) {
     .billboard { height: auto; width: 92vw; }
     .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .portais { height: auto; }
-    .portais-grid { flex-direction: column; height: auto; }
+    .portais { height: auto; gap: 0;}
     .portal-frame { width: 100%; }
     /* Stack upright (no tilt) and give each ad's media a fixed height so the
        flex-column card doesn't collapse when the billboard goes height:auto. */
     .portais-grid .portal-frame a { height: auto; transform: none; }
     .portal-ad-media { height: 260px; }
+	.portal-ad-headline { padding: 0; }
+	.portais-header { font-size: 0.9rem; top: -1rem; }
 }
 
 /* ── Full-site film-grain noise overlay ──────────────────────────────
