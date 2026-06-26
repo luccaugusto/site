@@ -1,7 +1,8 @@
 import { config } from './config.js';
 import { makeRng } from './rng.js';
-import { createGame } from './game.js';
+import { createGame, tick } from './game.js';
 import { renderRoom } from './render.js';
+import { showCue, showDialog } from './messages.js';
 
 function seedFromEnv() {
   const q = new URLSearchParams(location.search).get('seed');
@@ -10,11 +11,41 @@ function seedFromEnv() {
   return (Date.now() ^ (Math.random() * 1e9)) >>> 0;
 }
 
-let game = createGame(config, makeRng(seedFromEnv()));
 const root = document.getElementById('br-game');
+let game = createGame(config, makeRng(seedFromEnv()));
+let busy = false;
 
-function onAction(action) {
-  console.log('action', action);     // wired to tick in Task 11
+async function handleEvents(events) {
+  for (const ev of events) {
+    if (ev.type === 'cue') showCue(ev.text, ev.intensity);
+    else if (ev.type === 'flavor') showCue(ev.text, 'far');
+    else if (ev.type === 'win') {
+      onWin();                       // Task 13 replaces this with the win screen
+      return true;
+    } else if (ev.type === 'lose') {
+      // Buttonless dialog never resolves — do NOT await it; schedule the redirect directly.
+      showDialog({ text: ev.text, image: ev.image, button: null });
+      setTimeout(() => { location.href = config.LOSE_URL; }, 2200);
+      return true;
+    }
+  }
+  return false;
+}
+
+// Placeholder win until Task 13; redirects home after a beat.
+function onWin() {
+  showDialog({ text: 'VOCÊ ESCAPOU.', button: null });
+  setTimeout(() => { location.href = config.WIN_URL; }, 2200);
+}
+
+async function onAction(action) {
+  if (busy || game.status !== 'playing') return;
+  busy = true;
+  const { state, events } = tick(game, action);
+  game = state;
+  if (game.status === 'playing') renderRoom(root, game, onAction);
+  const terminal = await handleEvents(events);
+  if (!terminal) busy = false;       // stay locked once the game ends
 }
 
 renderRoom(root, game, onAction);
