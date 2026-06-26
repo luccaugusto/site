@@ -62,9 +62,8 @@ html, body { margin: 0; height: 100%; }
 .br-modal button:hover { background: var(--br-buzz); color: #000; }
 
 /* Intro overlay (Task 12). */
-.br-intro { position: fixed; inset: 0; z-index: 40; background: #000;
-  display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.br-intro video { width: 100%; height: 100%; object-fit: cover; }
+.br-intro { position: fixed; inset: 0; z-index: 40; background-color: #000;
+  background-repeat: repeat; background-position: center; cursor: pointer; }
 .br-intro__skip { position: absolute; bottom: 18px; right: 20px; color: var(--br-buzz);
   font-size: 13px; letter-spacing: 2px; opacity: .8; }
 
@@ -77,9 +76,33 @@ html, body { margin: 0; height: 100%; }
   border: 2px dashed rgba(255,247,194,.4); }
 .br-node { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px;
   border: 2px solid var(--br-buzz); background: #1a1607; transform: rotate(-4deg); }
-.br-node--spawn { background: #6f6; }
-.br-node--exit  { background: #ff5b5b; }
+/* Spawn & exit: bigger, icon-centred, and explicitly labelled (colour is only reinforcement). */
+.br-node--spawn, .br-node--exit { width: 30px; height: 30px; margin: -15px 0 0 -15px;
+  display: flex; align-items: center; justify-content: center; font-size: 16px; line-height: 1; z-index: 2; }
+.br-node--spawn { background: #1f6f2a; border-color: #8dff9b; }
+.br-node--exit  { background: #8d1c1c; border-color: #ff9b9b; }
+.br-node__label { position: absolute; top: calc(100% + 3px); left: 50%;
+  transform: translateX(-50%) rotate(4deg); white-space: nowrap;
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold;
+  color: var(--br-buzz); background: rgba(0,0,0,.72); padding: 1px 5px; border-radius: 3px; }
 .br-edge { position: absolute; height: 2px; background: rgba(255,247,194,.6); transform-origin: left center; }
 .br-win button { font: inherit; padding: 10px 22px; background: none; color: var(--br-buzz);
   border: 2px solid var(--br-buzz); cursor: pointer; letter-spacing: 2px; }
 .br-win button:hover { background: var(--br-buzz); color: #000; }
+
+/* DEBUG controls (config.DEBUG). */
+.br-debug-skip { position: fixed; top: 12px; left: 12px; z-index: 25; font: inherit; font-size: 12px;
+  letter-spacing: 1px; padding: 6px 12px; background: #ff2d95; color: #000; border: 2px solid #000;
+  cursor: pointer; box-shadow: 3px 3px 0 #000; }
+.br-debug-skip:hover { background: #00f3ff; }
+.br-node--unrevealed { opacity: .3; border-style: dashed; }
+/* DEBUG live minimap (whole map + current position), shown in every room. */
+.br-minimap { position: fixed; top: 12px; right: 12px; z-index: 24; background: rgba(0,0,0,.72);
+  border: 2px solid #000; padding: 6px; box-shadow: 3px 3px 0 #000; }
+.br-minimap__cap { font: 11px/1 "Courier New", monospace; letter-spacing: 1px; color: #00f3ff; margin-bottom: 5px; }
+.br-minimap .br-map { border-color: rgba(0,243,255,.35); }
+.br-minimap .br-node { width: 10px; height: 10px; margin: -5px 0 0 -5px; }
+.br-minimap .br-node--spawn, .br-minimap .br-node--exit, .br-minimap .br-node--here {
+  width: 14px; height: 14px; margin: -7px 0 0 -7px; font-size: 9px; }
+/* Current-position marker — defined last so it wins over spawn/exit colour on the same node. */
+.br-node--here { background: #00f3ff; border-color: #fff; box-shadow: 0 0 8px #00f3ff; z-index: 3; }

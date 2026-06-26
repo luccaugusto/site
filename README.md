@@ -1,7 +1,12 @@
 TODO:
-[ ] merge skate videos/pics on gram page with tag "skate"
-[ ] move brain to portfolio
-[ ] revamp portfolio to use pocketbase, tags for the different categories
-[ ] update gallery layout (lista) to be a building on the right, with a billboard in the center of the page, the bilboard will contain the content, and it will be scrollable inside the billboard, not the whole page
-[ ] make portals images (dev, portfolio, filmes)
-[ ] finish homepage layout
+- [ ] merge skate videos/pics on gram page with tag "skate"
+- [ ] move brain to portfolio
+- [ ] revamp portfolio to use pocketbase, tags for the different categories
+- [ ] add assets for the backroom mini game
+- [ ] make the map generation better, too many weird loops currently feels wrong, but too wrong, i want a weird felling
+- [ ] add trap and entities hints
+- [ ] add initial dialog
+- [ ] add entity that captures you and changes the map, if captured twice you loose
+- [ ] add Xuxa as a prop in one of the backrooms
+- [ ] add on/off lamp prop, user can click to turn it on/off
+- [ ] improve the texts
