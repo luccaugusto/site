@@ -230,7 +230,7 @@ h2{
 }
 #panel-eye {
     position: absolute;
-    top: 60vh;
+    top: 75vh;
     left: -6vw;
     width: 40em;
     z-index: 0;
@@ -539,6 +539,33 @@ h2{
 .zine-canvas {
 }
 
+/* Top section: two responsive flex columns that hold the interactive panels
+   (left: Meus Trem; right: Blog over Fotos). A column owns a bounded width, so
+   panels flow/wrap inside it instead of free-floating into each other — the old
+   pure-absolute layout collided in the 809–1600px band (vw offsets shrank while
+   em/px widths didn't). flex-wrap stacks the columns when they can't sit side by
+   side; below 808px the mobile query dissolves these wrappers (display:contents)
+   so the panels fall into the .zine-canvas single column.
+   See docs/2026-06-26-top-section-responsive-columns.md. */
+.zine-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 3vw;
+    padding: 20vh 4vw 0;
+    position: relative;
+    z-index: 10;
+}
+.zine-col {
+    flex: 1 1 24em;          /* grow/shrink; basis ~ a panel's natural width */
+    min-width: min(22em, 100%); /* wrap to stacked below this; never wider than the screen */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6vh;
+}
+
 /* Base Panel Style */
 .zine-panel {
     position: absolute;
@@ -628,10 +655,10 @@ a .crooked-header {
 
 /* Specific Panel Placements */
 .panel-links {
+    position: relative;
     z-index: 11;
-	top: 10vh;
-    left: 20vw;
     width: 22em;
+    max-width: 100%;
     transform: rotate(-4deg);
 }
 .panel-links .panel-content {
@@ -660,21 +687,21 @@ a .crooked-header {
 	opacity: 0.5;
 }
 .panel-blog {
-    top: 16vh;
-    right: 26vw;
+    position: relative;
     transform: rotate(12deg);
     z-index: 10;
     width: 400px;
+    max-width: 100%;
 }
 .panel-blog .crooked-header {
 	transform: rotate(-12deg);
 }
-.panel-pictures { bottom: 20vh; right: 30vw; width: 200px; transform: rotate(-15deg); }
+.panel-pictures { position: relative; width: 200px; max-width: 100%; transform: rotate(-15deg); margin-top: -2vh; }
 .panel-pictures .crooked-header {
 	transform: skewX(350deg) rotate(10deg);
 }
 /* Misc panel — pinned to the scene's bottom edge, to the RIGHT of the shaft. */
-.bottom-scene .panel-misc {
+.zine-bottom .panel-misc {
 	position: absolute;
 	bottom: 5vh;
 	left: auto;
@@ -687,26 +714,24 @@ a .crooked-header {
 	width: 150px;
 }
 
-/* Home "bottom scene": the billboard stands below the first screen (scroll down
-   to reach it) with its shaft reaching the page bottom — nothing scrolls past it.
-   The scene is absolutely positioned at --bb-top; its height comes from the
-   in-flow billboard inside it, so the scene's bottom == the shaft's bottom ==
-   the page's bottom. The misc panel and the joke-telling caveira are pinned to
-   that bottom edge, flanking the shaft (rules below). Scoped to .bottom-scene so
-   the .billboard-page gallery layout (fixed, centered) is untouched.
-   Knob: --bb-top slides the whole scene up/down (lower vh = less scroll to reach). */
-.bottom-scene {
-	--bb-top: 75vh;
-	position: absolute;
-	top: var(--bb-top);
-	left: 0;
-	right: 0;
+/* Home "zine bottom" scene: the billboard stands below the top section with its
+   shaft reaching the page bottom — nothing scrolls past it. It's IN-FLOW (relative)
+   so it always sits after .zine-top and can never overlap a tall/stacked top
+   section; its height comes from the in-flow billboard inside it, so the scene's
+   bottom == the shaft's bottom == the page's bottom. It's also the positioned
+   ancestor for the misc panel + caveira pinned to its bottom edge, flanking the
+   shaft (rules below).
+   Knob: --zine-gap is the breathing room between the top section and the board. */
+.zine-bottom {
+	--zine-gap: 20vh;
+	position: relative;
+	margin-top: var(--zine-gap);
 	z-index: 10;
 }
 /* In-flow inside the scene so it defines the scene's height; still a positioned
    ancestor for .billboard-screen. Overrides the gallery .billboard (fixed). Width
    is left to the base .billboard (60%) so the mobile 92vw override still wins. */
-.bottom-scene .billboard {
+.zine-bottom .billboard {
 	position: relative;
 	left: auto;
 	right: auto;
@@ -722,8 +747,7 @@ a .crooked-header {
    click-through; the balloon/skull re-enable it, and clicks bubble to the
    container's onclick (re-rolls the joke via piada()).
    ========================================================================== */
-/* Pinned to the bottom scene's bottom edge, to the LEFT of the billboard shaft.
-   (On mobile the .bottom-scene dissolves and the rule below re-flows this inline.) */
+/* Pinned to the zine-bottom scene's bottom edge, to the LEFT of the billboard shaft. */
 #caveira-anfitriao {
     position: absolute;
     bottom: 0;
@@ -798,7 +822,7 @@ a .crooked-header {
     position: relative;
     right: 0;
     pointer-events: none; /* purely decorative — never intercept clicks */
-    transform-origin: bottom right;
+    transform-origin: bottom;
     transform: rotate(-18deg);
 }
 #splash-text span {
@@ -815,60 +839,37 @@ a .crooked-header {
     50%      { transform: scale(1.08); }
 }
 
-/* Responsive fallback for mobile */
-@media (max-width: 808px) {
-    .zine-canvas {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 40px;
-        padding: 40px 10px;
-        min-height: auto;
+/* The home canvas is fluid by default — .zine-top wraps its columns to stacked and
+   .zine-bottom flows beneath them — so this is NOT a reflow fallback, just targeted
+   phone polish at ≤860px: force the single-column stack, open up the vertical gap
+   between the panels, nudge the decorative skull/eye into a tidier arrangement, and
+   let the billboard go full width. (Other pages break at 808px; the home canvas is
+   intentionally 860px so the stack kicks in before the two columns get cramped.) */
+@media (max-width: 860px) {
+    /* Force the two columns to stack: links on top, then blog + fotos. */
+    .zine-col {
+        flex-basis: 100%;
+        min-width: 0;
     }
-    .zine-panel {
-        position: relative;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        width: 90% !important;
-        transform: none !important;
+    /* More vertical breathing room between the (now stacked) links column and the
+       blog/fotos column — they were overlapping. row-gap only; column-gap is moot. */
+    .zine-top {
+        row-gap: 8vh;
     }
-    /* Collapse the wrapper so the blog card flows into the column like the
-       other panels; the decorative eye is hidden on small screens. */
-    .panel-blog-wrap {
-        display: contents;
+    /* Skull slides further off the right edge (more of it hidden), freeing the
+       right side... */
+    #panel-skull {
+        right: -36em;
+		top: 10vh;
     }
-    /* Dissolve the bottom scene so the billboard, misc panel and caveira re-flow
-       into the mobile column (their per-element rules below/above take over). */
-    .bottom-scene {
-        display: contents;
-    }
+    /* ...and the eye slides a little further off the LEFT edge to match. */
     #panel-eye {
-        display: none;
+        left: -25vw;
+		top: 120vh;
     }
-    /* Mascot leaves the corner and flows in at the bottom of the column,
-       so the joke survives on small screens. */
-    #caveira-anfitriao {
-        position: static;
-        align-items: center;
-        margin: 1.5em auto 2.5em;
-    }
-    .balao-piada {
-        margin-left: 0;
-    }
-    .balao-piada::after,
-    .balao-piada::before {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    /* Splash flows into the column instead of floating over the layout. */
-    #splash-text {
-        position: static;
-        transform: rotate(-18deg);
-        margin: 1em auto;
-    }
-    #splash-text span {
-        font-size: 1.2rem;
+    /* Billboard spans the full screen width, still centered by its margin:0 auto. */
+    .zine-bottom .billboard {
+        width: 100%;
     }
 }
 
@@ -1294,8 +1295,12 @@ a .crooked-header {
 .zine-canvas .billboard-content {
     height: 100%;
     box-sizing: border-box;
+}
+
+.zine-canvas .billboard-screen {
 	background-color: #edca8f;
 }
+
 /* Column wrapper: banner on top, tile grid fills the rest. */
 .portais {
     display: flex;

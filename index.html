@@ -18,6 +18,9 @@ title: Lucca Augusto
     </div>
 
 
+    <div class="zine-top">
+    <div class="zine-col zine-col-left">
+
     <!-- Links (Meus Trem) -->
     <div class="zine-panel panel-links">
         <div class="crooked-header">Meus Trem</div>
@@ -44,6 +47,9 @@ title: Lucca Augusto
         <div id="splash-text"><span></span></div>
     </div>
 
+    </div><!-- /zine-col-left -->
+    <div class="zine-col zine-col-right">
+
     <!-- 5. Blog -->
     <div class="zine-panel panel-blog">
         <a href="/blog">
@@ -67,6 +73,9 @@ title: Lucca Augusto
             </div>
         </a>
     </div>
+
+    </div><!-- /zine-col-right -->
+    </div><!-- /zine-top -->
 
     <!-- Portais — three recommendation tiles (dev portfolio, pds, art) side-by-side
          inside the billboard screen, under a shared crooked banner.
@@ -106,11 +115,11 @@ title: Lucca Augusto
         </div>
     </div>
     {% endcapture %}
-    <!-- Bottom scene: the billboard stands with its shaft reaching the bottom of
-         the page (nothing scrolls past it). The misc panel sits to the right of
-         the shaft and the joke-telling caveira to its left, both below the board.
-         The billboard is in-flow here so the scene's height == the shaft's bottom. -->
-    <div class="bottom-scene">
+    <!-- Zine bottom scene: the billboard stands below the top section with its
+         shaft reaching the bottom of the page (nothing scrolls past it). The misc
+         panel sits to the right of the shaft and the joke-telling caveira to its
+         left, both below the board. In-flow, so it always sits beneath .zine-top. -->
+    <div class="zine-bottom">
         {% include billboard.html content=portais_content hide_scroll_to_top="true" %}
 
         <!-- Misc — right of the shaft -->
