@@ -4,6 +4,7 @@ import { createGame, tick } from './game.js';
 import { renderRoom } from './render.js';
 import { showCue, showDialog } from './messages.js';
 import { playIntro } from './intro.js';
+import { showWinScreen } from './winscreen.js';
 
 function seedFromEnv() {
   const q = new URLSearchParams(location.search).get('seed');
@@ -33,10 +34,8 @@ async function handleEvents(events) {
   return false;
 }
 
-// Placeholder win until Task 13; redirects home after a beat.
 function onWin() {
-  showDialog({ text: 'VOCÊ ESCAPOU.', button: null });
-  setTimeout(() => { location.href = config.WIN_URL; }, 2200);
+  showWinScreen(game, config);
 }
 
 async function onAction(action) {
