@@ -128,9 +128,7 @@ test('no cue when the nearest entity is beyond the far threshold', () => {
     entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 6 }],
     status: 'playing', loseReason: null,
   };
-  const { events } = tick(s, { type: 'interact', propId: 'none' }); // no-op interact returns original; use move instead
-  // Move ahead so the player is at 1; wanderer somewhere >= dist 4 -> silence likely. Assert no throw + cue optional.
-  const r2 = tick(s, { type: 'move', dir: 'ahead' });
-  const cue = r2.events.find(e => e.type === 'cue');
-  if (cue) assert.ok(['near','far'].includes(cue.intensity)); // never 'close' from that distance
+  const { events } = tick(s, { type: 'move', dir: 'ahead' });
+  const cue = events.find(e => e.type === 'cue');
+  assert.ok(!cue, `expected no cue beyond far threshold but got ${cue?.intensity}`);
 });
