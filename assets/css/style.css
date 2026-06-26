@@ -1187,9 +1187,7 @@ a .crooked-header {
         column-count: 1;
     }
     #magazine-holding-hand {
-        width: 100px;
-        bottom: -15px;
-        left: -20px;
+		display: none;
     }
 }
 

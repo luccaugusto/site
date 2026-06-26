@@ -27,7 +27,7 @@
 .gram-search__clear:hover { color: #ff2d95; }
 
 .gram-feed { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; max-width: 960px; margin: 0 auto; }
-@media (max-width: 600px) { .gram-feed { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .gram-feed { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; } }
 .gram-post { width: 100%; break-inside: avoid; cursor: pointer; }
 .gram-post__caption { margin: 0.5rem 0 0; }
 .gram-media { position: relative; }
@@ -117,14 +117,18 @@
 }
 
 @media (max-width: 808px) {
+	/* In-flow at the top of the feed instead of floating at top:13% (which, as a
+	   % of the tall feed, landed the bar between the first two photos). Stays
+	   position:relative so it remains the anchor for its absolute icon + clear. */
 	.gram-search {
-		position: absolute;
+		position: relative;
 		width: 90%;
-		margin: 0 auto 2rem;
-		top: 13%;
-		left: 5%;
+		margin: 0 auto 1.5rem;
+		top: auto;
+		left: auto;
 	}
+	/* Search now flows in-line, so the header no longer needs to reserve room. */
 	.magazine-header {
-		margin-bottom: 100pt;
+		margin-bottom: 1.5rem;
 	}
 }
