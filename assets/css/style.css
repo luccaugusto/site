@@ -839,7 +839,6 @@ a .crooked-header {
     position: relative;
     right: 0;
     pointer-events: none; /* purely decorative — never intercept clicks */
-    transform-origin: bottom;
     transform: rotate(-18deg);
 }
 #splash-text span {
@@ -877,7 +876,7 @@ a .crooked-header {
        right side... */
     #panel-skull {
         right: -36em;
-		top: 10vh;
+		top: 130vh;
     }
     /* ...and the eye slides a little further off the LEFT edge to match. */
     #panel-eye {
@@ -917,6 +916,28 @@ a .crooked-header {
         width: auto;
     }
     .panel-misc .icone-grande { width: 28vw; max-width: 150px; }
+	.panel-misc .crooked-header { padding: 10px 30px; }
+	/* The desktop rotate(19deg) levers this 573px-wide banner's top corner off
+	   the top of a phone screen (and adds ~80px height). Keep the skew (the slant
+	   is pure skewX, which adds no height), drop most of the rotation, center it,
+	   and trim the 80px side padding (shrinks the box, not the text) so the full
+	   ASCII art stays on screen at its original size. */
+	.panel-uriel {
+		top: 2vh;
+		left: 50%;
+		right: auto;
+		transform: translateX(-40%) skewX(25deg) rotate(16deg);
+		padding: 0 20px;
+		z-index: 20;
+	}
+	#splash-text {
+		width: 105%;
+		right: 0;
+		left: -5%;
+	}
+	#splash-text span {
+		white-space: normal;
+	}
 }
 
 /* ==========================================================================
