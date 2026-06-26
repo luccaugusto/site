@@ -119,4 +119,11 @@
   .treino .modalities {
     grid-template-columns: 1fr;
   }
+  /* The rules table is wider than a phone; let it scroll inside its own box
+     instead of pushing the whole page sideways. */
+  .treino table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }

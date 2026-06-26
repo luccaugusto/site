@@ -27,6 +27,23 @@ body{
 	margin: 0 auto;
 	overflow-x: hidden;
 }
+/* Home only: the decorative panels (#panel-skull, #panel-eye, .panel-uriel, …)
+   are position:absolute and bleed off the right edge by design. overflow:hidden
+   on html/body alone can't clip them — an absolutely-positioned box anchored to
+   the initial containing block isn't "overflow" of any real element's box. So we
+   give the home <body> position:relative, which makes it the panels' containing
+   block; now its overflow-x:hidden actually clips the bleed instead of letting it
+   push a horizontal scrollbar. (The panels' offsets are all em/vw/vh, so changing
+   their containing block doesn't move them.) Scoped to the home layout
+   (<html class="zine-home">) so post pages — whose wide tablatura <pre> blocks may
+   legitimately need to scroll — are untouched. */
+html.zine-home,
+html.zine-home body{
+	overflow-x: hidden;
+}
+html.zine-home body{
+	position: relative;
+}
 h2{
 	border-bottom: 2px solid;
 	color: black;
@@ -1097,6 +1114,11 @@ a .crooked-header {
     text-align: justify;
 	scrollbar-color: #fff #000;
 	scrollbar-width: thin;
+    /* Break long words/headings (e.g. "Liberdade/Planetário" in the wide
+       Ethnocentric font) instead of letting them overflow the column and push a
+       horizontal scrollbar on narrow screens. Doesn't affect <pre> tabs, which
+       are white-space:pre and ignore overflow-wrap. */
+    overflow-wrap: break-word;
 }
 
 .magazine-content img {
@@ -1141,7 +1163,12 @@ a .crooked-header {
 .magazine-layout .scroll-to-top-container {
 	position: relative;
 	bottom: 0;
-	left: 50%;
+	/* Centre the inline-block button via text-align. The old `left: 50%` shifted
+	   this full-width block halfway off the right edge (the base rule's
+	   compensating translateX(-50%) is overridden to `none` here), which forced a
+	   horizontal scrollbar on every post/treino/tablatura page. */
+	left: auto;
+	text-align: center;
 	z-index: 10;
 	transform: none;
 }
@@ -1180,11 +1207,24 @@ a .crooked-header {
 
 @media (max-width: 808px) {
     .magazine-layout {
+        /* Fill the body's content box instead of 90vw: 90vw + .zine-body's 40px
+           horizontal padding exceeds 100vw below ~400px and overflowed the page.
+           border-box keeps the card's own 20px padding inside this width. */
+        width: 100%;
+        box-sizing: border-box;
         padding: 30px 20px;
         background-image: none; /* No fold on mobile */
     }
     .magazine-content {
         column-count: 1;
+    }
+    /* The big Ethnocentric title (3rem) is wider than a phone; shrink it and let
+       long words break so it can't push the page sideways. */
+    .magazine-title {
+        font-size: 2rem;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-wrap: break-word;
     }
     #magazine-holding-hand {
 		display: none;
