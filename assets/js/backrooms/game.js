@@ -66,6 +66,34 @@ export function tick(state, action) {
     }
   }
 
-  // 3 & 4 (entity advance + cues) are added in Task 7.
+  // 3. Advance entities by their speed.
+  const res = stepEntities(next, next.rng);
+  next.entities = res.entities;
+  if (res.caught) {
+    next.status = 'lost'; next.loseReason = 'caught';
+    events.push({ type: 'lose', reason: 'caught', text: C.tauntFor(res.caughtBy.type), image: null });
+    return { state: next, events };
+  }
+
+  // 4. Sensory cue from the nearest entity.
+  const cue = computeCue(next);
+  if (cue) events.push(cue);
+
   return { state: next, events };
+}
+
+function computeCue(state) {
+  let nearestType = null, nearestDist = Infinity;
+  for (const e of state.entities) {
+    const d = bfsDistances(state.rooms, e.roomId).get(state.playerRoom) ?? Infinity;
+    if (d < nearestDist) { nearestDist = d; nearestType = e.type; }
+  }
+  if (nearestType === null) return null;
+  const t = state.config.CUE_THRESHOLDS;
+  let intensity;
+  if (nearestDist <= t.close) intensity = 'close';
+  else if (nearestDist <= t.near) intensity = 'near';
+  else if (nearestDist <= t.far) intensity = 'far';
+  else return null;
+  return { type: 'cue', text: C.cueFor(nearestType, intensity), intensity };
 }
