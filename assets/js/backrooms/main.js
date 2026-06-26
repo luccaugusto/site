@@ -3,6 +3,7 @@ import { makeRng } from './rng.js';
 import { createGame, tick } from './game.js';
 import { renderRoom } from './render.js';
 import { showCue, showDialog } from './messages.js';
+import { playIntro } from './intro.js';
 
 function seedFromEnv() {
   const q = new URLSearchParams(location.search).get('seed');
@@ -48,4 +49,7 @@ async function onAction(action) {
   if (!terminal) busy = false;       // stay locked once the game ends
 }
 
-renderRoom(root, game, onAction);
+(async () => {
+  await playIntro(config);
+  renderRoom(root, game, onAction);
+})();
