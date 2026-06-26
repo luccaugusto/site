@@ -45,3 +45,21 @@ html, body { margin: 0; height: 100%; }
 /* Bootstrap placeholder (Task 8 only; removed once render.js lands). */
 .br-debug { position: absolute; top: 8px; left: 8px; color: var(--br-buzz);
   font-size: 12px; white-space: pre; z-index: 10; }
+
+/* Cue strip + modal (Task 10). */
+.br-cues { position: fixed; left: 50%; bottom: 14%; transform: translateX(-50%);
+  display: flex; flex-direction: column; gap: 6px; align-items: center; z-index: 20; pointer-events: none; }
+.br-cue { color: var(--br-buzz); background: rgba(0,0,0,.55); padding: 6px 14px; border-radius: 4px;
+  font-size: 14px; letter-spacing: 1px; animation: br-fade 3.2s forwards; }
+.br-cue--close { color: #ff5b5b; font-weight: bold; font-size: 17px; }
+.br-cue--near  { color: #ffd35b; }
+@keyframes br-fade { 0%{opacity:0} 12%{opacity:1} 78%{opacity:1} 100%{opacity:0} }
+
+.br-modal { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.92);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  color: var(--br-buzz); text-align: center; padding: 24px; }
+.br-modal img { max-width: 70vw; max-height: 50vh; border: 3px solid var(--br-buzz); }
+.br-modal p { font-size: 20px; max-width: 36ch; line-height: 1.5; }
+.br-modal button { font: inherit; padding: 10px 22px; background: none; color: var(--br-buzz);
+  border: 2px solid var(--br-buzz); cursor: pointer; letter-spacing: 2px; }
+.br-modal button:hover { background: var(--br-buzz); color: #000; }
