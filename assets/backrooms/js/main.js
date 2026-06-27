@@ -33,11 +33,15 @@ async function handleEvents(events) {
       onWin(); // Task 13 replaces this with the win screen
       return true;
     } else if (ev.type === "lose") {
-      // Buttonless dialog never resolves — do NOT await it; schedule the redirect directly.
-      showDialog({ text: ev.text, image: ev.image, button: null });
-      setTimeout(() => {
-        location.href = config.LOSE_URL;
-      }, 2200);
+      // Wait for the player to dismiss the death screen before redirecting.
+      showDialog({
+        text: ev.text,
+        image: ev.image,
+        button: "Sair",
+        onClose: () => {
+          location.href = config.LOSE_URL;
+        },
+      });
       return true;
     }
   }

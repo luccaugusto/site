@@ -21,11 +21,12 @@ export function resolveVisual(key, fallbackEmoji) {
 }
 
 // Hand-tuned prop anchor positions (cycled through as a room gets more props).
+// `side` angles the prop toward its side wall (see .br-prop--left/right in CSS).
 const PROP_SPOTS = [
-  { left: "24%", top: "58%" },
-  { left: "68%", top: "60%" },
-  { left: "14%", top: "40%" },
-  { left: "80%", top: "42%" },
+  { left: "24%", top: "58%", side: "left" },
+  { left: "68%", top: "60%", side: "right" },
+  { left: "14%", top: "40%", side: "left" },
+  { left: "80%", top: "42%", side: "right" },
 ];
 
 export function renderRoom(root, state, onAction) {
@@ -62,7 +63,7 @@ export function renderRoom(root, state, onAction) {
   room.props.forEach((p, i) => {
     const spot = PROP_SPOTS[i % PROP_SPOTS.length];
     const node = resolveVisual(`prop:${p.kind}`, PROP_EMOJI[p.kind] || "❔");
-    node.classList.add("br-prop");
+    node.classList.add("br-prop", `br-prop--${spot.side}`);
     node.style.left = spot.left;
     node.style.top = spot.top;
     node.title = p.kind;
