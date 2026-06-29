@@ -1,6 +1,6 @@
 import { generateMap, chooseEntitySpawns } from './mapgen.js';
 import { stepEntities } from './entities.js';
-import { bfsDistances } from './graph.js';
+import { bfsDistances, shortestStep, DIRECTIONS } from './graph.js';
 import * as C from './content.js';
 
 export function createGame(config, rng) {
@@ -13,6 +13,7 @@ export function createGame(config, rng) {
     entities: chooseEntitySpawns(map, config, rng),
     status: 'playing',
     loseReason: null,
+    cluesUsed: 0,
   };
 }
 
@@ -42,12 +43,21 @@ export function tick(state, action) {
   } else if (action.type === 'interact') {
     const prop = next.rooms[next.playerRoom].props.find(p => p.id === action.propId);
     if (!prop) return { state, events: [] };                       // unknown prop → no-op
-    if (prop.rigged) {
-      next.status = 'lost'; next.loseReason = 'rigged';
-      events.push({ type: 'lose', reason: 'rigged', text: C.RIGGED_DEATH.text, image: C.RIGGED_DEATH.image });
-      return { state: next, events };
+    const flipped = C.toggleLamp(prop.kind);
+    if (flipped) {
+      prop.kind = flipped;                                         // silent on/off swap; still costs a turn
+    } else if (prop.clue) {
+      next.cluesUsed += 1;
+      if (next.cluesUsed > next.config.CLUE_BUDGET) {              // one clue too many → the rigged death
+        next.status = 'lost'; next.loseReason = 'rigged';
+        events.push({ type: 'lose', reason: 'rigged', text: C.RIGGED_DEATH.text, image: C.RIGGED_DEATH.image });
+        return { state: next, events };
+      }
+      const dread = C.dreadFor(next.cluesUsed, next.config.CLUE_BUDGET);
+      events.push({ type: 'clue', text: prop.clue.text, dread: dread.text, intensity: dread.intensity });
+    } else {
+      events.push({ type: 'flavor', text: `voce examina o ${prop.kind}. nada.` });
     }
-    events.push({ type: 'flavor', text: `voce examina o ${prop.kind}. nada.` });
   } else if (action.type === 'talk') {
     const person = next.rooms[next.playerRoom].person;
     if (!person) return { state, events };                         // nobody here → no-op
@@ -88,17 +98,21 @@ export function tick(state, action) {
 }
 
 function computeCue(state) {
-  let nearestType = null, nearestDist = Infinity;
+  let nearest = null, nearestDist = Infinity;
   for (const e of state.entities) {
     const d = bfsDistances(state.rooms, e.roomId).get(state.playerRoom) ?? Infinity;
-    if (d < nearestDist) { nearestDist = d; nearestType = e.type; }
+    if (d < nearestDist) { nearestDist = d; nearest = e; }
   }
-  if (nearestType === null) return null;
+  if (nearest === null) return null;
   const t = state.config.CUE_THRESHOLDS;
   let intensity;
   if (nearestDist <= t.close) intensity = 'close';
   else if (nearestDist <= t.near) intensity = 'near';
   else if (nearestDist <= t.far) intensity = 'far';
   else return null;
-  return { type: 'cue', text: C.cueFor(nearestType, intensity), intensity };
+  // Direction toward the nearest entity: first step of the shortest path to it.
+  // The cue templates fill {dir} from this (see content.cueFor / CUES).
+  const step = shortestStep(state.rooms, state.playerRoom, nearest.roomId);
+  const dir = DIRECTIONS.find((d) => state.rooms[state.playerRoom].doors[d] === step);
+  return { type: 'cue', text: C.cueFor(intensity, dir), intensity };
 }

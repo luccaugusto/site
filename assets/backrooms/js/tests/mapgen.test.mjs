@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { makeRng } from '../rng.js';
-import { bfsDistances, shortestPath, RECIPROCAL, DIRECTIONS as DIRS } from '../graph.js';
+import { bfsDistances, shortestPath, shortestStep, RECIPROCAL, DIRECTIONS as DIRS } from '../graph.js';
 import { generateMap, degree, placeContent, chooseEntitySpawns, layoutVisited, makeRoom, connect } from '../mapgen.js';
 import { PEOPLE } from '../content.js';
 import { config } from '../config.js';
@@ -77,6 +77,27 @@ test('trap rooms avoid spawn, exit, and the true path', () => {
   }
 });
 
+test('lamps never carry a clue, even when every prop is forced to clue', () => {
+  for (let seed = 0; seed < 30; seed++) {
+    const { rooms } = gen(seed, { CLUE_PROP_CHANCE: 1 });
+    for (const r of rooms) for (const p of r.props) {
+      if (p.kind === 'lampada_acesa' || p.kind === 'lampada_apagada')
+        assert.equal(p.clue, null, `seed ${seed}: lamp ${p.id} carried a clue`);
+    }
+  }
+});
+
+test('every prop clue points one real step toward the exit', () => {
+  for (let seed = 0; seed < 25; seed++) {
+    const { rooms, exitId } = gen(seed, { CLUE_PROP_CHANCE: 1 });
+    for (const r of rooms) for (const p of r.props) {
+      if (!p.clue) continue;
+      assert.equal(rooms[r.id].doors[p.clue.dir], shortestStep(rooms, r.id, exitId),
+        `seed ${seed}: clue in room ${r.id} points the wrong way`);
+    }
+  }
+});
+
 test('chooseEntitySpawns matches the roster and avoids spawn', () => {
   const map = gen(8);
   const ents = chooseEntitySpawns(map, config, makeRng(8));
@@ -114,4 +135,18 @@ test('layoutVisited places spawn at origin and uses direction deltas', () => {
   assert.deepEqual(coords.get(0), { x: 0, y: 0 });
   assert.deepEqual(coords.get(1), { x: 0, y: -1 });
   assert.deepEqual(coords.get(2), { x: 0, y: -2 });
+});
+
+test('layoutVisited never assigns two rooms the same cell, even when doors collide', () => {
+  // 3 and 4 both want cell (1,-1): 1's `ahead` and 2's `right` point there.
+  const rooms = [makeRoom(0), makeRoom(1), makeRoom(2), makeRoom(3), makeRoom(4)];
+  connect(rooms, 0, 1, 'right'); //  1 -> (1, 0)
+  connect(rooms, 0, 2, 'ahead'); //  2 -> (0,-1)
+  connect(rooms, 1, 3, 'ahead'); //  3 ideal (1,-1)
+  connect(rooms, 2, 4, 'right'); //  4 ideal (1,-1) — collides, must be bumped
+  const coords = layoutVisited(rooms, new Set([0, 1, 2, 3, 4]), 0);
+
+  assert.equal(coords.size, 5, 'every revealed room is placed');
+  const cells = [...coords.values()].map((c) => `${c.x},${c.y}`);
+  assert.equal(new Set(cells).size, 5, 'all cells are unique (no overlap)');
 });

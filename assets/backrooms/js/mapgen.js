@@ -148,6 +148,20 @@ export function generateMap(config, rng) {
   return map;
 }
 
+// Resolve a truthful clue for a freshly-placed prop, or null. Lamps and exit-room
+// props never carry a clue; the rest carry one with probability CLUE_PROP_CHANCE.
+// A clue always points one step toward the exit — resolved here at generation time
+// so it is provably correct and never recomputed during play.
+function makeClue(rooms, room, kind, exitId, config, rng) {
+  if (room.id === exitId) return null;
+  if (CONTENT.toggleLamp(kind)) return null; // lamps stay a free toggle
+  if (rng() >= config.CLUE_PROP_CHANCE) return null; // most props are empty
+  const stepTo = shortestStep(rooms, room.id, exitId);
+  const dir = DIRECTIONS.find((d) => rooms[room.id].doors[d] === stepTo) ?? null;
+  if (!dir) return null;
+  return { dir, text: CONTENT.fillClue(pick(rng, CONTENT.CLUE_EXIT), dir) };
+}
+
 export function placeContent(map, config, rng) {
   const { rooms, spawnId, exitId } = map;
   const path = shortestPath(rooms, spawnId, exitId);
@@ -160,18 +174,19 @@ export function placeContent(map, config, rng) {
     trueDoors.add(`${a}:${dir}`);
   }
 
-  // Props
+  // Props — some carry a truthful clue pointing toward the exit; the rest are free
+  // to examine. See makeClue for how the direction is resolved.
   for (const room of rooms) {
     if (room.id === spawnId) continue;
     const n = randInt(rng, config.PROPS_PER_ROOM[0], config.PROPS_PER_ROOM[1]);
     for (let k = 0; k < n; k++) {
       const kind = pick(rng, CONTENT.PROP_KINDS);
-      const rigged = room.id !== exitId && rng() < config.RIGGED_PROP_CHANCE;
-      room.props.push({ id: `${room.id}-${k}`, kind, rigged });
+      const clue = makeClue(rooms, room, kind, exitId, config, rng);
+      room.props.push({ id: `${room.id}-${k}`, kind, clue });
     }
   }
 
-  // Trap rooms: off the true path, never spawn/exit
+  // Trap rooms: off the true path, never spawn/exit.
   const offPath = rooms.filter(
     (r) => !truePathSet.has(r.id) && r.id !== spawnId && r.id !== exitId,
   );
@@ -240,8 +255,34 @@ export function chooseEntitySpawns(map, config, rng) {
   return spawns;
 }
 
+// Lay the revealed rooms onto a grid, one UNIQUE cell each (no two rooms ever share a cell).
+// BFS from spawn placing each neighbour at parent+DELTA[dir]; when that ideal cell is already
+// taken (the room graph isn't a true grid, so collisions happen), bump to the nearest free
+// cell so squares never overlap. Deterministic — no RNG — so the live minimap stays put as the
+// player moves; only the door that lands on a non-ideal cell reads as a "loop" link when drawn.
 export function layoutVisited(rooms, visited, spawnId) {
-  const coords = new Map([[spawnId, { x: 0, y: 0 }]]);
+  const coords = new Map();
+  const occupied = new Set(); // "x,y" of taken cells
+  const key = (x, y) => x + "," + y;
+  const place = (id, x, y) => {
+    coords.set(id, { x, y });
+    occupied.add(key(x, y));
+  };
+  // The free cell closest to (ox,oy), searched in growing square rings (deterministic order).
+  const nearestFree = (ox, oy) => {
+    if (!occupied.has(key(ox, oy))) return { x: ox, y: oy };
+    for (let r = 1; ; r++) {
+      for (let dx = -r; dx <= r; dx++)
+        for (let dy = -r; dy <= r; dy++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue; // ring perimeter only
+          const x = ox + dx,
+            y = oy + dy;
+          if (!occupied.has(key(x, y))) return { x, y };
+        }
+    }
+  };
+
+  place(spawnId, 0, 0);
   const queue = [spawnId];
   while (queue.length) {
     const cur = queue.shift();
@@ -250,9 +291,17 @@ export function layoutVisited(rooms, visited, spawnId) {
       const nb = rooms[cur].doors[dir];
       if (nb === undefined || !visited.has(nb) || coords.has(nb)) continue;
       const [dx, dy] = DELTA[dir];
-      coords.set(nb, { x: x + dx, y: y + dy });
+      const { x: nx, y: ny } = nearestFree(x + dx, y + dy);
+      place(nb, nx, ny);
       queue.push(nb);
     }
+  }
+  // Safety net: a revealed room unreachable from spawn (shouldn't happen on a connected map)
+  // still gets a cell rather than vanishing from the drawing.
+  for (const id of visited) {
+    if (coords.has(id) || !rooms[id]) continue;
+    const { x, y } = nearestFree(0, 0);
+    place(id, x, y);
   }
   return coords;
 }

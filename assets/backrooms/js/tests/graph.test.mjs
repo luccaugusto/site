@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { DIRS, RECIPROCAL, DELTA, neighborIds, bfsDistances, shortestStep, shortestPath } from '../graph.js';
+import { DIRECTIONS, RECIPROCAL, DELTA, neighborIds, bfsDistances, shortestStep, shortestPath } from '../graph.js';
 
 // Build a 4-room line: 0 -ahead-> 1 -ahead-> 2 -ahead-> 3 (with reciprocal back doors)
 function line() {
@@ -12,7 +12,7 @@ function line() {
 }
 
 test('constants are consistent', () => {
-  assert.deepEqual([...DIRS].sort(), ['ahead','back','left','right']);
+  assert.deepEqual([...DIRECTIONS].sort(), ['ahead','back','left','right']);
   assert.equal(RECIPROCAL.ahead, 'back');
   assert.equal(RECIPROCAL.left, 'right');
   assert.deepEqual(DELTA.ahead, [0, -1]);

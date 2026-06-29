@@ -2,7 +2,7 @@ import { config } from "./config.js";
 import { makeRng } from "./rng.js";
 import { createGame, tick } from "./game.js";
 import { renderRoom, registerSprite } from "./render.js";
-import { QUADRO_SPRITES } from "./content.js";
+import { QUADRO_SPRITES, LAMP_SPRITES, FURNITURE_SPRITES } from "./content.js";
 import { showCue, showDialog } from "./messages.js";
 import { playIntro } from "./intro.js";
 import { showWinScreen } from "./winscreen.js";
@@ -15,8 +15,9 @@ function seedFromEnv() {
   return (Date.now() ^ (Math.random() * 1e9)) >>> 0;
 }
 
-// Map each quadro_N prop kind to its painting; render swaps the emoji for the <img>.
-for (const [kind, url] of Object.entries(QUADRO_SPRITES)) {
+// Map each sprite-backed prop kind (paintings + lamps + furniture) to its image;
+// render swaps the emoji for the <img>.
+for (const [kind, url] of Object.entries({ ...QUADRO_SPRITES, ...LAMP_SPRITES, ...FURNITURE_SPRITES })) {
   registerSprite(`prop:${kind}`, url);
 }
 
@@ -28,6 +29,10 @@ async function handleEvents(events) {
   for (const ev of events) {
     if (ev.type === "cue") showCue(ev.text, ev.intensity);
     else if (ev.type === "flavor") showCue(ev.text, "far");
+    else if (ev.type === "clue") {
+      showCue(ev.text, ev.intensity);
+      if (ev.dread) showCue(ev.dread, ev.intensity);
+    }
     else if (ev.type === "talk") showDialog({ text: ev.text, image: ev.image });
     else if (ev.type === "win") {
       onWin(); // Task 13 replaces this with the win screen

@@ -14,19 +14,98 @@ export const PROP_KINDS = [
   "lampada_apagada",
   "cadeira",
   "lixeira",
-  "espelho",
-  "mancha",
 ];
+// Emoji fallback per prop kind — shown by render.resolveVisual only when no sprite
+// is registered for the kind. Quadros and lamps are normally sprite-backed (see
+// QUADRO_SPRITES / LAMP_SPRITES), so their emoji only appears if an image fails.
 export const PROP_EMOJI = {
-  quadro: "🖼️",
-  lampada: "💡",
+  quadro_1: "🖼️",
+  quadro_2: "🖼️",
+  quadro_3: "🖼️",
+  quadro_4: "🖼️",
+  lampada_acesa: "💡",
+  lampada_apagada: "💡",
   cadeira: "🪑",
-  caixa: "📦",
-  espelho: "🪞",
-  cano: "🚰",
-  tomada: "🔌",
-  mancha: "🩸",
+  lixeira: "🗑️",
 };
+
+// Per-prop placement + transform. Single source of truth for where each kind
+// sits in the first-person scene and whether it gets the side-wall perspective.
+// Quadros hang high on the angled side walls; lamps sit face-on at mid-height;
+// floor clutter sits lower and flat. left/top are % into .br-scene.
+export const PROP_DEFAULT = { left: "50%", top: "50%", transform: "none" };
+export const PROP_STYLES = {
+  // Paintings hung on the side walls — angled to match the doorway perspective.
+  quadro_1: {
+    left: "18%",
+    top: "30%",
+    transform: "perspective(400px) rotateY(50deg)",
+  },
+  quadro_2: {
+    left: "70%",
+    top: "28%",
+    transform: "perspective(400px) rotateY(-50deg)",
+  },
+  quadro_3: {
+    left: "16%",
+    top: "34%",
+    transform: "perspective(400px) rotateY(50deg)",
+  },
+  quadro_4: {
+    left: "78%",
+    top: "32%",
+    transform: "perspective(400px) rotateY(-50deg)",
+  },
+  // Lamps — face-on, no perspective, mid-height.
+  lampada_acesa: { left: "50%", top: "50%", transform: "none" },
+  lampada_apagada: { left: "50%", top: "50%", transform: "none" },
+  // Floor clutter — lower in the frame, flat.
+  cadeira: { left: "30%", top: "60%", transform: "none" },
+  lixeira: { left: "72%", top: "62%", transform: "none" },
+  espelho: { left: "50%", top: "40%", transform: "none" },
+  mancha: { left: "46%", top: "78%", transform: "none" },
+};
+
+// Horizontal fan-out for same-kind duplicates in one room, so they don't stack.
+const LANE_STEP = 16; // % between same-kind lanes
+const JITTER_MAX = 5; // ± % organic jitter, derived from the prop id
+const LEFT_MIN = 4,
+  LEFT_MAX = 92;
+
+// FNV-1a hash → a stable pseudo-random number from the prop's id.
+function hashStr(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+// Resolve a prop's final placement. A lone prop sits exactly on its base style.
+// When a room holds several of the same kind, each is fanned out horizontally:
+// an even lane offset by dupIndex (0, +Δ, −Δ, +2Δ, …) guarantees no collision,
+// plus a small id-derived jitter so the layout reads as organic. Deterministic
+// on purpose — rooms re-render every move, so Math.random() would make props
+// jump around the screen.
+export function resolvePropPlacement(kind, id, dupIndex, dupCount) {
+  const base = PROP_STYLES[kind] || PROP_DEFAULT;
+  if (dupCount <= 1) return { ...base };
+  const magnitude = Math.ceil(dupIndex / 2);
+  const sign = dupIndex % 2 === 1 ? 1 : -1;
+  const lane = sign * magnitude * LANE_STEP;
+  const jitter = (((hashStr(id) % 1001) / 1000) * 2 - 1) * JITTER_MAX;
+  const left = Math.min(
+    LEFT_MAX,
+    Math.max(LEFT_MIN, parseFloat(base.left) + lane + jitter),
+  );
+  return {
+    left: `${Math.round(left * 10) / 10}%`,
+    top: base.top,
+    transform: base.transform,
+  };
+}
+
 // Each quadro_N prop kind shows a real painting hung on the wall (registered as
 // a sprite at startup; see main.js + render.js resolveVisual).
 export const QUADRO_SPRITES = {
@@ -35,6 +114,26 @@ export const QUADRO_SPRITES = {
   quadro_3: "/assets/backrooms/images/quadro-caveira.jpg",
   quadro_4: "/assets/backrooms/images/quadro-karate.jpg",
 };
+// The two lamp prop kinds are sprite-backed like the quadros (registered at
+// startup; see main.js). A lamp is generated on or off at random; clicking it
+// flips it to the opposite variant (see toggleLamp + game.tick's `interact`).
+export const LAMP_SPRITES = {
+  lampada_acesa: "/assets/backrooms/images/lamp-on.png",
+  lampada_apagada: "/assets/backrooms/images/lamp-off.png",
+};
+// Furniture props are sprite-backed like the quadros and lamps (registered at
+// startup; see main.js). Their PROP_EMOJI entries only show if the image fails.
+export const FURNITURE_SPRITES = {
+  cadeira: "/assets/backrooms/images/chair.png",
+  lixeira: "/assets/backrooms/images/bin.png",
+};
+// Returns the opposite lamp kind for a lamp, or null when `kind` is not a lamp.
+// Doubles as the "is this prop a lamp?" predicate.
+export function toggleLamp(kind) {
+  if (kind === "lampada_acesa") return "lampada_apagada";
+  if (kind === "lampada_apagada") return "lampada_acesa";
+  return null;
+}
 export const ENTITY_EMOJI = {
   hunter: "🫥",
   sprinter: "🏃",
@@ -80,6 +179,35 @@ export const HINT_DECEPTIVE = [
 ];
 export function fillHint(template, dir) {
   return template.replaceAll("{dir}", DIR_PT[dir]);
+}
+
+// Prop clues — the honest counterpart to wall hints. A prop clue NEVER lies: it
+// always points toward the real exit. The direction is resolved at map-generation
+// (see mapgen.makeClue) and the text is pre-filled, so nothing is recomputed during play.
+export const CLUE_EXIT = [
+  "o caminho é a {dir}",
+  "uma corrente de ar fresca vem da {dir}",
+  "você sente: a saída está a {dir}",
+];
+export function fillClue(template, dir) {
+  return template.replaceAll("{dir}", DIR_PT[dir]);
+}
+
+// Escalating dread shown alongside each safe clue. Index 0 is calm (no extra
+// line); the last entry is the final warning before the rigged death. dreadFor
+// maps how many clues you've taken onto this ramp, scaling if CLUE_BUDGET != 3.
+export const CLUE_DREAD = [
+  "",
+  "o objeto formiga na sua mão, você quer mais",
+  "a vibração é quase insuportável, você não consegue parar",
+];
+const DREAD_BANDS = ["far", "near", "close"];
+export function dreadFor(cluesUsed, budget) {
+  // frac: 0 at the first clue, 1 at the last safe clue (cluesUsed === budget).
+  const frac = budget <= 1 ? 1 : Math.min(1, (cluesUsed - 1) / (budget - 1));
+  const idx = Math.min(CLUE_DREAD.length - 1, Math.round(frac * (CLUE_DREAD.length - 1)));
+  const band = DREAD_BANDS[Math.min(DREAD_BANDS.length - 1, Math.round(frac * (DREAD_BANDS.length - 1)))];
+  return { text: CLUE_DREAD[idx], intensity: band };
 }
 
 export const INITIAL_DIALOG =

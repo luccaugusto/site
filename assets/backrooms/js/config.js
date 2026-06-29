@@ -13,7 +13,8 @@ export const config = {
   ],
   STALKER_AMBUSH_RANGE: 1, // stalker closes in when player within this many rooms
   TRAP_ROOM_COUNT: 1,
-  RIGGED_PROP_CHANCE: 0.15,
+  CLUE_BUDGET: 3, // clue-props examinable before the next one is the rigged death
+  CLUE_PROP_CHANCE: 0.3, // chance a non-lamp, non-exit prop carries an exit-pointing clue
   DECEPTIVE_HINT_RATIO: 0.1,
   HINT_ROOM_CHANCE: 0.2, // fraction of rooms that carry a hint
   PROPS_PER_ROOM: [0, 3], // inclusive range

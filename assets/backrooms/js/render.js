@@ -1,5 +1,5 @@
 import { DIRECTIONS } from "./graph.js";
-import { PROP_EMOJI, DIR_PT, personById } from "./content.js";
+import { PROP_EMOJI, DIR_PT, personById, resolvePropPlacement } from "./content.js";
 
 // Sprite registry seam: register a URL for a kind to swap the emoji for an <img>.
 const SPRITES = Object.create(null); // e.g. SPRITES['prop:lampada'] = '/assets/backrooms/lamp.png'
@@ -19,15 +19,6 @@ export function resolveVisual(key, fallbackEmoji) {
   span.textContent = fallbackEmoji;
   return span;
 }
-
-// Hand-tuned prop anchor positions (cycled through as a room gets more props).
-// `side` angles the prop toward its side wall (see .br-prop--left/right in CSS).
-const PROP_SPOTS = [
-  { left: "24%", top: "58%", side: "left" },
-  { left: "68%", top: "60%", side: "right" },
-  { left: "14%", top: "40%", side: "left" },
-  { left: "80%", top: "42%", side: "right" },
-];
 
 export function renderRoom(root, state, onAction) {
   const room = state.rooms[state.playerRoom];
@@ -59,13 +50,20 @@ export function renderRoom(root, state, onAction) {
     scene.append(ex);
   }
 
-  // Props
-  room.props.forEach((p, i) => {
-    const spot = PROP_SPOTS[i % PROP_SPOTS.length];
+  // Props — each kind owns its placement/transform (see content.PROP_STYLES).
+  // Pre-count kinds so same-kind duplicates in this room fan out instead of stacking.
+  const kindCounts = {};
+  for (const p of room.props) kindCounts[p.kind] = (kindCounts[p.kind] || 0) + 1;
+  const kindSeen = {};
+  room.props.forEach((p) => {
+    const dupIndex = kindSeen[p.kind] || 0;
+    kindSeen[p.kind] = dupIndex + 1;
+    const place = resolvePropPlacement(p.kind, p.id, dupIndex, kindCounts[p.kind]);
     const node = resolveVisual(`prop:${p.kind}`, PROP_EMOJI[p.kind] || "❔");
-    node.classList.add("br-prop", `br-prop--${spot.side}`);
-    node.style.left = spot.left;
-    node.style.top = spot.top;
+    node.classList.add("br-prop", `br-prop--${p.kind}`);
+    node.style.left = place.left;
+    node.style.top = place.top;
+    node.style.setProperty("--br-prop-tf", place.transform);
     node.title = p.kind;
     node.addEventListener("click", () =>
       onAction({ type: "interact", propId: p.id }),
