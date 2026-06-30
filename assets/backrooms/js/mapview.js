@@ -12,7 +12,15 @@ import { DIRECTIONS, DELTA } from "./graph.js";
 //   markEnds — when true, draw the icon + label on spawn/exit (win screen); minimap keeps it terse
 export function buildMapEl(
   state,
-  { reveal, width, height, pad = 16, here = null, markEnds = false },
+  {
+    reveal,
+    width,
+    height,
+    pad = 16,
+    here = null,
+    markEnds = false,
+    entityRooms = null, // DEBUG: room ids holding an entity → marked .br-cell--entity
+  },
 ) {
   const coords = layoutVisited(state.rooms, reveal, state.spawnId);
 
@@ -67,7 +75,8 @@ export function buildMapEl(
   for (const [id, c] of coords) {
     const isSpawn = id === state.spawnId,
       isExit = id === state.exitId,
-      isHere = id === here;
+      isHere = id === here,
+      isEntity = entityRooms !== null && entityRooms.has(id);
     const unrevealed = !state.visited.has(id) && !isSpawn && !isExit && !isHere;
     const node = document.createElement("div");
     node.className =
@@ -75,6 +84,7 @@ export function buildMapEl(
       (isSpawn ? " br-cell--spawn" : "") +
       (isExit ? " br-cell--exit" : "") +
       (isHere ? " br-cell--here" : "") +
+      (isEntity ? " br-cell--entity" : "") +
       (unrevealed ? " br-cell--unrevealed" : "");
     node.style.width = sq + "px";
     node.style.height = sq + "px";
@@ -88,7 +98,10 @@ export function buildMapEl(
       label.textContent = isSpawn ? "início" : "saída";
       node.append(label);
     }
-    node.title = (isHere ? "você · " : "") + `sala ${id}`;
+    node.title =
+      (isHere ? "você · " : "") +
+      (isEntity ? "entidade · " : "") +
+      `sala ${id}`;
     map.append(node);
   }
   return map;

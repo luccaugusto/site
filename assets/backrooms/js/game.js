@@ -3,7 +3,7 @@ import { stepEntities } from "./entities.js";
 import { bfsDistances, shortestStep, DIRECTIONS } from "./graph.js";
 import * as C from "./content.js";
 
-export function createGame(config, rng) {
+export function createGame(config, rng, captureCount = 0) {
   const map = generateMap(config, rng);
   return {
     config,
@@ -17,6 +17,10 @@ export function createGame(config, rng) {
     status: "playing",
     loseReason: null,
     cluesUsed: 0,
+    // How many times the wanderer has caught the player and stashed them in a
+    // fresh map. Carried across relocations so capture nº (CAPTURE_LIMIT + 1) is
+    // fatal instead of forgiving (see resolveCapture).
+    captureCount,
   };
 }
 
@@ -26,6 +30,32 @@ function cloneState(state) {
     visited: new Set(state.visited),
     entities: state.entities.map((e) => ({ ...e })),
   };
+}
+
+// The wanderer reached the player. The first CAPTURE_LIMIT captures aren't fatal:
+// we end this map ("captured") and main.js drops the player into a fresh one far
+// from the wanderer. Once those second chances run out, the next capture is a real
+// loss (redirect to the lose screen). Mutates `next` and pushes the terminal event.
+function resolveCapture(next, entityType, events) {
+  next.loseReason = "caught";
+  if (next.captureCount >= next.config.CAPTURE_LIMIT) {
+    next.status = "lost";
+    events.push({
+      type: "lose",
+      reason: "caught",
+      text: C.tauntFor(entityType),
+      image: null,
+    });
+  } else {
+    next.captureCount += 1;
+    next.status = "captured";
+    events.push({
+      type: "captured",
+      text: C.CAPTURE_TEXT,
+      image: null,
+      captureCount: next.captureCount,
+    });
+  }
 }
 
 export function tick(state, action) {
@@ -110,14 +140,7 @@ export function tick(state, action) {
   // 2. Did the player walk into an entity?
   for (const e of next.entities) {
     if (e.roomId === next.playerRoom) {
-      next.status = "lost";
-      next.loseReason = "caught";
-      events.push({
-        type: "lose",
-        reason: "caught",
-        text: C.tauntFor(e.type),
-        image: null,
-      });
+      resolveCapture(next, e.type, events);
       return { state: next, events };
     }
   }
@@ -126,14 +149,7 @@ export function tick(state, action) {
   const res = stepEntities(next, next.rng);
   next.entities = res.entities;
   if (res.caught) {
-    next.status = "lost";
-    next.loseReason = "caught";
-    events.push({
-      type: "lose",
-      reason: "caught",
-      text: C.tauntFor(res.caughtBy.type),
-      image: null,
-    });
+    resolveCapture(next, res.caughtBy.type, events);
     return { state: next, events };
   }
 

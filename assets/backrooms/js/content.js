@@ -232,11 +232,18 @@ export function cueFor(intensity, dir) {
 }
 
 export const TAUNTS = {
-  wanderer: "Ele te achou, deve ter sido o cheiro.", //TODO: elaborar sobre ele te guardar pra depois e tals
+  wanderer:
+    "Ele te achou, deve ter sido o cheiro. A última coisa que você vê é um corpo desproporcional inominável.",
 };
 export function tauntFor(type) {
   return TAUNTS[type];
 }
+
+// First time the wanderer catches you it doesn't kill you — it stashes you away.
+// Shown on a survivable capture, before the player wakes up in a fresh map (see
+// resolveCapture in game.js / the "captured" event in main.js).
+export const CAPTURE_TEXT =
+  "Você mal pôde reagir antes que algo te capturasse. Ainda meio tonto, você acorda preso em uma sala diferente. Que sorte, parece que aquela coisa te guardou pra mais tarde, mas te levou pra bem longe de onde estava. Com algum esforço você consegue se soltar, aproveite, a sorte pode não estar do seu lado da próxima vez";
 
 export const TRAP_DEATHS = [
   {

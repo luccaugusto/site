@@ -1,13 +1,12 @@
 export const config = {
-  DEBUG: true, // when true: show a "skip to exit" button in-game + reveal the WHOLE map on the win screen
+  DEBUG: false, // if true shows minimap and skip to exit buttons
   ROOM_COUNT: 25,
   MAX_DEGREE: 4,
   SPAWN_MAX_DOORS: 3,
   EXIT_MAX_DOORS: 3,
   EXTRA_EDGE_RATIO: 0.15, // extra edges ≈ ROOM_COUNT * ratio
-  entities: [
-    // { type: 'wanderer', count: 1, speed: 1 },
-  ],
+  entities: [{ type: "wanderer", count: 1, speed: 1 }],
+  CAPTURE_LIMIT: 1, // captures you survive (stashed away in a new map); the next one is fatal
   TRAP_ROOM_COUNT: 1,
   CLUE_PROP_CHANCE: 0.3, // chance a non-lamp, non-exit prop carries an exit-pointing clue
   DECEPTIVE_HINT_RATIO: 0.1,

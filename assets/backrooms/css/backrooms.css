@@ -91,6 +91,7 @@ html, body { margin: 0; height: 100%; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px; }
 .br-win h1 { font-size: 22px; letter-spacing: 3px; margin: 0; text-align: center; }
 .br-win p { max-width: 40ch; text-align: center; opacity: .85; margin: 0; }
+.br-win__time { font-size: 18px; letter-spacing: 2px; opacity: 1; text-transform: uppercase; }
 .br-map { position: relative; border: 2px dashed rgba(255,247,194,.4); }
 /* Each room is a square in its own grid cell; size/position are set inline from the layout. */
 .br-cell { position: absolute; box-sizing: border-box; border: 2px solid var(--br-buzz);
@@ -125,3 +126,6 @@ html, body { margin: 0; height: 100%; }
 /* Current-position marker — defined last so it wins over spawn/exit colour on the same cell. */
 .br-cell--here { background: #00f3ff; border-color: #fff; color: #002;
   box-shadow: 0 0 8px #00f3ff; z-index: 3; }
+/* DEBUG: the wanderer's current room — magenta, drawn above every other marker. */
+.br-cell--entity { background: #c026d3; border-color: #ff8df0; color: #fff;
+  box-shadow: 0 0 8px #c026d3; z-index: 4; }

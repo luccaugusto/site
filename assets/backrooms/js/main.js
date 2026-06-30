@@ -24,12 +24,14 @@ const root = document.getElementById("br-game");
 let game = createGame(config, makeRng(seedFromEnv()));
 let busy = false;
 let timeLimitTimer = null;
+let timeLimitStartedAt = null; // when the current countdown armed; escape time = now - this
 
 // Time death: the backrooms claim you after config.TIME_LIMIT_MS of play. This is
 // a real-time concern, so it lives here (the wiring layer) rather than in tick(),
 // which is a pure, deterministic, turn-based state machine. Armed once gameplay
 // starts (after the intro) and cleared the moment the run ends any other way.
 function startTimeLimit() {
+  timeLimitStartedAt = Date.now();
   if (!config.TIME_LIMIT_MS) return;
   timeLimitTimer = setTimeout(onTimeLimit, config.TIME_LIMIT_MS);
 }
@@ -70,6 +72,17 @@ async function handleEvents(events) {
     else if (ev.type === "win") {
       onWin(); // Task 13 replaces this with the win screen
       return true;
+    } else if (ev.type === "captured") {
+      // Non-fatal capture: show the text, then wake up in a brand-new map far from
+      // the wanderer. onAction disarms the time-limit timer (this is terminal for
+      // the current map); relocateAfterCapture re-arms it fresh on the new map.
+      showDialog({
+        text: ev.text,
+        image: ev.image,
+        button: "Continuar",
+        onClose: () => relocateAfterCapture(ev.captureCount),
+      });
+      return true;
     } else if (ev.type === "lose") {
       // Wait for the player to dismiss the death screen before redirecting.
       showDialog({
@@ -87,7 +100,20 @@ async function handleEvents(events) {
 }
 
 function onWin() {
-  showWinScreen(game, config);
+  // Time the player took to escape = elapsed since the (current) countdown armed,
+  // i.e. config.TIME_LIMIT_MS minus whatever was left on the clock.
+  const escapeMs =
+    timeLimitStartedAt !== null ? Date.now() - timeLimitStartedAt : null;
+  showWinScreen(game, config, escapeMs);
+}
+
+// Stash the player in a fresh map after a (survivable) capture. captureCount rides
+// along so the new map's tick knows whether the next capture is the fatal one.
+function relocateAfterCapture(captureCount) {
+  game = createGame(config, makeRng(seedFromEnv()), captureCount);
+  render();
+  startTimeLimit();
+  busy = false; // capture locked input; the new map hands control back
 }
 
 async function onAction(action) {
@@ -138,6 +164,7 @@ function renderMinimap() {
       height: 180,
       pad: 12,
       here: game.playerRoom,
+      entityRooms: new Set(game.entities.map((e) => e.roomId)),
       markEnds: false,
     }),
   );
