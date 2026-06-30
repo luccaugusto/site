@@ -33,10 +33,17 @@ export function renderRoom(root, state, onAction) {
   // Doors
   for (const dir of DIRECTIONS) {
     if (room.doors[dir] === undefined) continue;
-    const isExitDoor = state.rooms[room.doors[dir]].isExit;
+    const target = state.rooms[room.doors[dir]];
+    const isExitDoor = target.isExit;
+    // Doors into trap rooms wear a distinct silhouette — a fair "tell" the wary
+    // player can learn to read. Traps never coincide with the exit (see mapgen),
+    // so these two flavors never collide on one door.
+    const isTrapDoor = !!target.trap;
     const door = el(
       "button",
-      `br-door br-door--${dir}` + (isExitDoor ? " br-door--exit" : ""),
+      `br-door br-door--${dir}` +
+        (isExitDoor ? " br-door--exit" : "") +
+        (isTrapDoor ? " br-door--trap" : ""),
     );
     door.textContent = isExitDoor ? "SAÍDA" : DIR_PT[dir].toUpperCase();
     door.addEventListener("click", () => onAction({ type: "move", dir }));
