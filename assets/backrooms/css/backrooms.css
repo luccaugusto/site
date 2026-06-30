@@ -27,6 +27,13 @@ html, body { margin: 0; height: 100%; }
 .br-door--right { width: 12%; height: 52%; right: 3%; top: 24%; background-image: url("../images/door-right.png"); }
 .br-door--back  { left: 50%; transform: translateX(-50%); bottom: 4%; width: 22%; height: 11%;
   font-size: 14px; align-items: center; padding-bottom: 0; background-image: url("../images/door-back.png"); }
+/* Doors into trap rooms swap to a trap-variant silhouette per direction. Two
+   classes here out-specify the single-class direction rules above, so the trap
+   art wins for the same door footprint. */
+.br-door--trap.br-door--ahead { background-image: url("../images/door-ahead-trap.png"); }
+.br-door--trap.br-door--left  { background-image: url("../images/door-left-trap.png"); }
+.br-door--trap.br-door--right { background-image: url("../images/door-right-trap.png"); }
+.br-door--trap.br-door--back  { background-image: url("../images/door-back-trap.png"); }
 /* Exit reuses its direction's door art but pulses with a green glow that
    follows the door silhouette (drop-shadow, not a rectangular box-shadow). */
 .br-door--exit { filter: drop-shadow(0 0 14px #6f6) drop-shadow(0 0 30px #2f2); }

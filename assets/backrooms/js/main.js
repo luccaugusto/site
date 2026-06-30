@@ -2,7 +2,7 @@ import { config } from "./config.js";
 import { makeRng } from "./rng.js";
 import { createGame, tick } from "./game.js";
 import { renderRoom, registerSprite } from "./render.js";
-import { PROP_SPRITES } from "./content.js";
+import { PROP_SPRITES, TIME_DEATH } from "./content.js";
 import { showCue, showDialog } from "./messages.js";
 import { playIntro } from "./intro.js";
 import { showWinScreen } from "./winscreen.js";
@@ -23,6 +23,39 @@ for (const [kind, url] of Object.entries(PROP_SPRITES)) {
 const root = document.getElementById("br-game");
 let game = createGame(config, makeRng(seedFromEnv()));
 let busy = false;
+let timeLimitTimer = null;
+
+// Time death: the backrooms claim you after config.TIME_LIMIT_MS of play. This is
+// a real-time concern, so it lives here (the wiring layer) rather than in tick(),
+// which is a pure, deterministic, turn-based state machine. Armed once gameplay
+// starts (after the intro) and cleared the moment the run ends any other way.
+function startTimeLimit() {
+  if (!config.TIME_LIMIT_MS) return;
+  timeLimitTimer = setTimeout(onTimeLimit, config.TIME_LIMIT_MS);
+}
+
+function clearTimeLimit() {
+  if (timeLimitTimer !== null) {
+    clearTimeout(timeLimitTimer);
+    timeLimitTimer = null;
+  }
+}
+
+function onTimeLimit() {
+  timeLimitTimer = null;
+  if (game.status !== "playing") return;
+  game.status = "lost";
+  game.loseReason = "time";
+  busy = true; // run's over — lock input behind the death screen
+  showDialog({
+    text: TIME_DEATH.text,
+    image: TIME_DEATH.image,
+    button: "Sair",
+    onClose: () => {
+      location.href = config.LOSE_URL;
+    },
+  });
+}
 
 async function handleEvents(events) {
   for (const ev of events) {
@@ -64,6 +97,7 @@ async function onAction(action) {
   game = state;
   if (game.status === "playing") render();
   const terminal = await handleEvents(events);
+  if (terminal) clearTimeLimit(); // won/died another way — disarm the time death
   if (!terminal) busy = false; // stay locked once the game ends
 }
 
@@ -71,6 +105,7 @@ async function onAction(action) {
 function debugSkipToExit() {
   if (game.status !== "playing") return;
   busy = true;
+  clearTimeLimit();
   game.status = "won";
   onWin();
 }
@@ -118,4 +153,5 @@ function render() {
   await playIntro(config);
   render();
   mountDebugControls();
+  startTimeLimit();
 })();

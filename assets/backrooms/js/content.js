@@ -243,12 +243,13 @@ export const TRAP_DEATHS = [
     text: "O chão treme e cede debaixo dos seus pés. Tudo acontece muito rápido, mas você sabe que está condenado a viver no limbo mais profundo da internet",
     image: null,
   },
-  // TODO: This one bellow should not be a trap, but should be triggered after 5 minutes pass.
-  {
-    text: "Você jurava que já tinha passado aqui. É a sala, ela está na sua mente, você está aqui a tanto tempo, já se sente parte disso. O limbo mais profundo da internet agora é sua casa.",
-    image: null,
-  },
 ];
+// Not a trap: the backrooms claim you by sheer time. Triggered after the player
+// has wandered for config.TIME_LIMIT_MS (see main.js → time-limit timer).
+export const TIME_DEATH = {
+  text: "Você jurava que já tinha passado aqui. Essa sala, você está aqui a tanto tempo, já se sente parte disso. O limbo mais profundo da internet agora é sua casa.",
+  image: null,
+};
 export const ONE_WITH_THE_BACKROOMS_DEATH = {
   text: "Esse objeto tem algo estranho, uma certa vibração quando tocado. Fascinante. Quanto mais você olha e toca mais você quer experimentar essa sensação. Antes que possa perceber, é tarde demais, você é um com as paredes amarelas. Esse limbo agora é você e você agora é esse limbo.",
   image: null,

@@ -20,6 +20,7 @@ export const config = {
   INTRO_FALLBACK_MS: 4000,
   WIN_URL: "/",
   LOSE_URL: "https://boards.4chan.org/mlp/",
+  TIME_LIMIT_MS: 5 * 60 * 1000, // wander this long (5 min) → the time death (see main.js)
   SEED: null, // null → seed from time / ?seed=
 };
 
