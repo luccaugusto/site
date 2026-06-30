@@ -758,6 +758,29 @@ a .crooked-header {
 	transform: none;
 }
 
+/* Backrooms entrance — a small open doorway standing at the foot of the
+   billboard shaft, just to its right. Secret entry to the /backrooms game;
+   the doorway glows when you approach. Pinned to the scene's bottom edge
+   (positioned ancestor is .zine-bottom), flanking the centred post the same
+   way the caveira (left) and misc panel (right) do. */
+.zine-bottom .backrooms-entry {
+	display: block;
+	position: absolute;
+	bottom: 10pt;
+	left: 90%;
+	margin-left: 5vw;        /* clear the centred post and sit beside it */
+	z-index: 20;
+}
+.backrooms-entry img {
+	display: block;
+	width: 80px;             /* small — easy to miss */
+	height: auto;
+	transition: transform 0.3s ease, filter 0.3s ease;
+}
+.backrooms-entry:hover img {
+	filter: drop-shadow(0 0 14px #fff);
+}
+
 /* ==========================================================================
    CAVEIRA ANFITRIÃ — bottom-left mascot that tells the "piada do dia" in a
    speech balloon. The container is pointer-events:none so the corner stays
@@ -1580,43 +1603,4 @@ a .crooked-header {
 	/* The Topo button scrolled the (now non-scrolling) screen — hide it; the
 	   window scrolls normally now. */
 	.billboard-page .scroll-to-top-container { display: none; }
-}
-
-/* ── Full-site film-grain noise overlay ──────────────────────────────
-   `.overlay` is the hidden base; `.overlay.noise` (in _includes/noise.html,
-   dropped into every layout's <body>) is the active film-grain layer. It's
-   oversized + offset so the `grain` jitter never exposes an edge, sits above
-   page content (z-index 800) and lets clicks pass through (pointer-events). */
-.overlay {
-    top: 0;
-    left: 0;
-    position: fixed;
-    pointer-events: none;
-    display: none;
-}
-
-.overlay.noise {
-    display: block;
-    z-index: 800;
-    animation: grain 8s steps(10) infinite;
-    background-image: url(/assets/img/noise.png);
-    height: 400%;
-    left: -50%;
-    top: -150%;
-    width: 300%;
-    background-size: auto;
-    opacity: 0.2;
-}
-
-@keyframes grain {
-    0%, 100% { transform: translate(0, 0); }
-    10%  { transform: translate(-5%, -10%); }
-    20%  { transform: translate(-15%, 5%); }
-    30%  { transform: translate(7%, -25%); }
-    40%  { transform: translate(-5%, 25%); }
-    50%  { transform: translate(-15%, 10%); }
-    60%  { transform: translate(15%, 0%); }
-    70%  { transform: translate(0%, 15%); }
-    80%  { transform: translate(3%, 35%); }
-    90%  { transform: translate(-10%, 10%); }
 }

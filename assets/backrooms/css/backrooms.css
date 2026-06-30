@@ -1,0 +1,131 @@
+:root {
+  --br-wall: #c9b458;        /* backrooms yellow */
+  --br-wall-dark: #a8923f;
+  --br-ink: #1a1607;
+  --br-buzz: #fff7c2;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+.br-body { background: #000; color: var(--br-ink); font-family: "Courier New", monospace; overflow: hidden; }
+.br-game { position: fixed; inset: 0; }
+
+/* First-person scene: a single photographic backdrop (walls/floor/ceiling).
+   Doors, props, hints and people are layered on top. */
+.br-scene { position: absolute; inset: 0; overflow: hidden;
+  background: #000 center / cover no-repeat url("../images/background.jpg"); }
+
+/* Doorways: each direction is a pre-rendered door image (perspective baked in,
+   so no CSS rotateY here). The button itself is transparent; the art is a
+   contained background and the label rides on top. */
+.br-door { position: absolute; background: transparent center bottom / contain no-repeat; border: 0;
+  cursor: pointer; display: flex; align-items: flex-end; justify-content: center;
+  color: var(--br-buzz); font-size: 12px; padding-bottom: 6px; letter-spacing: 2px;
+  text-shadow: 0 1px 3px #000, 0 0 8px #000; }
+.br-door:hover { filter: drop-shadow(0 0 18px var(--br-buzz)); }
+.br-door--ahead { width: 16%; height: 35%; left: 42%; top: 24%; background-image: url("../images/door-ahead.png"); }
+.br-door--left  { width: 12%; height: 52%; left: 3%;  top: 24%; background-image: url("../images/door-left.png"); }
+.br-door--right { width: 12%; height: 52%; right: 3%; top: 24%; background-image: url("../images/door-right.png"); }
+.br-door--back  { left: 50%; transform: translateX(-50%); bottom: 4%; width: 22%; height: 11%;
+  font-size: 14px; align-items: center; padding-bottom: 0; background-image: url("../images/door-back.png"); }
+/* Doors into trap rooms swap to a trap-variant silhouette per direction. Two
+   classes here out-specify the single-class direction rules above, so the trap
+   art wins for the same door footprint. */
+.br-door--trap.br-door--ahead { background-image: url("../images/door-ahead-trap.png"); }
+.br-door--trap.br-door--left  { background-image: url("../images/door-left-trap.png"); }
+.br-door--trap.br-door--right { background-image: url("../images/door-right-trap.png"); }
+.br-door--trap.br-door--back  { background-image: url("../images/door-back-trap.png"); }
+/* Exit reuses its direction's door art but pulses with a green glow that
+   follows the door silhouette (drop-shadow, not a rectangular box-shadow). */
+.br-door--exit { filter: drop-shadow(0 0 14px #6f6) drop-shadow(0 0 30px #2f2); }
+.br-door--exit:hover { filter: drop-shadow(0 0 22px #6f6) drop-shadow(0 0 42px #2f2); }
+
+/* Props + hint. Per-prop transform comes from --br-prop-tf (set in render.js);
+   the hover pop uses the standalone `scale` property so it composes with any
+   perspective transform. */
+.br-prop { position: absolute; font-size: 38px; cursor: pointer; filter: drop-shadow(0 2px 4px #000);
+  transform: var(--br-prop-tf, none); transition: scale .12s; }
+.br-prop:hover { scale: 1.15; }
+/* Image props (quadros + lamps): borderless, rendered at 2x. */
+.br-sprite { display: block; width: 184px; height: 184px; object-fit: cover; }
+/* Furniture sprites are isolated objects on transparent backgrounds: keep their
+   natural aspect ratio inside the box instead of cropping to a square. */
+.br-prop--cadeira.br-sprite,
+.br-prop--lixeira.br-sprite { object-fit: contain; }
+
+/* Person entity: a full-body cutout standing on the floor, click to talk. */
+.br-person { position: absolute; left: 65%; bottom: 0; transform: translateX(-50%);
+  height: 52%; max-width: 42%; object-fit: contain; cursor: pointer;
+  filter: drop-shadow(0 8px 12px rgba(0,0,0,.75)); transition: transform .12s; }
+.br-person:hover { transform: translateX(-50%) scale(1.04); }
+.br-hint { position: absolute; left: 50%; top: 16%; transform: translateX(-50%) rotate(-3deg);
+  color: var(--br-ink); font-weight: bold; max-width: 40%; text-align: center;
+  text-shadow: 0 1px 0 rgba(255,255,255,.25); }
+
+
+/* Cue strip + modal (Task 10). */
+.br-cues { position: fixed; left: 50%; bottom: 14%; transform: translateX(-50%);
+  display: flex; flex-direction: column; gap: 6px; align-items: center; z-index: 20; pointer-events: none; }
+.br-cue { color: var(--br-buzz); background: rgba(0,0,0,.55); padding: 6px 14px; border-radius: 4px;
+  font-size: 14px; letter-spacing: 1px; animation: br-fade 3.2s forwards; }
+.br-cue--close { color: #ff5b5b; font-weight: bold; font-size: 17px; }
+.br-cue--near  { color: #ffd35b; }
+@keyframes br-fade { 0%{opacity:0} 12%{opacity:1} 78%{opacity:1} 100%{opacity:0} }
+
+.br-modal { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.92);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  color: var(--br-buzz); text-align: center; padding: 24px; }
+.br-modal img { max-width: 70vw; max-height: 50vh; border: 3px solid var(--br-buzz); }
+.br-modal p { font-size: 20px; max-width: 36ch; line-height: 1.5; }
+.br-modal button { font: inherit; padding: 10px 22px; background: none; color: var(--br-buzz);
+  border: 2px solid var(--br-buzz); cursor: pointer; letter-spacing: 2px; }
+.br-modal button:hover { background: var(--br-buzz); color: #000; }
+
+/* Intro overlay (Task 12). */
+.br-intro { position: fixed; inset: 0; z-index: 40; background-color: #000;
+  background-repeat: repeat; background-position: center; cursor: pointer; }
+.br-intro__skip { position: absolute; bottom: 18px; right: 20px; color: var(--br-buzz);
+  font-size: 13px; letter-spacing: 2px; opacity: .8; }
+
+/* Win screen (Task 13). */
+.br-win { position: fixed; inset: 0; z-index: 35; background: #0c0b05; color: var(--br-buzz);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px; }
+.br-win h1 { font-size: 22px; letter-spacing: 3px; margin: 0; text-align: center; }
+.br-win p { max-width: 40ch; text-align: center; opacity: .85; margin: 0; }
+.br-win__time { font-size: 18px; letter-spacing: 2px; opacity: 1; text-transform: uppercase; }
+.br-map { position: relative; border: 2px dashed rgba(255,247,194,.4); }
+/* Each room is a square in its own grid cell; size/position are set inline from the layout. */
+.br-cell { position: absolute; box-sizing: border-box; border: 2px solid var(--br-buzz);
+  background: #1a1607; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; line-height: 1; color: var(--br-buzz); }
+/* Spawn & exit: colour + icon/label (size matches every other cell). */
+.br-cell--spawn { background: #1f6f2a; border-color: #8dff9b; z-index: 2; }
+.br-cell--exit  { background: #8d1c1c; border-color: #ff9b9b; z-index: 2; }
+.br-cell__label { position: absolute; top: calc(100% + 3px); left: 50%;
+  transform: translateX(-50%); white-space: nowrap;
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold;
+  color: var(--br-buzz); background: rgba(0,0,0,.72); padding: 1px 5px; border-radius: 3px; }
+/* Door links sit behind the squares: solid for an exact grid adjacency, dashed for a loop/displaced door. */
+.br-link { position: absolute; height: 2px; background: rgba(255,247,194,.6); transform-origin: left center; }
+.br-link--loop { height: 0; background: none; border-top: 2px dashed rgba(0,243,255,.55); }
+.br-win button { font: inherit; padding: 10px 22px; background: none; color: var(--br-buzz);
+  border: 2px solid var(--br-buzz); cursor: pointer; letter-spacing: 2px; }
+.br-win button:hover { background: var(--br-buzz); color: #000; }
+
+/* DEBUG controls (config.DEBUG). */
+.br-debug-skip { position: fixed; top: 12px; left: 12px; z-index: 25; font: inherit; font-size: 12px;
+  letter-spacing: 1px; padding: 6px 12px; background: #ff2d95; color: #000; border: 2px solid #000;
+  cursor: pointer; box-shadow: 3px 3px 0 #000; }
+.br-debug-skip:hover { background: #00f3ff; }
+.br-cell--unrevealed { opacity: .35; border-style: dashed; }
+/* DEBUG live minimap (whole map + current position), shown in every room. */
+.br-minimap { position: fixed; top: 12px; right: 12px; z-index: 24; background: rgba(0,0,0,.72);
+  border: 2px solid #000; padding: 6px; box-shadow: 3px 3px 0 #000; }
+.br-minimap__cap { font: 11px/1 "Courier New", monospace; letter-spacing: 1px; color: #00f3ff; margin-bottom: 5px; }
+.br-minimap .br-map { border-color: rgba(0,243,255,.35); }
+.br-minimap .br-cell { font-size: 9px; }
+/* Current-position marker — defined last so it wins over spawn/exit colour on the same cell. */
+.br-cell--here { background: #00f3ff; border-color: #fff; color: #002;
+  box-shadow: 0 0 8px #00f3ff; z-index: 3; }
+/* DEBUG: the wanderer's current room — magenta, drawn above every other marker. */
+.br-cell--entity { background: #c026d3; border-color: #ff8df0; color: #fff;
+  box-shadow: 0 0 8px #c026d3; z-index: 4; }
