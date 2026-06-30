@@ -6,14 +6,9 @@ export const config = {
   EXIT_MAX_DOORS: 3,
   EXTRA_EDGE_RATIO: 0.15, // extra edges ≈ ROOM_COUNT * ratio
   entities: [
-    // { type: 'hunter',   count: 1, speed: 1 },
-    // { type: 'sprinter', count: 1, speed: 2 },
     // { type: 'wanderer', count: 1, speed: 1 },
-    // { type: 'stalker',  count: 1, speed: 1 },
   ],
-  STALKER_AMBUSH_RANGE: 1, // stalker closes in when player within this many rooms
   TRAP_ROOM_COUNT: 1,
-  CLUE_BUDGET: 3, // clue-props examinable before the next one is the rigged death
   CLUE_PROP_CHANCE: 0.3, // chance a non-lamp, non-exit prop carries an exit-pointing clue
   DECEPTIVE_HINT_RATIO: 0.1,
   HINT_ROOM_CHANCE: 0.2, // fraction of rooms that carry a hint

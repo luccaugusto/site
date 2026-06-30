@@ -239,16 +239,12 @@ export function chooseEntitySpawns(map, config, rng) {
   const far = rooms
     .filter((r) => r.id !== spawnId && (dist.get(r.id) ?? 0) >= 2)
     .map((r) => r.id);
-  const trapIds = rooms.filter((r) => r.trap).map((r) => r.id);
   const all = rooms.map((r) => r.id).filter((id) => id !== spawnId);
   const spawns = [];
   let id = 0;
   for (const entry of config.entities) {
     for (let k = 0; k < entry.count; k++) {
-      let roomId;
-      if (entry.type === "stalker" && trapIds.length)
-        roomId = pick(rng, trapIds);
-      else roomId = pick(rng, far.length ? far : all);
+      const roomId = pick(rng, far.length ? far : all);
       spawns.push({ id: id++, type: entry.type, speed: entry.speed, roomId });
     }
   }

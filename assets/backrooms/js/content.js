@@ -15,20 +15,21 @@ export const PROP_KINDS = [
   "cadeira",
   "lixeira",
 ];
-// Emoji fallback per prop kind — shown by render.resolveVisual only when no sprite
-// is registered for the kind. Quadros and lamps are normally sprite-backed (see
-// QUADRO_SPRITES / LAMP_SPRITES), so their emoji only appears if an image fails.
-export const PROP_EMOJI = {
-  quadro_1: "🖼️",
-  quadro_2: "🖼️",
-  quadro_3: "🖼️",
-  quadro_4: "🖼️",
-  lampada_acesa: "💡",
-  lampada_apagada: "💡",
-  cadeira: "🪑",
-  lixeira: "🗑️",
-};
 
+// Player-facing names (article included) for props you can examine. Keeps the
+// internal kind slug — "quadro_1" and friends — out of the clue/flavor copy.
+// Lamps never show text (they toggle silently), so they're omitted.
+export const PROP_NAMES = {
+  quadro_1: "o quadro",
+  quadro_2: "o quadro",
+  quadro_3: "o quadro",
+  quadro_4: "o quadro",
+  cadeira: "a cadeira",
+  lixeira: "a lixeira",
+};
+export function propName(kind) {
+  return PROP_NAMES[kind] || "o objeto";
+}
 // Per-prop placement + transform. Single source of truth for where each kind
 // sits in the first-person scene and whether it gets the side-wall perspective.
 // Quadros hang high on the angled side walls; lamps sit face-on at mid-height;
@@ -106,24 +107,18 @@ export function resolvePropPlacement(kind, id, dupIndex, dupCount) {
   };
 }
 
-// Each quadro_N prop kind shows a real painting hung on the wall (registered as
-// a sprite at startup; see main.js + render.js resolveVisual).
-export const QUADRO_SPRITES = {
+// Every prop kind is backed by a sprite image, registered at startup (see
+// main.js → render.registerSprite) and swapped in for the kind by render.js.
+// Single source of truth: quadros are paintings hung on the wall; the two lamp
+// kinds are the on/off variants a lamp flips between (see toggleLamp +
+// game.tick's `interact`); the rest is floor furniture.
+export const PROP_SPRITES = {
   quadro_1: "/assets/backrooms/images/quadro-monociclo.jpg",
   quadro_2: "/assets/backrooms/images/quadro-creeper.jpg",
   quadro_3: "/assets/backrooms/images/quadro-caveira.jpg",
   quadro_4: "/assets/backrooms/images/quadro-karate.jpg",
-};
-// The two lamp prop kinds are sprite-backed like the quadros (registered at
-// startup; see main.js). A lamp is generated on or off at random; clicking it
-// flips it to the opposite variant (see toggleLamp + game.tick's `interact`).
-export const LAMP_SPRITES = {
   lampada_acesa: "/assets/backrooms/images/lamp-on.png",
   lampada_apagada: "/assets/backrooms/images/lamp-off.png",
-};
-// Furniture props are sprite-backed like the quadros and lamps (registered at
-// startup; see main.js). Their PROP_EMOJI entries only show if the image fails.
-export const FURNITURE_SPRITES = {
   cadeira: "/assets/backrooms/images/chair.png",
   lixeira: "/assets/backrooms/images/bin.png",
 };
@@ -134,13 +129,32 @@ export function toggleLamp(kind) {
   if (kind === "lampada_apagada") return "lampada_acesa";
   return null;
 }
-export const ENTITY_EMOJI = {
-  hunter: "🫥",
-  sprinter: "🏃",
-  wanderer: "👁️",
-  stalker: "🕴️",
-};
 
+// Resolve placements for every prop in a room, keyed by a STABLE placement group
+// so a prop never jumps when its kind changes. Lamps are the reason: toggling one
+// flips its kind (lampada_acesa ⇄ lampada_apagada). If we grouped by raw kind, two
+// lamps fanned out into two lanes would collapse onto the same base spot the moment
+// they differed (each becomes a lone prop of its kind). Both lamp variants share a
+// single group ("lampada"), so the fan-out — and each lamp's lane — stays put.
+export function placeRoomProps(props) {
+  const groupOf = (kind) => (toggleLamp(kind) ? "lampada" : kind);
+  const counts = {};
+  for (const p of props) {
+    const g = groupOf(p.kind);
+    counts[g] = (counts[g] || 0) + 1;
+  }
+  const seen = {};
+  return props.map((p) => {
+    const g = groupOf(p.kind);
+    const dupIndex = seen[g] || 0;
+    seen[g] = dupIndex + 1;
+    return {
+      id: p.id,
+      kind: p.kind,
+      ...resolvePropPlacement(p.kind, p.id, dupIndex, counts[g]),
+    };
+  });
+}
 // People entities: harmless celebrities who linger in one room. One is picked
 // per map (see mapgen). Clicking one reads its `text` in a dialog with `image`.
 export const PEOPLE = [
@@ -185,29 +199,23 @@ export function fillHint(template, dir) {
 // always points toward the real exit. The direction is resolved at map-generation
 // (see mapgen.makeClue) and the text is pre-filled, so nothing is recomputed during play.
 export const CLUE_EXIT = [
-  "o caminho é a {dir}",
-  "uma corrente de ar fresca vem da {dir}",
-  "você sente: a saída está a {dir}",
+  "{dir}",
+  "siga para {dir}",
+  "o caminho certo é para {dir}",
 ];
 export function fillClue(template, dir) {
   return template.replaceAll("{dir}", DIR_PT[dir]);
 }
 
-// Escalating dread shown alongside each safe clue. Index 0 is calm (no extra
-// line); the last entry is the final warning before the rigged death. dreadFor
-// maps how many clues you've taken onto this ramp, scaling if CLUE_BUDGET != 3.
+// Touching more objects increases the dread, touch too many and become one with the backrooms
 export const CLUE_DREAD = [
-  "",
-  "o objeto formiga na sua mão, você quer mais",
-  "a vibração é quase insuportável, você não consegue parar",
+  "uma leve vibração é notável nesse objeto, fascinante, mas não parece saudável",
+  "a mesma vibração, mas agora mais forte, parece que o objeto se conecta com você",
+  "agora a vibração é vívida, intensa, você perde o limite entre sua pele e esse objeto. Seus instintos te dizem pra não tocar mais em nada",
 ];
-const DREAD_BANDS = ["far", "near", "close"];
-export function dreadFor(cluesUsed, budget) {
-  // frac: 0 at the first clue, 1 at the last safe clue (cluesUsed === budget).
-  const frac = budget <= 1 ? 1 : Math.min(1, (cluesUsed - 1) / (budget - 1));
-  const idx = Math.min(CLUE_DREAD.length - 1, Math.round(frac * (CLUE_DREAD.length - 1)));
-  const band = DREAD_BANDS[Math.min(DREAD_BANDS.length - 1, Math.round(frac * (DREAD_BANDS.length - 1)))];
-  return { text: CLUE_DREAD[idx], intensity: band };
+export function dreadFor(cluesUsed) {
+  const idx = Math.min(cluesUsed, CLUE_DREAD.length);
+  return { text: CLUE_DREAD[idx] };
 }
 
 export const INITIAL_DIALOG =
@@ -224,7 +232,7 @@ export function cueFor(intensity, dir) {
 }
 
 export const TAUNTS = {
-  hunter: "Ele te achou, deve ter sido o cheiro.", //TODO: elaborar sobre ele te guardar pra depois e tals
+  wanderer: "Ele te achou, deve ter sido o cheiro.", //TODO: elaborar sobre ele te guardar pra depois e tals
 };
 export function tauntFor(type) {
   return TAUNTS[type];
@@ -241,7 +249,7 @@ export const TRAP_DEATHS = [
     image: null,
   },
 ];
-export const RIGGED_DEATH = {
+export const ONE_WITH_THE_BACKROOMS_DEATH = {
   text: "Esse objeto tem algo estranho, uma certa vibração quando tocado. Fascinante. Quanto mais você olha e toca mais você quer experimentar essa sensação. Antes que possa perceber, é tarde demais, você é um com as paredes amarelas. Esse limbo agora é você e você agora é esse limbo.",
   image: null,
 };

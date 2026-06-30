@@ -4,6 +4,7 @@ import { makeRng } from '../rng.js';
 import { makeRoom, connect } from '../mapgen.js';
 import { createGame, tick } from '../game.js';
 import { config } from '../config.js';
+import * as C from '../content.js';
 
 // Hand-built 3-room line with NO entities, for deterministic action tests.
 function fixture(overrides = {}) {
@@ -58,17 +59,19 @@ test('examining a clue prop under budget emits a clue event and keeps playing', 
   assert.equal(state.cluesUsed, 1);
   const clue = events.find(e => e.type === 'clue');
   assert.ok(clue, 'expected a clue event');
-  assert.equal(clue.text, 'o caminho é a frente');
-  assert.ok(['far', 'near', 'close'].includes(clue.intensity));
+  assert.ok(clue.text.includes('o caminho é a frente'), 'the dialog text embeds the clue');
+  assert.ok(clue.text.includes('o quadro'), 'the dialog names the prop readably');
+  assert.ok(!clue.text.includes('quadro_1'), 'the internal kind slug must not leak into the copy');
+  assert.ok(clue.image && clue.image.endsWith('.jpg'), 'the dialog shows the examined prop image');
 });
 
-test('the clue past the budget triggers the rigged death', () => {
-  const s = fixture({ cluesUsed: config.CLUE_BUDGET }); // already at the limit
+test('the clue past the budget triggers the one-with-the-backrooms death', () => {
+  const s = fixture({ cluesUsed: C.CLUE_DREAD.length }); // already at the limit
   s.rooms[0].props = [{ id: '0-0', kind: 'quadro_1', clue: { dir: 'ahead', text: 'x' } }];
   const { state, events } = tick(s, { type: 'interact', propId: '0-0' });
   assert.equal(state.status, 'lost');
-  assert.equal(state.loseReason, 'rigged');
-  assert.ok(events.some(e => e.type === 'lose' && e.reason === 'rigged'));
+  assert.equal(state.loseReason, 'one_with_the_backrooms');
+  assert.ok(events.some(e => e.type === 'lose' && e.reason === 'one_with_the_backrooms'));
 });
 
 test('examining an empty prop emits flavor and does not spend the clue budget', () => {
@@ -77,18 +80,20 @@ test('examining an empty prop emits flavor and does not spend the clue budget', 
   const { state, events } = tick(s, { type: 'interact', propId: '0-0' });
   assert.equal(state.status, 'playing');
   assert.equal(state.cluesUsed, 0, 'empty props are free');
-  assert.ok(events.some(e => e.type === 'flavor'));
+  const flavor = events.find(e => e.type === 'flavor');
+  assert.ok(flavor, 'expected a flavor event');
+  assert.ok(flavor.text.includes('a cadeira'), 'flavor names the prop readably');
 });
 
 test('clicking a lamp toggles its kind silently but still costs a turn', () => {
-  // 7-room line; hunter starts beyond cue range so the turn advances it observably
-  // without computing a cue (the cue path is buggy independently of lamps).
+  // 7-room line; the wanderer at the far end (only neighbour: room 5) is forced
+  // one step inward, so the turn advances it observably without a cue.
   const rooms = [0, 1, 2, 3, 4, 5, 6].map(makeRoom);
   for (let i = 0; i < 6; i++) connect(rooms, i, i + 1, 'ahead');
   const s = {
     config, rng: makeRng(1), rooms, spawnId: 0, exitId: 6,
     playerRoom: 0, visited: new Set([0]),
-    entities: [{ id: 0, type: 'hunter', speed: 1, roomId: 6 }],
+    entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 6 }],
     status: 'playing', loseReason: null, cluesUsed: 0,
   };
   s.rooms[0].props = [{ id: '0-0', kind: 'lampada_apagada', clue: null }];
@@ -96,7 +101,7 @@ test('clicking a lamp toggles its kind silently but still costs a turn', () => {
   assert.equal(state.status, 'playing');
   assert.equal(state.rooms[0].props[0].kind, 'lampada_acesa', 'lamp should flip to its on variant');
   assert.ok(!events.some(e => e.type === 'flavor'), 'a lamp toggle should not emit flavor text');
-  assert.equal(state.entities[0].roomId, 5, 'the toggle should cost a turn — the hunter advances');
+  assert.equal(state.entities[0].roomId, 5, 'the toggle should cost a turn — the wanderer advances');
   assert.equal(state.cluesUsed, 0, 'a lamp toggle never spends the clue budget');
 });
 
@@ -132,7 +137,7 @@ test('exit action outside the exit room is a no-op', () => {
 });
 
 test('walking into a room occupied by an entity loses (caught)', () => {
-  const s = fixture({ entities: [{ id: 0, type: 'hunter', speed: 1, roomId: 1 }] });
+  const s = fixture({ entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 1 }] });
   const { state, events } = tick(s, { type: 'move', dir: 'ahead' });
   assert.equal(state.status, 'lost');
   assert.equal(state.loseReason, 'caught');
@@ -147,9 +152,9 @@ test('tick on a finished game is inert', () => {
 });
 
 test('after the player moves, entities advance and can catch', () => {
-  // player at 0 moves to 1; sprinter at 2 (speed 2) reaches 0 then 1? It targets player's NEW room (1).
-  const s = fixture({ entities: [{ id: 0, type: 'hunter', speed: 1, roomId: 2 }] });
-  const { state } = tick(s, { type: 'move', dir: 'ahead' }); // player 0->1, hunter 2->1 => caught
+  // player 0->1; wanderer at 2 (only neighbour: room 1) is forced into the player's new room.
+  const s = fixture({ entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 2 }] });
+  const { state } = tick(s, { type: 'move', dir: 'ahead' }); // player 0->1, wanderer 2->1 => caught
   assert.equal(state.status, 'lost');
   assert.equal(state.loseReason, 'caught');
 });
@@ -161,10 +166,10 @@ test('a distant entity does not catch but emits a cue', () => {
   const s = {
     config, rng: makeRng(1), rooms, spawnId: 0, exitId: 4,
     playerRoom: 0, visited: new Set([0]),
-    entities: [{ id: 0, type: 'hunter', speed: 1, roomId: 4 }],
+    entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 4 }],
     status: 'playing', loseReason: null, cluesUsed: 0,
   };
-  const { state, events } = tick(s, { type: 'move', dir: 'ahead' }); // player->1, hunter 4->3 (dist 2)
+  const { state, events } = tick(s, { type: 'move', dir: 'ahead' }); // player->1, wanderer 4->3 (dist 2)
   assert.equal(state.status, 'playing');
   const cue = events.find(e => e.type === 'cue');
   assert.ok(cue && typeof cue.text === 'string');

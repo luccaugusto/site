@@ -1,19 +1,13 @@
-import { neighborIds, shortestStep } from "./graph.js";
+import { neighborIds } from "./graph.js";
 import { pick } from "./rng.js";
 
+// The wanderer is the only entity: it strolls to a random adjacent room each
+// step, oblivious to the player — you lose only by walking into it (or it into
+// you). Any other type is inert (returns null → no move).
 export function decide(state, entity, rng) {
-  const { rooms, playerRoom } = state;
-  switch (entity.type) {
-    case "hunter":
-      // if player is more than 5 rooms away just walk randomly, otherwise walk towards them
-      return shortestStep(rooms, entity.roomId, playerRoom);
-    case "wanderer": {
-      const nbs = neighborIds(rooms[entity.roomId]);
-      return nbs.length ? pick(rng, nbs) : null;
-    }
-    default:
-      return null;
-  }
+  if (entity.type !== "wanderer") return null;
+  const nbs = neighborIds(state.rooms[entity.roomId]);
+  return nbs.length ? pick(rng, nbs) : null;
 }
 
 export function stepEntities(state, rng) {

@@ -80,14 +80,13 @@ export function buildMapEl(
     node.style.height = sq + "px";
     node.style.left = cx(c) - sq / 2 + "px";
     node.style.top = cy(c) - sq / 2 + "px";
+    // Spawn/exit carry a text label on the win screen; the current-position cell
+    // is marked by its colour alone (.br-cell--here). No glyphs.
     if (markEnds && (isSpawn || isExit)) {
-      node.textContent = isSpawn ? "📍" : "🚪";
       const label = document.createElement("span");
       label.className = "br-cell__label";
       label.textContent = isSpawn ? "início" : "saída";
       node.append(label);
-    } else if (isHere) {
-      node.textContent = "◉";
     }
     node.title = (isHere ? "você · " : "") + `sala ${id}`;
     map.append(node);

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fillHint, cueFor, tauntFor, DIR_PT, PROP_KINDS, PROP_EMOJI, LAMP_SPRITES, toggleLamp, PEOPLE, personById, PROP_STYLES, PROP_DEFAULT, resolvePropPlacement, CLUE_EXIT, CLUE_DREAD, fillClue, dreadFor } from '../content.js';
+import { fillHint, cueFor, tauntFor, DIR_PT, PROP_KINDS, PROP_NAMES, propName, PROP_SPRITES, toggleLamp, placeRoomProps, PEOPLE, personById, PROP_STYLES, PROP_DEFAULT, resolvePropPlacement, CLUE_EXIT, CLUE_DREAD, fillClue, dreadFor } from '../content.js';
 
 test('fillHint substitutes the pt-BR direction word', () => {
   assert.equal(fillHint('vai pra {dir}.', 'left'), 'vai pra esquerda.');
@@ -18,13 +18,9 @@ test('cueFor fills the direction word into a per-intensity template', () => {
   }
 });
 
-test('tauntFor taunts the hunter; other entity types have none', () => {
-  assert.ok(typeof tauntFor('hunter') === 'string' && tauntFor('hunter').length > 0);
-  for (const t of ['sprinter','wanderer','stalker']) assert.equal(tauntFor(t), undefined);
-});
-
-test('every prop kind has an emoji', () => {
-  for (const k of PROP_KINDS) assert.ok(PROP_EMOJI[k], `missing emoji for ${k}`);
+test('tauntFor taunts the wanderer; unknown entity types have none', () => {
+  assert.ok(typeof tauntFor('wanderer') === 'string' && tauntFor('wanderer').length > 0);
+  for (const t of ['hunter','sprinter','stalker']) assert.equal(tauntFor(t), undefined);
 });
 
 test('toggleLamp flips a lamp to its opposite variant', () => {
@@ -38,9 +34,13 @@ test('toggleLamp returns null for kinds that are not lamps', () => {
   assert.equal(toggleLamp('not-a-prop'), null);
 });
 
-test('LAMP_SPRITES maps each lamp kind to its on/off image', () => {
-  assert.match(LAMP_SPRITES.lampada_acesa, /lamp-on\.png$/);
-  assert.match(LAMP_SPRITES.lampada_apagada, /lamp-off\.png$/);
+test('PROP_SPRITES backs every prop kind with an image; lamps map to on/off', () => {
+  for (const k of PROP_KINDS) {
+    assert.ok(PROP_SPRITES[k], `missing sprite for ${k}`);
+    assert.match(PROP_SPRITES[k], /\.(png|jpg)$/, `bad sprite url for ${k}`);
+  }
+  assert.match(PROP_SPRITES.lampada_acesa, /lamp-on\.png$/);
+  assert.match(PROP_SPRITES.lampada_apagada, /lamp-off\.png$/);
 });
 
 test('PEOPLE pool has the three celebrities, each fully described', () => {
@@ -89,6 +89,42 @@ test('resolvePropPlacement falls back to PROP_DEFAULT for unknown kinds', () => 
   assert.deepEqual(resolvePropPlacement('not-a-prop', 'x', 0, 1), PROP_DEFAULT);
 });
 
+test('placeRoomProps fans out two lamps and keeps them put when one is toggled', () => {
+  // Two lamps in a room → they must occupy distinct lanes, not stack.
+  const off = [
+    { id: '3-0', kind: 'lampada_apagada' },
+    { id: '3-1', kind: 'lampada_apagada' },
+  ];
+  const before = placeRoomProps(off);
+  assert.notEqual(before[0].left, before[1].left, 'two lamps should fan out');
+
+  // Toggle the first lamp on — same physical objects, just different kinds.
+  const toggled = [
+    { id: '3-0', kind: 'lampada_acesa' },
+    { id: '3-1', kind: 'lampada_apagada' },
+  ];
+  const after = placeRoomProps(toggled);
+  assert.notEqual(after[0].left, after[1].left, 'toggling must NOT collapse them onto each other');
+  assert.equal(after[0].left, before[0].left, 'the toggled lamp does not move');
+  assert.equal(after[1].left, before[1].left, 'the other lamp does not move');
+});
+
+test('placeRoomProps still fans out same-kind non-lamp props', () => {
+  const placed = placeRoomProps([
+    { id: '4-0', kind: 'quadro_1' },
+    { id: '4-1', kind: 'quadro_1' },
+  ]);
+  assert.notEqual(placed[0].left, placed[1].left);
+});
+
+test('propName gives a readable, slug-free label and a safe fallback', () => {
+  assert.equal(propName('quadro_1'), 'o quadro');
+  assert.equal(propName('cadeira'), 'a cadeira');
+  assert.equal(propName('lixeira'), 'a lixeira');
+  assert.equal(propName('not-a-prop'), 'o objeto');
+  for (const k of Object.keys(PROP_NAMES)) assert.ok(!propName(k).includes('_'), `slug leaked for ${k}`);
+});
+
 test('fillClue substitutes the pt-BR direction word', () => {
   assert.equal(fillClue('o caminho é a {dir}.', 'right'), 'o caminho é a direita.');
   assert.ok(!fillClue('{dir} {dir}', 'ahead').includes('{dir}'));
@@ -101,29 +137,24 @@ test('every clue template carries a {dir} placeholder', () => {
   assert.ok(CLUE_EXIT.length > 0);
 });
 
-test('CLUE_DREAD ramps from a calm (empty) line up to a non-empty warning', () => {
-  // the invariant dreadFor relies on: index 0 is calm/empty, the last is the loudest
-  assert.equal(CLUE_DREAD[0], '', 'the first dread level is calm/empty');
+test('CLUE_DREAD is a non-empty ramp of escalating warnings', () => {
   assert.ok(CLUE_DREAD.length >= 2, 'the ramp needs at least two levels');
-  assert.ok(CLUE_DREAD[CLUE_DREAD.length - 1].length > 0, 'the final dread level must warn');
+  for (const line of CLUE_DREAD) assert.ok(line.length > 0, 'every dread line warns');
 });
 
-test('dreadFor escalates from calm to unbearable across the budget', () => {
-  const N = 3;
-  const first = dreadFor(1, N);
-  const last = dreadFor(N, N);
-  assert.equal(first.intensity, 'far');
-  assert.equal(last.intensity, 'close');
-  assert.ok(last.text.length > 0, 'the last safe clue must carry a warning');
-  for (let k = 1; k <= N; k++) {
-    const d = dreadFor(k, N);
-    assert.ok(['far', 'near', 'close'].includes(d.intensity), `bad band at k=${k}`);
-    assert.equal(typeof d.text, 'string');
+test('dreadFor returns the dread line at the given clue index', () => {
+  for (let i = 0; i < CLUE_DREAD.length; i++) {
+    assert.equal(dreadFor(i).text, CLUE_DREAD[i], `index ${i}`);
+    assert.ok(dreadFor(i).text.length > 0, `line ${i} should warn`);
   }
 });
 
-test('dreadFor handles a budget of 1 (single safe clue is the strongest warning)', () => {
-  const d = dreadFor(1, 1);
-  assert.equal(d.intensity, 'close');
-  assert.ok(d.text.length > 0);
+test('across a run the dread walks the whole ramp in order, clue by clue', () => {
+  // game.js shows dreadFor(cluesUsed - 1) for cluesUsed 1..length before the death fires,
+  // so a full run reveals every CLUE_DREAD line in escalating order.
+  const shown = [];
+  for (let cluesUsed = 1; cluesUsed <= CLUE_DREAD.length; cluesUsed++) {
+    shown.push(dreadFor(cluesUsed - 1).text);
+  }
+  assert.deepEqual(shown, CLUE_DREAD, 'each clue reveals the next dread line, in order');
 });

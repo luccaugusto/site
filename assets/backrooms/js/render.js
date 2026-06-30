@@ -1,13 +1,16 @@
 import { DIRECTIONS } from "./graph.js";
-import { PROP_EMOJI, DIR_PT, personById, resolvePropPlacement } from "./content.js";
+import { DIR_PT, personById, placeRoomProps } from "./content.js";
 
-// Sprite registry seam: register a URL for a kind to swap the emoji for an <img>.
-const SPRITES = Object.create(null); // e.g. SPRITES['prop:lampada'] = '/assets/backrooms/lamp.png'
+// Sprite registry seam: register a URL for a kind to render it as an <img>.
+const SPRITES = Object.create(null); // e.g. SPRITES['prop:lampada_acesa'] = '/assets/backrooms/images/lamp-on.png'
 export function registerSprite(key, url) {
   SPRITES[key] = url;
 }
 
-export function resolveVisual(key, fallbackEmoji) {
+// Every prop kind is sprite-backed (see content.PROP_SPRITES), so the <img>
+// branch is the live path. The empty-span fallback is just a defensive no-op
+// for an unregistered key — broken images degrade to their alt text.
+export function resolveVisual(key) {
   if (SPRITES[key]) {
     const img = document.createElement("img");
     img.src = SPRITES[key];
@@ -15,9 +18,7 @@ export function resolveVisual(key, fallbackEmoji) {
     img.className = "br-sprite";
     return img;
   }
-  const span = document.createElement("span");
-  span.textContent = fallbackEmoji;
-  return span;
+  return document.createElement("span");
 }
 
 export function renderRoom(root, state, onAction) {
@@ -50,26 +51,20 @@ export function renderRoom(root, state, onAction) {
     scene.append(ex);
   }
 
-  // Props — each kind owns its placement/transform (see content.PROP_STYLES).
-  // Pre-count kinds so same-kind duplicates in this room fan out instead of stacking.
-  const kindCounts = {};
-  for (const p of room.props) kindCounts[p.kind] = (kindCounts[p.kind] || 0) + 1;
-  const kindSeen = {};
-  room.props.forEach((p) => {
-    const dupIndex = kindSeen[p.kind] || 0;
-    kindSeen[p.kind] = dupIndex + 1;
-    const place = resolvePropPlacement(p.kind, p.id, dupIndex, kindCounts[p.kind]);
-    const node = resolveVisual(`prop:${p.kind}`, PROP_EMOJI[p.kind] || "❔");
-    node.classList.add("br-prop", `br-prop--${p.kind}`);
+  // Props — placement (incl. same-kind fan-out and lamp-toggle stability) is
+  // resolved by content.placeRoomProps; each kind owns its base style/transform.
+  for (const place of placeRoomProps(room.props)) {
+    const node = resolveVisual(`prop:${place.kind}`);
+    node.classList.add("br-prop", `br-prop--${place.kind}`);
     node.style.left = place.left;
     node.style.top = place.top;
     node.style.setProperty("--br-prop-tf", place.transform);
-    node.title = p.kind;
+    node.title = place.kind;
     node.addEventListener("click", () =>
-      onAction({ type: "interact", propId: p.id }),
+      onAction({ type: "interact", propId: place.id }),
     );
     scene.append(node);
-  });
+  }
 
   // Person entity (harmless celebrity) — click to read their lore.
   if (room.person) {
