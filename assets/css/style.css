@@ -758,6 +758,29 @@ a .crooked-header {
 	transform: none;
 }
 
+/* Backrooms entrance — a small open doorway standing at the foot of the
+   billboard shaft, just to its right. Secret entry to the /backrooms game;
+   the doorway glows when you approach. Pinned to the scene's bottom edge
+   (positioned ancestor is .zine-bottom), flanking the centred post the same
+   way the caveira (left) and misc panel (right) do. */
+.zine-bottom .backrooms-entry {
+	display: block;
+	position: absolute;
+	bottom: 10pt;
+	left: 90%;
+	margin-left: 5vw;        /* clear the centred post and sit beside it */
+	z-index: 20;
+}
+.backrooms-entry img {
+	display: block;
+	width: 80px;             /* small — easy to miss */
+	height: auto;
+	transition: transform 0.3s ease, filter 0.3s ease;
+}
+.backrooms-entry:hover img {
+	filter: drop-shadow(0 0 14px #fff);
+}
+
 /* ==========================================================================
    CAVEIRA ANFITRIÃ — bottom-left mascot that tells the "piada do dia" in a
    speech balloon. The container is pointer-events:none so the corner stays
