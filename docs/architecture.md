@@ -143,8 +143,9 @@ Used consistently across the redesign and the two scoped stylesheets:
 | Orange | `#f0a830` / `#ff8100` | Header tape strips / neon glows |
 | Black | `#000` | Borders + hard offset shadows |
 
-Headings use the **`Ethnocentric`** font (`@font-face`, loaded from
-`assets/Ethnocentric-Regular.otf`).
+Headings use the **`Ethnocentric`** font (`@font-face`,
+`assets/Ethnocentric-Regular.otf`); the homepage splash tagline uses
+**`BetterVCR`** (`assets/BetterVCR 25.09.ttf`).
 
 ### `assets/css/style.css` (global)
 
@@ -209,7 +210,7 @@ scripts **`defer`** on every page; the rest are page-local.
 | `piada.js` | Injects a random "piada do dia" into `#p-piada` (the caveira host's speech balloon; clicking the host re-rolls). **Liquid-templated** — bakes in `_data/piadas.yml` via `{{ site.data.piadas \| jsonify }}`. |
 | `splash.js` | Fills `#splash-text` with a daily-rotating tagline (same for every visitor on a given day, keyed on days-since-epoch; birthday override on May 28). **Liquid-templated** — bakes in `_data/splashes.yml`. |
 
-### Page-local
+### Page-local (active)
 
 | File | Page | What it does |
 |------|------|--------------|

@@ -90,6 +90,12 @@ scripts/             pb-bulk-import.mjs (seed the PocketBase feed)
   Letterboxd, LinkedIn, MyAnimeList, Instagram, a Jellyfin media server, Amazon
   wishlist, sibling subdomains `pds.`/`dev.`). YouTube/Spotify/Deezer embeds
   appear on a few pages.
+  feed (`gram.html`). `gram.html` sets `window.GRAM_PB_URL` and `gram.js` fetches
+  it live. See `docs/2026-06-04-instagram-feed-*.md`.
+- **External links** live as `url_*` / `user_*` vars in `_config.yml` (GitHub,
+  Jellyfin `filmes.`, Letterboxd, MyAnimeList, LinkedIn, Instagram, Spotify,
+  Amazon wishlist, sibling subdomains `pds.`/`dev.`). YouTube/Spotify/Deezer and
+  a standup MP4 embed appear on a few pages.
 
 ---
 
