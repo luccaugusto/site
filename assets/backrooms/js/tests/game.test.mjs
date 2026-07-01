@@ -16,7 +16,7 @@ function fixture(overrides = {}) {
     config, rng: makeRng(1),
     rooms, spawnId: 0, exitId: 2,
     playerRoom: 0, visited: new Set([0]),
-    entities: [], status: 'playing', loseReason: null, cluesUsed: 0,
+    entities: [], status: 'playing', loseReason: null, cluesUsed: 0, captureCount: 0,
     ...overrides,
   };
 }
@@ -136,8 +136,17 @@ test('exit action outside the exit room is a no-op', () => {
   assert.equal(state.status, 'playing');
 });
 
-test('walking into a room occupied by an entity loses (caught)', () => {
-  const s = fixture({ entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 1 }] });
+test('walking into an entity the first time is a survivable capture (stashed away)', () => {
+  const s = fixture({ entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 1 }], captureCount: 0 });
+  const { state, events } = tick(s, { type: 'move', dir: 'ahead' });
+  assert.equal(state.status, 'captured');
+  assert.equal(state.loseReason, 'caught');
+  assert.equal(state.captureCount, 1);
+  assert.ok(events.some(e => e.type === 'captured'));
+});
+
+test('walking into an entity past the capture limit loses (caught)', () => {
+  const s = fixture({ entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 1 }], captureCount: config.CAPTURE_LIMIT });
   const { state, events } = tick(s, { type: 'move', dir: 'ahead' });
   assert.equal(state.status, 'lost');
   assert.equal(state.loseReason, 'caught');
@@ -153,7 +162,8 @@ test('tick on a finished game is inert', () => {
 
 test('after the player moves, entities advance and can catch', () => {
   // player 0->1; wanderer at 2 (only neighbour: room 1) is forced into the player's new room.
-  const s = fixture({ entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 2 }] });
+  // captureCount at the limit so this catch is fatal, exercising the entity-advance catch path.
+  const s = fixture({ entities: [{ id: 0, type: 'wanderer', speed: 1, roomId: 2 }], captureCount: config.CAPTURE_LIMIT });
   const { state } = tick(s, { type: 'move', dir: 'ahead' }); // player 0->1, wanderer 2->1 => caught
   assert.equal(state.status, 'lost');
   assert.equal(state.loseReason, 'caught');

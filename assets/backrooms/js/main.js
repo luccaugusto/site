@@ -2,11 +2,12 @@ import { config } from "./config.js";
 import { makeRng } from "./rng.js";
 import { createGame, tick } from "./game.js";
 import { renderRoom, registerSprite } from "./render.js";
-import { PROP_SPRITES, TIME_DEATH } from "./content.js";
+import { PROP_SPRITES, TIME_DEATH, INITIAL_DIALOG } from "./content.js";
 import { showCue, showDialog } from "./messages.js";
 import { playIntro } from "./intro.js";
 import { showWinScreen } from "./winscreen.js";
 import { buildMapEl } from "./mapview.js";
+import { preloadImages } from "./preload.js";
 
 function seedFromEnv() {
   const q = new URLSearchParams(location.search).get("seed");
@@ -70,7 +71,7 @@ async function handleEvents(events) {
     } else if (ev.type === "talk")
       showDialog({ text: ev.text, image: ev.image });
     else if (ev.type === "win") {
-      onWin(); // Task 13 replaces this with the win screen
+      onWin();
       return true;
     } else if (ev.type === "captured") {
       // Non-fatal capture: show the text, then wake up in a brand-new map far from
@@ -177,8 +178,16 @@ function render() {
 }
 
 (async () => {
+  // Warm the cache for every game image while the intro plays. Fire-and-forget
+  // (not awaited) so a slow asset can never stall the game — by the time the
+  // intro ends, the backdrop, doors, props and portraits are already cached and
+  // rooms render without the on-demand pop-in.
+  preloadImages();
   await playIntro(config);
   render();
   mountDebugControls();
+  // Framing text over the just-rendered first room. The escape clock only arms
+  // once the player dismisses it, so reading the setup isn't a time penalty.
+  await showDialog({ text: INITIAL_DIALOG });
   startTimeLimit();
 })();

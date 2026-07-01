@@ -48,21 +48,8 @@ h2{
 	border-bottom: 2px solid;
 	color: black;
 }
-.short-description{
-	display: none;
-}
-.c55-studio-embed{
-	background-color: #9dded7;
-	margin: auto;
-}
 .palmtree{
 	background-image: url('/assets/img/background-2.jpg');
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-attachment: fixed;
-}
-.take-me-away{
-	background-image: url('/assets/img/vaporwhat.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-attachment: fixed;
@@ -124,15 +111,6 @@ h2{
 .neon{
     box-shadow: 0px 0px 20px 20px #00f3ff;
 }
-.neon-y{
-    box-shadow: 0px 0px 20px 20px #ffb100;
-}
-.fleft{
-	float: left;
-}
-.fright{
-	float: right;
-}
 .parte{
 	text-align: center;
 	padding: 0 5pt;
@@ -142,15 +120,6 @@ h2{
 }
 .bipartido div{
 	width: 50% !important;
-}
-.tripartido{
-	display: inline-flex;
-}
-.tripartido div{
-	width: 33% !important;
-}
-.p15{
-	padding: 15px;
 }
 .w100{
 	width: 100%;
@@ -179,9 +148,6 @@ h2{
 .me{
 	width: 100%;
 }
-.img-skate{
-	width: 80%;
-}
 .time{
 	width: 300px;
 	position: absolute;
@@ -199,20 +165,8 @@ h2{
 .nome{
 	height: 80pt;
 }
-.fdp-logo{
-	margin-left: 50%;
-}
 .nome:hover{
 	cursor: pointer;
-}
-.composicao{
-	position: absolute;
-	top: 230pt;
-	left: 150pt;
-}
-.icone{
-	width: 24px;
-	vertical-align: middle;
 }
 .icone-grande{
 	width: 58px;
@@ -266,9 +220,6 @@ h2{
 .to-the-right{
 	padding-left: 5pt;
 }
-.to-the-left{
-	padding-right: 5pt;
-}
 .cabecalho{
 	width: 100%;
 	display: inline-flex;
@@ -280,56 +231,14 @@ h2{
 	margin-bottom: 2pt;
 }
 /*COLORS*/
-.blackground{
-	background-color: #000;
-}
-.synth-purple{
-	background-color: #8500cb !important;
-}
 .cool-red{
 	background-color: #b5dae0;
-}
-.cool-yellow{
-	background-color: #f5efc7;
-}
-.light-pink{
-	background-color: #eb8ce4;
-}
-.turquoise{
-	color: #00ffd3;
 }
 .greyish{
 	color: #f2efef;
 }
-.cor1{
-	color: #B22222;
-}
-.cor2{
-	color: #CC6600;
-}
-.cor3{
-	color: #DAA520;
-}
-.cor4{
-	color: #008000;
-}
-.cor5{
-	color: #008080;
-}
-.cor6{
-	color: #0000CD;
-}
-.cor7{
-	color: #800080;
-}
 
 /*FONTS*/
-.font10{
-	font-size: 10px;
-}
-.font12{
-	font-size: 12px;
-}
 .font15{
 	font-size: 15px;
 }
@@ -338,16 +247,6 @@ h2{
 }
 .windowContent > p{
 	font-size: 15pt;
-}
-/*SIZE*/
-.full-width{
-	width: 100%;
-}
-.small-width{
-	width: 68px;
-}
-.smallest-height{
-	height: 25px;
 }
 
 /*WINDOW*/
@@ -415,12 +314,6 @@ h2{
 	color: black;
 	padding: 0 15pt 0 15pt;
 }
-.container-img{
-	width: 200px;
-	height: 200px;
-	overflow: hidden;
-	margin: 2pt;
-}
 .container-flor{
 	width: 100%;
 	overflow: hidden;
@@ -433,11 +326,6 @@ h2{
 	height: 100%;
 	display: table-cell;
 	object-fit: cover;
-}
-.fundo-neutro{
-	/* temporada 1 */
-	background-color: #ecb44d;
-    box-shadow: 0px 0px 20px 20px #ff8100;
 }
 .pracima{
 	margin-top: -50%;
@@ -460,35 +348,11 @@ h2{
 	align-content: center;
 	justify-content: space-evenly;
 }
-.font10{
-	font-size: 10pt;
-}
 .font15{
 	font-size: 15pt;
 }
-.font20{
-	font-size: 20pt;
-}
-.font25{
-	font-size: 25pt;
-}
-.m25{
-	margin: 0 25pt;
-}
-.mauto{
-	margin: auto;
-}
-.w25{
-	width: 25%;
-}
-.w30m{
-	max-width: 30%;
-}
 .w50{
 	width: 50%;
-}
-.w75{
-	width: 75%;
 }
 .w100{
 	width: 100%;
@@ -538,9 +402,6 @@ h2{
 		position: absolute;
 		top: 15pt;
 		left: 15pt;
-	}
-	.mobile-hidden{
-		display:none;
 	}
 	.gongo-item{
 		width: unset;
@@ -685,7 +546,6 @@ a .crooked-header {
 .panel-links .crooked-header {
 	transform: rotate(-12deg);
 }
-.panel-portals { top: 15vh; right: 15vw; width: 250px; height: 200px; transform: rotate(2deg); }
 .panel-uriel {
 	top: 2vh;
 	right: -3vw;
@@ -1275,57 +1135,6 @@ a .crooked-header {
     }
 }
 
-/* ── Desktop: fixed magazine frame, two-column spread scrolls SIDEWAYS ──────
-   On wide screens the card stops growing with its content. It's pinned to most
-   of the viewport, the title stays as a static header, and .magazine-content
-   scrolls HORIZONTALLY through its columns — a long post adds more columns to
-   the right. The center fold stays put as a fixed spine while columns slide
-   past it, and the hand keeps gripping the now-fixed bottom-left corner, so it
-   is always in frame. `magazine-page` is only on multi-column posts (tablatura
-   `single_column` pages keep the normal vertical page-scroll above). */
-@media (min-width: 809px) {
-    .magazine-page {
-        height: 100vh;
-        overflow: hidden;          /* the window no longer scrolls; content does */
-        padding: 0 20px;           /* drop zine-body's 40px top/bottom so the frame fills */
-        box-sizing: border-box;
-    }
-
-    .magazine-page .magazine-layout {
-        height: 82vh;              /* fixed frame; the gap below holds the hand */
-        min-height: 0;             /* override base min-height: 80vh */
-        margin-top: 4vh;
-        padding: 40px 80px;        /* a touch less vertical padding → more reading height */
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-    }
-
-    .magazine-page .magazine-header {
-        flex: 0 0 auto;            /* static header pinned to the top of the frame */
-    }
-
-    .magazine-page .magazine-content {
-        flex: 1 1 auto;
-        min-height: 0;             /* let the flex child shrink so overflow engages */
-        column-fill: auto;         /* fill each column to full height, then flow right */
-        overflow-x: auto;          /* → horizontal scroll through the columns */
-        overflow-y: hidden;
-        scroll-behavior: smooth;
-        padding-bottom: 8px;       /* breathing room above the scrollbar */
-    }
-
-    .magazine-page .scroll-to-top-container {
-        position: static;          /* sits as a flex item under the content */
-        flex: 0 0 auto;
-        left: auto;
-        bottom: auto;
-        transform: none;
-        align-self: flex-end;      /* tuck Início into the bottom-right of the frame */
-        margin-top: 10px;
-    }
-}
-
 /* BILLBOARD GALLERY (gallery.html layout) */
 
 /* Single non-scrolling viewport; only the billboard screen scrolls.
@@ -1508,31 +1317,11 @@ a .crooked-header {
     padding: 8px 30px;
     transform: skewX(22deg) rotate(2deg);
 }
-.portal-iframe {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
 .portal-img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
     display: block;
-}
-
-/* Piada-style speech bubble floating over the PC image in the left portal
-   frame. Reuses .balao-piada's look (orange fill, hard shadow, down-tail);
-   this modifier just pins it near the top-center of the frame so the tail
-   points down at the computer. .portal-frame is the positioned ancestor. */
-.balao-pc {
-    position: absolute;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0;
-    max-width: 14em;
-    text-align: center;
-    z-index: 2;
 }
 
 .gallery-grid {

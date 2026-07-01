@@ -63,8 +63,6 @@ export const PROP_STYLES = {
   // Floor clutter — lower in the frame, flat.
   cadeira: { left: "30%", top: "60%", transform: "none" },
   lixeira: { left: "72%", top: "62%", transform: "none" },
-  espelho: { left: "50%", top: "40%", transform: "none" },
-  mancha: { left: "46%", top: "78%", transform: "none" },
 };
 
 // Horizontal fan-out for same-kind duplicates in one room, so they don't stack.
@@ -214,7 +212,7 @@ export const CLUE_DREAD = [
   "agora a vibração é vívida, intensa, você perde o limite entre sua pele e esse objeto. Seus instintos te dizem pra não tocar mais em nada",
 ];
 export function dreadFor(cluesUsed) {
-  const idx = Math.min(cluesUsed, CLUE_DREAD.length);
+  const idx = Math.min(cluesUsed, CLUE_DREAD.length - 1);
   return { text: CLUE_DREAD[idx] };
 }
 
@@ -258,7 +256,7 @@ export const TIME_DEATH = {
   image: null,
 };
 export const ONE_WITH_THE_BACKROOMS_DEATH = {
-  text: "Esse objeto tem algo estranho, uma certa vibração quando tocado. Fascinante. Quanto mais você olha e toca mais você quer experimentar essa sensação. Antes que possa perceber, é tarde demais, você é um com as paredes amarelas. Esse limbo agora é você e você agora é esse limbo.",
+  text: "Você sente para além dos limites do seu corpo, tudo é uma coisa só, sua pele se funde a esse objeto e você sente toda a entidade. Antes que possa perceber, é tarde demais, você é um com as paredes amarelas. Esse limbo agora é você e você agora é esse limbo.",
   image: null,
 };
 
