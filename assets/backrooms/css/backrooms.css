@@ -42,7 +42,7 @@ html, body { margin: 0; height: 100%; }
 /* Props + hint. Per-prop transform comes from --br-prop-tf (set in render.js);
    the hover pop uses the standalone `scale` property so it composes with any
    perspective transform. */
-.br-prop { position: absolute; font-size: 38px; cursor: pointer; filter: drop-shadow(0 2px 4px #000);
+.br-prop { position: absolute; cursor: pointer; filter: drop-shadow(0 2px 4px #000);
   transform: var(--br-prop-tf, none); transition: scale .12s; }
 .br-prop:hover { scale: 1.15; }
 /* Image props (quadros + lamps): borderless, rendered at 2x. */
@@ -62,7 +62,7 @@ html, body { margin: 0; height: 100%; }
   text-shadow: 0 1px 0 rgba(255,255,255,.25); }
 
 
-/* Cue strip + modal (Task 10). */
+/* Cue strip + modal. */
 .br-cues { position: fixed; left: 50%; bottom: 14%; transform: translateX(-50%);
   display: flex; flex-direction: column; gap: 6px; align-items: center; z-index: 20; pointer-events: none; }
 .br-cue { color: var(--br-buzz); background: rgba(0,0,0,.55); padding: 6px 14px; border-radius: 4px;
@@ -80,13 +80,13 @@ html, body { margin: 0; height: 100%; }
   border: 2px solid var(--br-buzz); cursor: pointer; letter-spacing: 2px; }
 .br-modal button:hover { background: var(--br-buzz); color: #000; }
 
-/* Intro overlay (Task 12). */
+/* Intro overlay. */
 .br-intro { position: fixed; inset: 0; z-index: 40; background-color: #000;
   background-repeat: repeat; background-position: center; cursor: pointer; }
 .br-intro__skip { position: absolute; bottom: 18px; right: 20px; color: var(--br-buzz);
   font-size: 13px; letter-spacing: 2px; opacity: .8; }
 
-/* Win screen (Task 13). */
+/* Win screen. */
 .br-win { position: fixed; inset: 0; z-index: 35; background: #0c0b05; color: var(--br-buzz);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px; }
 .br-win h1 { font-size: 22px; letter-spacing: 3px; margin: 0; text-align: center; }

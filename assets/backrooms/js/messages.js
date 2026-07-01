@@ -14,7 +14,10 @@ export function showCue(text, intensity = "far") {
   line.className = `br-cue br-cue--${intensity}`;
   line.textContent = text;
   strip.append(line);
-  setTimeout(() => line.remove(), 6000);
+  // Remove when the fade-out finishes. Must match the `br-fade` duration in
+  // backrooms.css (3.2s) so the node isn't torn down mid-animation or left
+  // lingering invisible after it.
+  setTimeout(() => line.remove(), 3200);
 }
 
 // Resolves when the user dismisses it. If `button` is null the modal stays up (terminal screen).
